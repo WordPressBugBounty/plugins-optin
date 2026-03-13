@@ -1,0 +1,5104 @@
+# Copyright (C) 2026 WPXPO
+# This file is distributed under the GPLv3.
+msgid ""
+msgstr ""
+"Project-Id-Version: WowOptin 1.4.29\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/optin\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-03-12T07:33:41+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: optin\n"
+
+#. Plugin Name of the plugin
+#: optin.php
+#: admin/class-admin.php:171
+#: admin/class-admin.php:172
+msgid "WowOptin"
+msgstr ""
+
+#. Description of the plugin
+#: optin.php
+msgid "A WordPress Optin plugin helps capture visitor info through customizable forms to grow your email list and boost lead generation!"
+msgstr ""
+
+#. Author of the plugin
+#: optin.php
+msgid "WPXPO"
+msgstr ""
+
+#. Author URI of the plugin
+#: optin.php
+msgid "https://wpxpo.com/"
+msgstr ""
+
+#: admin/class-admin.php:182
+#: build/admin/index.js:1088
+msgid "WowOptin Dashboard"
+msgstr ""
+
+#: admin/class-admin.php:183
+#: build/admin/index.js:1
+msgid "Dashboard"
+msgstr ""
+
+#: admin/class-admin.php:187
+#: build/admin/index.js:1088
+msgid "WowOptin Optins"
+msgstr ""
+
+#: admin/class-admin.php:188
+#: includes/utils/class-plugin-actions.php:43
+#: build/admin/index.js:1
+msgid "Optins"
+msgstr ""
+
+#: admin/class-admin.php:192
+#: build/admin/index.js:1088
+msgid "WowOptin Templates"
+msgstr ""
+
+#: admin/class-admin.php:193
+#: build/admin/index.js:1
+msgid "Templates"
+msgstr ""
+
+#: admin/class-admin.php:197
+#: build/admin/index.js:1088
+msgid "WowOptin Leads"
+msgstr ""
+
+#: admin/class-admin.php:198
+#: build/admin/index.js:1
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Leads"
+msgstr ""
+
+#: admin/class-admin.php:202
+#: build/admin/index.js:1088
+msgid "WowOptin A/B Testing"
+msgstr ""
+
+#: admin/class-admin.php:203
+#: build/admin/index.js:1
+msgid "A/B Testing"
+msgstr ""
+
+#: admin/class-admin.php:207
+#: build/admin/index.js:1088
+msgid "WowOptin Integrations"
+msgstr ""
+
+#: admin/class-admin.php:208
+#: build/admin/index.js:1
+#: build/admin/index.js:3
+msgid "Integrations"
+msgstr ""
+
+#: admin/class-admin.php:212
+#: build/admin/index.js:1088
+msgid "WowOptin Settings"
+msgstr ""
+
+#: admin/class-admin.php:213
+#: build/admin/index.js:1
+#: build/admin/index.js:1088
+msgid "Settings"
+msgstr ""
+
+#: admin/class-admin.php:217
+#: build/admin/index.js:1088
+msgid "WowOptin License"
+msgstr ""
+
+#: admin/class-admin.php:218
+#: build/admin/index.js:1
+msgid "License"
+msgstr ""
+
+#: admin/class-admin.php:222
+#: admin/class-admin.php:223
+#: build/admin/index.js:1088
+msgid "Our Products"
+msgstr ""
+
+#: admin/class-admin.php:227
+#: build/admin/index.js:1088
+msgid "WowOptin Builder"
+msgstr ""
+
+#: admin/class-admin.php:228
+msgid "Builder"
+msgstr ""
+
+#: admin/class-admin.php:238
+#: includes/utils/class-plugin-actions.php:57
+#: build/admin/index.js:1
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: admin/class-admin.php:242
+#: includes/utils/class-plugin-actions.php:53
+#: build/admin/index.js:1082
+msgid "Renew License"
+msgstr ""
+
+#: admin/class-admin.php:258
+#: build/admin/index.js:1
+msgid "WowOptin Pro"
+msgstr ""
+
+#: admin/class-rest-admin.php:362
+msgid "Settings is required"
+msgstr ""
+
+#: admin/class-rest-admin.php:533
+#: admin/class-rest-admin.php:553
+#: admin/class-rest-admin.php:572
+msgid "Post ID(s) is required"
+msgstr ""
+
+#: admin/class-rest-admin.php:540
+msgid "Invalid Delete Type"
+msgstr ""
+
+#: admin/class-rest-admin.php:595
+msgid "Lead ID(s) is required"
+msgstr ""
+
+#: admin/rest/class-rest-ab-testing.php:151
+msgid "ID of the A/B Test"
+msgstr ""
+
+#: admin/rest/class-rest-ab-testing.php:162
+msgid "Title of the A/B Test"
+msgstr ""
+
+#: admin/rest/class-rest-ab-testing.php:173
+msgid "Type of the A/B Test"
+msgstr ""
+
+#: admin/rest/class-rest-ab-testing.php:185
+msgid "Status of the A/B Test"
+msgstr ""
+
+#: admin/rest/class-rest-ab-testing.php:197
+msgid "Metric of the A/B Test"
+msgstr ""
+
+#: admin/rest/class-rest-ab-testing.php:209
+msgid "Duration of the A/B Test"
+msgstr ""
+
+#: admin/rest/class-rest-ab-testing.php:221
+msgid "Should update duration of the A/B Test"
+msgstr ""
+
+#: admin/rest/class-rest-ab-testing.php:232
+msgid "Optins of the A/B Test"
+msgstr ""
+
+#: admin/rest/class-rest-integration.php:63
+#: admin/rest/class-rest-integration.php:129
+msgid "Type of the integration"
+msgstr ""
+
+#: admin/rest/class-rest-integration.php:74
+msgid "Integration Slug"
+msgstr ""
+
+#: admin/rest/class-rest-integration.php:85
+msgid "Query"
+msgstr ""
+
+#: admin/rest/class-rest-integration.php:118
+msgid "ID of the integration"
+msgstr ""
+
+#: admin/rest/class-rest-integration.php:140
+msgid "User prompt"
+msgstr ""
+
+#: admin/rest/class-rest-integration.php:151
+msgid "Instruction"
+msgstr ""
+
+#: admin/rest/class-rest-integration.php:162
+msgid "Task Type"
+msgstr ""
+
+#: frontend/class-optin-generator.php:116
+msgid "Your Inline Optin will appear here"
+msgstr ""
+
+#: includes/class-db.php:1231
+#: build/admin/index.js:1
+#: build/admin/index.js:1071
+msgid "Desktop"
+msgstr ""
+
+#: includes/class-db.php:1232
+#: build/admin/index.js:1
+#: build/admin/index.js:1071
+msgid "Tablet"
+msgstr ""
+
+#: includes/class-db.php:1233
+#: build/admin/index.js:1
+#: build/admin/index.js:1071
+msgid "Mobile"
+msgstr ""
+
+#: includes/class-db.php:1519
+#: includes/class-db.php:2764
+msgid "Unknown"
+msgstr ""
+
+#: includes/class-db.php:2239
+msgid "Recipe not found"
+msgstr ""
+
+#: includes/class-db.php:2243
+msgid "Update required"
+msgstr ""
+
+#: includes/class-db.php:2334
+msgid "New Optin"
+msgstr ""
+
+#: includes/class-db.php:2711
+#: build/admin/index.js:1088
+msgid "Popup"
+msgstr ""
+
+#: includes/class-db.php:2713
+#: build/admin/index.js:1088
+msgid "Banner"
+msgstr ""
+
+#: includes/class-db.php:2715
+#: build/admin/index.js:1088
+msgid "Slide"
+msgstr ""
+
+#: includes/class-db.php:2717
+#: build/admin/index.js:375
+#: build/admin/index.js:1088
+msgid "Inline"
+msgstr ""
+
+#: includes/class-wpxpo-plugins.php:31
+msgid "Nonce is missing."
+msgstr ""
+
+#: includes/class-wpxpo-plugins.php:35
+#: includes/utils/class-notice.php:815
+msgid "Invalid nonce."
+msgstr ""
+
+#: includes/class-wpxpo-plugins.php:39
+msgid "Insufficient permissions."
+msgstr ""
+
+#: includes/utils/class-deactive.php:62
+msgid "The plugin isn’t working properly."
+msgstr ""
+
+#: includes/utils/class-deactive.php:67
+msgid "Limited features on the free version."
+msgstr ""
+
+#: includes/utils/class-deactive.php:72
+msgid "I found a better plugin."
+msgstr ""
+
+#: includes/utils/class-deactive.php:73
+msgid "Please share which plugin."
+msgstr ""
+
+#: includes/utils/class-deactive.php:78
+msgid "It's a temporary deactivation."
+msgstr ""
+
+#: includes/utils/class-deactive.php:83
+msgid "Other."
+msgstr ""
+
+#: includes/utils/class-deactive.php:84
+msgid "Please share the reason."
+msgstr ""
+
+#: includes/utils/class-deactive.php:100
+msgid "Quick Feedback"
+msgstr ""
+
+#: includes/utils/class-deactive.php:105
+msgid "If you have a moment, please let us know why you are deactivating WowOptin:"
+msgstr ""
+
+#: includes/utils/class-deactive.php:122
+msgid "Submit & Deactivate"
+msgstr ""
+
+#: includes/utils/class-deactive.php:123
+msgid "Skip & Deactivate"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:434
+#: build/admin/index.js:3
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:767
+#: build/admin/index.js:902
+#: build/admin/index.js:1028
+msgid "General"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:440
+msgid "Entire Site"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:447
+msgid "Home Page"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:454
+msgid "Page"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:460
+msgid "Parent Page"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:466
+msgid "Author"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:472
+msgid "Post Type"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:478
+msgid "Cookie"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:491
+msgid "URL Path"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:496
+#: includes/utils/class-display-rules.php:507
+msgid "Ex"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:502
+msgid "URL Parameter"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:513
+msgid "Post"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:519
+msgid "Posts"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:525
+msgid "Post Category"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:530
+msgid "Post Tag"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:585
+msgid "WooCommerce"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:591
+#: includes/utils/class-display-rules.php:652
+msgid "Product Single Page"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:598
+#: includes/utils/class-display-rules.php:659
+msgid "Product Single Page with Category"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:604
+#: includes/utils/class-display-rules.php:665
+msgid "Product Single Page with Tag"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:610
+#: includes/utils/class-display-rules.php:672
+msgid "Products in Cart"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:616
+#: includes/utils/class-display-rules.php:678
+msgid "Number of Products in Cart"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:624
+#: includes/utils/class-display-rules.php:686
+msgid "Total Cart Amount"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:632
+#: includes/utils/class-display-rules.php:694
+msgid "Cart Page"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:639
+#: includes/utils/class-display-rules.php:701
+msgid "Thank You Page"
+msgstr ""
+
+#: includes/utils/class-display-rules.php:646
+msgid "EDD"
+msgstr ""
+
+#: includes/utils/class-notice.php:107
+msgid "Hello Bar Action performed"
+msgstr ""
+
+#: includes/utils/class-notice.php:190
+#: includes/utils/class-notice.php:208
+msgid "Spring Sale:"
+msgstr ""
+
+#: includes/utils/class-notice.php:191
+#: includes/utils/class-notice.php:209
+msgid "WowOptin offers are live - Enjoy %s off on WowOptin Pro."
+msgstr ""
+
+#: includes/utils/class-notice.php:195
+#: includes/utils/class-notice.php:213
+msgid "Claim Your Discount!"
+msgstr ""
+
+#: includes/utils/class-notice.php:546
+msgid "Close Banner"
+msgstr ""
+
+#: includes/utils/class-notice.php:753
+msgid "Want to help make WowOptin even more awesome?"
+msgstr ""
+
+#: includes/utils/class-notice.php:755
+msgid "Allow us to collect diagnostic data and usage information. see "
+msgstr ""
+
+#: includes/utils/class-notice.php:756
+msgid "what we collect."
+msgstr ""
+
+#: includes/utils/class-notice.php:774
+msgid "Accept & Close"
+msgstr ""
+
+#: includes/utils/class-notice.php:819
+msgid "Invalid request."
+msgstr ""
+
+#: includes/utils/class-plugin-actions.php:34
+msgid "Spring Sale - Up to 60% OFF"
+msgstr ""
+
+#: includes/utils/class-plugin-actions.php:93
+msgid "Docs"
+msgstr ""
+
+#: includes/utils/class-plugin-actions.php:95
+msgid "Support"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Spring Sale - Enjoy Up to 60% Off on"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1082
+msgid "Upgrade Now"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Close notification"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1071
+#: build/admin/index.js:1082
+msgid "Cancel"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Yes, Confirm"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:3
+#: build/admin/index.js:1082
+msgid "Please Wait…"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "News"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1088
+msgid "Create A/B Test"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Create Optin"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Learn More"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Close Toast"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Get Support"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Thank You!"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Your message has been received. We will contact you soon on your email with a response. Stay connected and check mail!"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Unable to submit ticket. Please try again later."
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:490
+msgid "Message"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Local Time (User's Timezone)"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "UTC"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1071
+msgid "Elements"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Audience"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "Trigger"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Placement"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "Display Rules"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Schedules"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+#: build/admin/index.js:375
+msgid "Interval"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "No Repeat"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Repeat"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Repeat X"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Repeat Y"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Space"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Round"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Cover"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Contain"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Auto"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Fixed"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Scroll"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Local"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Low"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Medium"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "High"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Pixels"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Percentage"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Includes Any of"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Doesn't Include Any of"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Includes All of"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Includes None of (Match All)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Equal to"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Less than"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "More than"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "saturday"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "sunday"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "monday"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "tuesday"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "wednesday"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "thursday"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "friday"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:310
+#: build/admin/index.js:375
+msgid "Seconds"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:375
+msgid "Minutes"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:375
+msgid "Hours"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:375
+#: build/admin/index.js:1082
+msgid "Days"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Weeks"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Months"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "After X Seconds"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "After Scrolling to X"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "Inactivity Mode"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "Exit Intent"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "On Click"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "On Hover"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Always"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Inside"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Outside"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:3
+#: build/admin/index.js:227
+#: build/admin/index.js:233
+#: build/admin/index.js:310
+msgid "Left"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+#: build/admin/index.js:233
+#: build/admin/index.js:310
+#: build/admin/index.js:932
+msgid "Right"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Small"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Large"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "Custom"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+msgid "Normal"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Multiply"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Screen"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:375
+#: build/admin/index.js:767
+msgid "Overlay"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Darken"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Lighten"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Color Dodge"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Color Burn"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Hard Light"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Soft Light"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Difference"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Exclusion"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Hue"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Saturaion"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:310
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+#: build/admin/index.js:877
+#: build/admin/index.js:932
+msgid "Color"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Luminosity"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+#: build/admin/index.js:233
+#: build/admin/index.js:310
+msgid "Center"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Justify"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "One Column Layout"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Two Column Layout"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Three Column Layout"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Four Column Layout"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Solid"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Gradient"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:767
+msgid "Image"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1028
+msgid "Video"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Blink"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Bounce"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Jello"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Heartbeat"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Shake"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Rotate"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Vibrate"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Wobble"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Follow"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Share"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Equals"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Does not equal"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Starts with"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Does not start with"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Ends with"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Does not end with"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "Contains"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Does not contain"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Exists"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Does not exist"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Empty"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Not empty"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "No Sound"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Beep 1"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Beep 2"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Beep 3"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Success"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+#: build/admin/index.js:623
+#: build/admin/index.js:1082
+#: build/admin/index.js:1085
+msgid "Error"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Chime"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Correct"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Body Begin"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Body End"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Before Title"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "After Title"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Before Content"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "After Content"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Before Comment Form"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "After Comment Form"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Footer Begin"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Footer End"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Insert at the beginning"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Insert at the end"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "European Union Countries"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Unable to Import Template"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1088
+msgid "Pro"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Select an Option"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "[Woo]"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "[EDD]"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "Search…"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Lock Window"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Unlock Window"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Close Menu"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Close"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Choose Your Target Audience"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Choose audience segments based on device, type, language, location, operating system, and source."
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Visitor Device(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "All Devices"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Select Device(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Visitor Type(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "All Visitors"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Specific Visitors"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Select Visitor Type(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1088
+msgid "New"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Returning"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Logged In"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Logged Out"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Browser Language(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "All Languages"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Specific Languages"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Select Language(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Select Languages"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Geolocation(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "All Locations"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Specific Locations"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Select Location(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Include"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Exclude"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Select one or more Countries"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Operating System(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "All OS"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Specific OS"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Desktop Operating Systems"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Windows"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "macOS"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Linux"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Mobile Operating Systems"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Android"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "iOS"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Traffic Source(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "All Source(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Specific Channels"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Specific URL"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Select Channel(s)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Organic Search"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Visitors from unpaid search results. (Google, Bing)"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:932
+msgid "Social"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Visitors from social media sites (Facebook, Instagram)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Paid Search"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Visitors from paid ads (Google Ads, Youtube Ads)"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Direct"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Visitors who access your website directly"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Show optin only when visiting from URL"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+msgid "Example:"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+#: build/admin/index.js:932
+#: build/admin/index.js:1028
+msgid "Corner Radius"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Stroke"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+msgid "Angle"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Curve"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Tail Size"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Depth"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Cut"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Fold Size"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:767
+msgid "Cut Size"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Horizontal Cut Size"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Vertical Cut Size"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Cut Depth"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Horizontal Cut Depth"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Vertical Cut Depth"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:3
+#: build/admin/index.js:310
+#: build/admin/index.js:375
+#: build/admin/index.js:767
+#: build/admin/index.js:932
+#: build/admin/index.js:1028
+msgid "Size"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:767
+msgid "Spikes"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Pointer Width"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Tail Direction"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Tail Skew"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Tail Height"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Tail Thickness"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Tail Position"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Remove Color"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Linear"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Radial"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:227
+#: build/admin/index.js:310
+#: build/admin/index.js:1088
+msgid "Type"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:3
+msgid "Reset"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Solid Color"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:767
+msgid "Image Position"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:877
+msgid "Select an Image"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Attachment"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Fallback Color"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Show Overlay"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Overlay Color"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1028
+msgid "Video URL"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1028
+msgid "Autoplay"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1028
+msgid "Muted"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1028
+msgid "Show Controls"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1028
+msgid "Add Video Thumbnail"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Replace Image"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Replace Thumbnail"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:767
+msgid "Replace"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Delete Image"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Delete Thumbnail"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:3
+#: build/admin/index.js:227
+#: build/admin/index.js:1071
+#: build/admin/index.js:1082
+msgid "Delete"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:1082
+msgid "Email"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Full Name"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "First Name"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "First name"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Last Name"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Last name"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:233
+msgid "Phone Number"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "+1 (XXX) XXX-XXXX"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Your label"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Your placeholder"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:623
+msgid "Text"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Privacy Policy"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Checkbox"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Spacer"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Form Fields"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Field ID"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:932
+msgid "Label Text"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:932
+msgid "Eg. Facebook"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Placeholder Text"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:3
+msgid "Help Text"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Some helpful message"
+msgstr ""
+
+#: build/admin/index.js:1
+msgid "Required"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:310
+msgid "Custom Class"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:310
+msgid "Separate multiple classes with comma (,)"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:310
+msgid "Custom CSS"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/admin/index.js:310
+msgid "Invalid CSS Detected."
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:375
+msgid "Advanced"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Zoom Out"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Reset Zoom"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Zoom In"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Enter Link"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Open Link to"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Current Window"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "New Window"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Do Follow"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Help"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Sponsored"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Download"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Apply"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Applied"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:1082
+#: build/admin/index.js:1088
+msgid "Edit"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:227
+msgid "Unlock"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Hide in Device"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Hide in Desktop"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Hide in Tablet"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Hide in Mobile"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Bold"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Italic"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Underline"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Strikethrough"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Horizontal"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Vertical"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Blur"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Spread"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:310
+msgid "Fill"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:310
+#: build/admin/index.js:767
+msgid "Opacity"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Search fonts…"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Font Family"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Weight"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Select"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Weight (Bold)"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Applies to Bold font only"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Line Height"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Letter Spacing"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Transformation"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Text Wrapping"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:767
+#: build/admin/index.js:902
+#: build/admin/index.js:932
+#: build/admin/index.js:1028
+msgid "Content"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+#: build/admin/index.js:877
+#: build/admin/index.js:932
+#: build/admin/index.js:1028
+msgid "Style"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Button Text"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Button Text During Submission"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Button Text After Submission"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+msgid "Font"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:310
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+#: build/admin/index.js:932
+#: build/admin/index.js:1028
+msgid "Border"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+#: build/admin/index.js:932
+#: build/admin/index.js:1028
+msgid "Corners"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:767
+#: build/admin/index.js:932
+#: build/admin/index.js:1028
+msgid "Box Shadow"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+#: build/admin/index.js:932
+msgid "Hover"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+msgid "Text Color"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+#: build/admin/index.js:932
+msgid "Background Color"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+#: build/admin/index.js:932
+#: build/admin/index.js:1028
+msgid "Border Type"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:375
+#: build/admin/index.js:490
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+#: build/admin/index.js:932
+#: build/admin/index.js:1028
+msgid "Border Color"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "How does it open?"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Instruct search engines to count this link in their ranking algorithms"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Mark the link as a paid promotion to comply with search engine guidelines"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Enable this if the link provides a downloadable file"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Webhook"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Fluent CRM"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "MailerLite"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Mailchimp"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "HubSpot"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Brevo"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Moosend"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Omnisend"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "MailPoet"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Convert Kit"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Campaign Monitor"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Get Response"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Google Analytics"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Zapier"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Drip"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "SendFox"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "ActiveCampaign"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Field Mapping"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Select a Field"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:1082
+msgid "URL"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Request Method"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Form Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Hook Parameters"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Error fetching data."
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "List"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Tags"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "FluentCRM Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Loading..."
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Refresh Data"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+#: build/admin/index.js:602
+#: build/admin/index.js:623
+msgid "Group"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "MailerLite Field"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:227
+#: build/admin/index.js:310
+msgid "Loading…"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Double Opt-in"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Audience/Contact List"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Mailchimp Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "HubSpot Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Brevo Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Moosend Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Omnisend Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "MailPoet Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Convert Kit Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Lists"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Input ID"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Campaign Monitor Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Get Response Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Accounts"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Drip Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "SendFox Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "AC Field"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:623
+msgid "Add Integration"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Loading"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Third Party Integrations"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "No Active Integration Found."
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Enable Integrations"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "WP Plugins / Webhooks"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:1082
+msgid "Remove"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Form Button Settings"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Form Settings"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Form Integrations"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Edit Form Button"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Form Checkbox Typography"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Checkbox Label Link"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Checkbox Label Alignment"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Action after Successful Submission"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Do Nothing"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Redirect to URL"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+msgid "Show Next Step"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:233
+msgid "Close Optin"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Layout"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Active"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Input Text Color"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Input Background Color"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:490
+msgid "Message Text Color"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Placeholder Text Color"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:932
+msgid "Enable Label"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Label Placement"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:227
+#: build/admin/index.js:233
+#: build/admin/index.js:310
+#: build/admin/index.js:375
+msgid "Top"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Space Between Label & Field"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:375
+#: build/admin/index.js:932
+msgid "Label Color"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Field & Help Text Gap"
+msgstr ""
+
+#: build/admin/index.js:3
+#: build/admin/index.js:375
+#: build/admin/index.js:932
+msgid "Label"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Input"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Add New Form Field"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Input Fields"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Others"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Form"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Subscribe"
+msgstr ""
+
+#: build/admin/index.js:3
+msgid "Submitted"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Text Presets"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Stock Images"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "My Images"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Upload Your Image"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:623
+msgid "Go Back"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Search Images…"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Search Videos…"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Custom/Embedded Video"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Stock Videos"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "All"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Specific"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "No results found"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Manage Display Rules"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Configure and Control Where to Show the Optin."
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Key"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Key Name"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Value"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Cookie Value"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:623
+msgid "None"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Equals to"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Enter an Amount"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Delete Rule"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Rule Group"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Add New Rule"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Add New Rule Group"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "AND"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "OR"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Manage Interval Settings"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Set how frequently visitors see the optin."
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Display Frequency"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Set how often the optin shows up for a visitor"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Every Page Load"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Display Once Every"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Stop Displaying when Visitors"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Determine when the optin stops displaying for a visitor"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Close the Optin"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Take Action (Clicks/Submits)"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Hit the View Limit"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Display the Optin Up to"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Times"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:1071
+#: build/admin/index.js:1088
+msgid "Duplicate"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Goal"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Manage Placement Settings"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Set where the Optin will be shown"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:902
+msgid "Shortcode"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Embed"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Choose Position"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Select a Position"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Custom Filter"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Custom Filter Name…"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Time Schedule"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Local Time (User TZ)"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Schedule"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Manage Schedule Settings"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Customize and control your optin’s schedule."
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Set Recurring Days and Times"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Choose the days and times to display the optin repeatedly."
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Everyday"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Weekdays"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Start Time"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "End Time"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:375
+msgid "Timezone"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Current UTC Time is"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Current time in the selected timezone is"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "This setting is unavailable when Everyday/Weekday Schedule is turned on"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Select Launch Date"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Immediately"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Start Date"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Select End Date"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Never"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:1088
+msgid "End Date"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Manage Trigger Settings"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Choose when and how your visitors will see this optin"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Delete Trigger"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Trigger Group"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Add New Trigger"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Add New Trigger Group"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Display after a set number of seconds"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Display after X seconds of inactivity"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Inactivity Time (Seconds)"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Display when visitors click a specific element"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Trigger Element"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "CSS Selector"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Button Shortcode"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Enter a CSS selector (ID, class, or tag) for the element"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Display when visitors intend to leave the page"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Sensitivity"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Display when visitors hover on an element."
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Minimum Hover Duration (Seconds)"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Display after hovering on the element for X seconds."
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Show after scrolling down to X pixels or percentage"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Choose when to show"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "After a Delay"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Show after X seconds"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "After Delay"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Copy of"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:230
+msgid "Paste"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Add New Step"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Go to Previous Step"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Go to Next Step"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:1071
+msgid "Duplicate Step"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Copy"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Lock"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Bring to Front"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Send to Back"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Ungroup"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Set as Background Image"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Set as Background Video"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Align to Canvas"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:233
+msgid "Middle"
+msgstr ""
+
+#: build/admin/index.js:227
+#: build/admin/index.js:233
+#: build/admin/index.js:310
+#: build/admin/index.js:375
+#: build/admin/index.js:932
+msgid "Bottom"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Copy Block Data"
+msgstr ""
+
+#: build/admin/index.js:227
+msgid "Download Screenshot"
+msgstr ""
+
+#. translators: %s: number of selected elements
+#: build/admin/index.js:230
+msgid "Copy %s Element"
+msgid_plural "Copy %s Elements"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of selected elements
+#: build/admin/index.js:233
+msgid "Delete %s Element"
+msgid_plural "Delete %s Elements"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/admin/index.js:233
+msgid "Align Elements"
+msgstr ""
+
+#: build/admin/index.js:233
+msgid "Vertical Spacing"
+msgstr ""
+
+#: build/admin/index.js:233
+msgid "Horizontal Spacing"
+msgstr ""
+
+#: build/admin/index.js:233
+#: build/admin/index.js:310
+msgid "Choose Icon"
+msgstr ""
+
+#: build/admin/index.js:233
+msgid "Button Settings"
+msgstr ""
+
+#: build/admin/index.js:233
+#: build/admin/index.js:1071
+#: build/admin/index.js:1082
+msgid "Action"
+msgstr ""
+
+#: build/admin/index.js:233
+#: build/admin/index.js:310
+#: build/admin/index.js:490
+msgid "Icon"
+msgstr ""
+
+#: build/admin/index.js:233
+msgid "Button Action"
+msgstr ""
+
+#: build/admin/index.js:233
+msgid "Open Link or Download File"
+msgstr ""
+
+#: build/admin/index.js:233
+msgid "Call a Phone Number"
+msgstr ""
+
+#: build/admin/index.js:233
+msgid "Track Conversion"
+msgstr ""
+
+#: build/admin/index.js:233
+msgid "Counted as succesful conversion when clicked"
+msgstr ""
+
+#: build/admin/index.js:233
+msgid "Icon Position"
+msgstr ""
+
+#: build/admin/index.js:233
+#: build/admin/index.js:490
+#: build/admin/index.js:932
+msgid "Icon Size"
+msgstr ""
+
+#: build/admin/index.js:233
+#: build/admin/index.js:490
+msgid "Spacing"
+msgstr ""
+
+#: build/admin/index.js:233
+#: build/admin/index.js:490
+msgid "Button"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Top Left"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Top Center"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Top Right"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Center Left"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Center Right"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Bottom Left"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Bottom Center"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Bottom Right"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Placement (Visible on front-end only)"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Position Adjustment"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Fixed Width"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Banner Content Max Width"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Fixed Height"
+msgstr ""
+
+#: build/admin/index.js:310
+#: build/admin/index.js:767
+#: build/admin/index.js:1028
+msgid "Width"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Border Radius"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Select Entrance Effect"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Select Exit Effect"
+msgstr ""
+
+#: build/admin/index.js:310
+#: build/admin/index.js:375
+msgid "Sound"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Play"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Audio will be played when the Optin is displayed."
+msgstr ""
+
+#: build/admin/index.js:310
+#: build/admin/index.js:767
+msgid "Enable Overlay"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Prevent Page Scrolling"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Enable Close Icon"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Color Customization"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Display Icon (Front-end Only)"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Closing Behavior"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Close with ESC Key"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Close by Clicking Outside"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Auto-close after Delay"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Set Time"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Close on Page Scroll"
+msgstr ""
+
+#: build/admin/index.js:310
+msgid "Columns"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Background"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Position"
+msgstr ""
+
+#: build/admin/index.js:375
+#: build/admin/index.js:623
+msgid "Shadow"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Animation"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Close Button"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Countdown Settings"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "End Action"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Countdown Type"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Static"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Evergreen"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "End Date & Time"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Repeat after finished"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Enable Two-Digit Format (00)"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Choose Units"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Min."
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Sec."
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Enable Labels"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Label Position"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Label Alignment"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "No Action"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Hide Countdown"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Custom Message"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Enter Message"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Write your message"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Box"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Separator"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Enable Separator"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Separator Style"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Separator Position"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Digit Color"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Separator Color"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Box Width"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Box Height"
+msgstr ""
+
+#: build/admin/index.js:375
+#: build/admin/index.js:623
+#: build/admin/index.js:902
+msgid "Padding"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Box Gap"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Label & Unit Gap"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Digits"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Labels"
+msgstr ""
+
+#: build/admin/index.js:375
+msgid "Countdown"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Coupon Settings"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Messages"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Coupon Code"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Confetti Effect"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Show confetti effect when clicked"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Copy Message"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Message Gap"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Copy Button Color"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Copy Button Width"
+msgstr ""
+
+#: build/admin/index.js:490
+#: build/admin/index.js:932
+msgid "Icon Color"
+msgstr ""
+
+#: build/admin/index.js:490
+#: build/admin/index.js:932
+msgid "Icon Gap"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Icon Hover Color"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Button Text Color"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Button Background Color"
+msgstr ""
+
+#: build/admin/index.js:490
+msgid "Coupon"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Casual"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Formal"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Friendly"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Urgent"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Inspiring"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Reassuring"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Shorten"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Expand"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Summarize"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Rephrase"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Fix Grammar & Spelling"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "You don't have any AI integration yet."
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Select Provider"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Generate Text"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Restyle"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Failed to generate text"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Describe your writing task…"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Tone of voice"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Describe writing style…"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Presets"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Rewrite"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "This but…"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "What would you like to be changed?"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Change tone of voice"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "More like this"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Insert"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Arch"
+msgstr ""
+
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+msgid "Radius"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Convex"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Intensity"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Flip Direction"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Text Stroke"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Stroke Width"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Text Settings"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "AI Text Generation"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Write with AI"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Link"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Text Alignment"
+msgstr ""
+
+#: build/admin/index.js:623
+#: build/admin/index.js:767
+msgid "Warp"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Transform"
+msgstr ""
+
+#: build/admin/index.js:623
+msgid "Stroke Color"
+msgstr ""
+
+#: build/admin/index.js:756
+msgid "HTML Code"
+msgstr ""
+
+#: build/admin/index.js:756
+msgid "Add your code here…"
+msgstr ""
+
+#: build/admin/index.js:756
+msgid "New: Style and Script tags are also supported!"
+msgstr ""
+
+#: build/admin/index.js:756
+msgid "Html"
+msgstr ""
+
+#: build/admin/index.js:767
+msgid "Your HTML preview will appear here"
+msgstr ""
+
+#: build/admin/index.js:767
+msgid "Image Settings"
+msgstr ""
+
+#: build/admin/index.js:767
+msgid "Open Media Library"
+msgstr ""
+
+#: build/admin/index.js:767
+#: build/admin/index.js:1071
+msgid "Failed to upload image"
+msgstr ""
+
+#: build/admin/index.js:767
+msgid "Upload"
+msgstr ""
+
+#: build/admin/index.js:767
+msgid "Image Source URL"
+msgstr ""
+
+#: build/admin/index.js:767
+#: build/admin/index.js:1028
+msgid "Height"
+msgstr ""
+
+#: build/admin/index.js:767
+msgid "Image Alt Text"
+msgstr ""
+
+#: build/admin/index.js:767
+msgid "Describe your image to improve accessibility."
+msgstr ""
+
+#: build/admin/index.js:767
+msgid "Frame"
+msgstr ""
+
+#: build/admin/index.js:767
+msgid "Image Filter"
+msgstr ""
+
+#: build/admin/index.js:767
+msgid "Blend Mode"
+msgstr ""
+
+#: build/admin/index.js:877
+msgid "Loading Asset…"
+msgstr ""
+
+#: build/admin/index.js:877
+msgid "Preset Loader"
+msgstr ""
+
+#: build/admin/index.js:877
+msgid "Failed to load preset."
+msgstr ""
+
+#: build/admin/index.js:877
+msgid "Loading Preset…"
+msgstr ""
+
+#: build/admin/index.js:877
+msgid "Shape Settings"
+msgstr ""
+
+#: build/admin/index.js:877
+msgid "Shape"
+msgstr ""
+
+#: build/admin/index.js:902
+msgid "Shortcode preview might not always be accurate due to different plugins taking different approaches. Be sure double check with the Live Preview Mode."
+msgstr ""
+
+#: build/admin/index.js:902
+msgid "Fixed Layout"
+msgstr ""
+
+#: build/admin/index.js:902
+msgid "Disables floating mode and applies fixed position, ensuring the content never overflows outside of the parent element. Useful for 3rd party content that can have unpredicatble size."
+msgstr ""
+
+#: build/admin/index.js:902
+msgid "Prevent Clipping (Frontend)"
+msgstr ""
+
+#: build/admin/index.js:902
+msgid "If the content of shortcode clips (parts of content are hidden due to height), this will automatically adjust the height of the block to fit the content. This is only applied on the frontend."
+msgstr ""
+
+#: build/admin/index.js:902
+msgid "Horizontal Alignment"
+msgstr ""
+
+#: build/admin/index.js:902
+msgid "Vertical Alignment"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Shortcode Preview"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Shortcode preview will appear here"
+msgstr ""
+
+#: build/admin/index.js:932
+#: build/admin/index.js:1071
+#: build/admin/index.js:1088
+msgid "Loading Preview…"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Facebook"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "X"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Instagram"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Youtube"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "WhatsApp"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "TikTok"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Bluesky"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Discord"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Twitch"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Telegram"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Reddit"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Tumblr"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Snapchat"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Threads"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "LinkedIn"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Social Platforms"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Enter URL"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Social Settings"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Socials"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Use Brand Color"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Default"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Label Gap"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Alignment"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Social Type"
+msgstr ""
+
+#: build/admin/index.js:932
+msgid "Add New Social Platform"
+msgstr ""
+
+#: build/admin/index.js:1028
+msgid "Video Settings"
+msgstr ""
+
+#: build/admin/index.js:1028
+msgid "Loop"
+msgstr ""
+
+#: build/admin/index.js:1028
+msgid "Video Description"
+msgstr ""
+
+#: build/admin/index.js:1028
+msgid "Describe your video to improve accessibility."
+msgstr ""
+
+#: build/admin/index.js:1071
+#: build/admin/index.js:1088
+msgid "Saving"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Failed!"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Saved"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Update"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Save"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Undo Ctrl+Z"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Undo"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Redo Ctrl+Y"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Redo"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Design Menu"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Audience Menu"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Trigger Menu"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Display Rules Menu"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Schedule Menu"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Interval Menu"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Integration Tutorial"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Tutorials"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Learn WowOptin"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Latest Videos"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "section to get detailed use-cases."
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "WowOptin Knowledge Base"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Customer Support"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Have a question or need assistance? Feel free to reach out to us at"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "For more, Check out our"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Youtube channel."
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Failed to load documentation."
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Exit"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Reload Preview"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Toggle Live Preview"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Layers"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Publish Warning"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Please make sure that your Optin is properly designed for all devices before publishing."
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Publish Anyway"
+msgstr ""
+
+#: build/admin/index.js:1071
+#: build/admin/index.js:1088
+msgid "Published"
+msgstr ""
+
+#: build/admin/index.js:1071
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Draft"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Add Step"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Rename Step"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Rename"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Delete Step"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Are you sure you want to delete this step?"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Dev"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Uploading Image…"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Please wait…"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Some elements are out of viewport due to device size. Click here bring them into the viewport."
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Reposition Elements into Viewport"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Hidden Blocks"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Block Name"
+msgstr ""
+
+#: build/admin/index.js:1071
+msgid "Unhide"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Loading Builder…"
+msgstr ""
+
+#: build/admin/index.js:1079
+#: build/admin/index.js:1088
+msgid "All Optins"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Last 7 Days"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Last 15 Days"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Last 30 Days"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Total"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Unique"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Actions"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Show Results"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Impressions by Country"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "World Domination"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Views"
+msgstr ""
+
+#: build/admin/index.js:1079
+#: build/admin/index.js:1082
+#: build/admin/index.js:1088
+msgid "Optin"
+msgstr ""
+
+#: build/admin/index.js:1079
+#: build/admin/index.js:1082
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Impressions"
+msgstr ""
+
+#: build/admin/index.js:1079
+#: build/admin/index.js:1088
+msgid "CR"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Top Converting Optins"
+msgstr ""
+
+#: build/admin/index.js:1079
+#: build/admin/index.js:1082
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Revenue"
+msgstr ""
+
+#: build/admin/index.js:1079
+#: build/admin/index.js:1082
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Conversions"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Impressions by Device"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Total Views"
+msgstr ""
+
+#: build/admin/index.js:1079
+msgid "Unique Views"
+msgstr ""
+
+#. translators: %s Current user name
+#: build/admin/index.js:1082
+msgid "Hello, %s"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Let’s track your progress and set new milestones!"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Total Unique Visitors"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Number of unique visitors who visited your website"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Number of times users saw your optins"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Page Views"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Total pageview"
+msgstr ""
+
+#: build/admin/index.js:1082
+#: build/admin/index.js:1088
+msgid "Social Clicks"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Total clicks"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Number of users converted"
+msgstr ""
+
+#: build/admin/index.js:1082
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Conversion Rate"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Percentage of impressions became conversions"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Total revenue generated from conversions"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Sync your WowOptin forms with Mailchimp to automate email campaigns, segment subscribers, and boost conversions."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Easily connect MailerLite with WowOptin to send automated emails, nurture leads, and track performance with real-time analytics."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Combine WowOptin with FluentCRM to manage your contacts, create targeted campaigns, and track interactions - all within WordPress."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Sync WowOptin leads with HubSpot to manage your marketing, sales, and CRM in one place."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Connect Brevo with WowOptin to engage your audience with automated email & SMS campaigns."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Seamlessly connect Moosend with WowOptin to automate your email marketing like never before."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Combine Omnisend with WowOptin to capture and engage leads through email, SMS, and push notifications."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Sync WowOptin with MailPoet to capture, nurture, and engage your subscribers using powerful automation"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Integrate Kit with WowOptin to automate personalized email sequences, and deliver targeted content."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Integrate Campaign Monitor with WowOptin to deliver visually appealing and engaging emails."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Combine WowOptin with GetResponse to build high-converting email campaigns and grow your business with AI-powered automation."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Combine WowOptin with Drip to power smarter automation for your eCommerce brand through seamless email and SMS workflows."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Connect SendFox with WowOptin to build smarter and automated email workflows that make growing your audience effortless."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Integrate ActiveCampaign with WowOptin to sync contacts to lists, and trigger automations for welcome, cart recovery, and more."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Integrate Google Analytics with WowOptin to gain deep insights into your opt-in form performance."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Bring the intelligence of OpenAI's ChatGPT into WowOptin to generate, rewrite, and refine text for your campaigns."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Access the power of Google's Gemini in WowOptin to generate, rewrite, and refine text for your campaigns."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Get the creativity of xAI's Grok inside WowOptin to generate, rewrite, and refine text for your campaigns."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Email Marketing Tools"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Analytics Tools"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "AI Tools"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Account Connected!"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Failed to connect account. Please try again later."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Title must be at least 5 characters long"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Title cannot be empty."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "URL cannot be empty."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "API Key cannot be empty."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Client ID cannot be empty."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Please select a model"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Only GA4 is supported."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Invalid Measurement ID."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Measurement ID cannot be empty."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Title"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "For internal use only. Please provide a descriptive name for your convenience"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "API Key"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Unlock this Integration"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Please Wait..."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Connect"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Client ID"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Measurement ID"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Measurement Protocol API Key"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Model"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Select Model"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Loading Models…"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Seamless Integrations with WowOptin"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Connect WowOptin with the top tools in the industry to supercharge your marketing and analytics."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Tutorial"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Manage"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "An error occured while changing integration settings. Please try again later."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Integration"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Back"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "For security reasons, once the data is saved, it cannot be updated. Ensure you input the correct information before saving."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Delete Account"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Account Deleted Successfully!"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Could not delete account. Please try again later."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Add Account"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Name"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Date Submitted"
+msgstr ""
+
+#: build/admin/index.js:1082
+#: build/admin/index.js:1088
+msgid "Bulk Action"
+msgstr ""
+
+#: build/admin/index.js:1082
+#: build/admin/index.js:1088
+msgid "Delete Permanently"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "You don't have any leads yet!"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Ready to generate high-quality leads effortlessly?"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Learn How"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "View Submitted Data"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Are you sure you want to permanently delete this lead?"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Failed to delete lead"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Are you sure you want to permanently delete selected leads?"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Leads exported successfully!"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Failed to export leads"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Export"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "1 Site - Lifetime"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "25 Sites - Lifetime"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Choose a upgrade plan"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Congratulations"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "WowOptin Pro is activated. Now you can enjoy all of its features to start capturing leads and growing your business."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "License Type"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Expiration"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Deactivate License"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Activate WowOptin Pro"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Enter the license key below to activate the pro version and unlock all premium features."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "You can get the license key from your \"My Account Page” at WPXPO."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Get My License Key"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Activate License"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Just Getting Started with WowOptin?"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "If you are using WowOptin for the first time, explore the detailed documentation"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "documentation"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "to learn about its effective uses."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Can Someone Help Me?"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Yes, we have a dedicated support team. Please"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "contact us"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "if you encounter any difficulties while using WowOptin."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Can I Request a Feature?"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Absolutely! You can explore and"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "request the desired features"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid " you need. We carefully consider all requests to ensure WowOptin meets your expectations."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Total Conversions"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Total Leads / Form Submissions"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Total Revenue"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Create an A/B Test"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Edit A/B Test"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "How Do A/B tests Work?"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Test Name"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Upgrade to Pro & Start Testing"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "A/B Test Created"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "A/B Test Updated"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Failed to create A/B Test"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Failed to update A/B Test"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Start Testing"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Update Test"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Failed to duplicate Optin"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Variants"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Divides your visitors between test versions equally to see which one brings more conversions, signups, or clicks."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Traffic Distribution (%)"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Variant"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Duplicate & Add Optin"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Are you sure you want to duplicate this Optin and add it to this A/B test?"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Duplicate & Add"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Add New Variant"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Change"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Add Optin…"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "No Results"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Pick the test version with the best performance to optimize your site’s results - either manually or automatically."
+msgstr ""
+
+#: build/admin/index.js:1082
+#: build/admin/index.js:1085
+msgid "Winner Selection"
+msgstr ""
+
+#: build/admin/index.js:1082
+#: build/admin/index.js:1085
+msgid "Manual"
+msgstr ""
+
+#: build/admin/index.js:1082
+#: build/admin/index.js:1085
+msgid "Automatic"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Automated Winner Selection Parameter"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Picks the best test variant using the pre-defined parameters."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "The total duration the A/B test will run."
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Modify Duration"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Variant Title"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "DELETED OPTIN"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "[No Title]"
+msgstr ""
+
+#: build/admin/index.js:1082
+msgid "Winner"
+msgstr ""
+
+#. translators:  %s Percentage of the audience.
+#: build/admin/index.js:1085
+msgid "Traffic Distribution: %s%% of the audience"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Traffic Distribution: Unknown"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Failed to select winner"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Please try again later or contact support."
+msgstr ""
+
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Failed to reset statistics"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Are you sure you want to select this Optin as the winner of the A/B Test? This will end the test and deactivate other Optins and leave the winner Optin activated."
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Select Winner and End Testing"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Select Winner"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Edit Optin"
+msgstr ""
+
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Reset Statistics"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Are you sure you want to reset the statistics for this A/B test? This will clear the analytics data for all the optins in this test."
+msgstr ""
+
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Activated"
+msgstr ""
+
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Ended"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Test Title"
+msgstr ""
+
+#: build/admin/index.js:1085
+#: build/admin/index.js:1088
+msgid "Status"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Winner Selection Type"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Metric"
+msgstr ""
+
+#: build/admin/index.js:1085
+msgid "Duration"
+msgstr ""
+
+#. translators: Number of duration in days.
+#: build/admin/index.js:1088
+msgid "%d Day"
+msgid_plural "%d Days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/admin/index.js:1088
+msgid "Ending at"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Ended at"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Search A/B Tests…"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Ready to Optimize Conversions Through A/B Testing?"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "The WowOptin quick setup wizard will guide you and help you create your first A/B tests in just a few steps. It's simply plan, click, and go!"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "No A/B Tests in Draft"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Create draft campaigns and save them for later - use drafts for creating active A/B testing campaigns"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "View Winners from A/B tests"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "See the winning optins from the A/B tests - view which optins did the best and which need work!"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "No Campaigns Live for A/B Testing"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Activate A/B testing campaigns - you're just a few clicks away from actionable results!"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "See Results"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Details"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Delete A/B Test"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Are you sure you want to delete this A/B test? All the variants will be disabled and the test will be deleted."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Failed to delete A/B test"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Delete Test"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "is a B2B wholesale plugin featuring advanced wholesale pricing and customization features."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "is a complete WooCommerce store builder featuring advanced options to improve sales!"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "boost sales and maximize revenue with the advanced discount campaigns of WowRevenue."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "creates wonderful custom blogs and more using the powerful and customizable PostX site builder."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "extends the functionality of your WooCommerce store with additional features and options."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Last Modified"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Trash"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Search Optins…"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Show Columns"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Start growing your audience today!"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Create your first optin with WowOptin — designed to boost engagement and generate high-quality leads."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "No drafts are available."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Your unpublished optins will show up here."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "The trash is empty."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Trashed items are stored here. You can restore or permanently delete them."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "You haven’t published any optins yet."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Create optins and start generating leads today."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Create New Optin"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Move to Trash"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Restore"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "View Quick Statistics"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Are you sure you want to move the selected item(s) to the trash?"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Failed to move optin(s) to the trash"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Failed to restore optin"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Are you sure you want to permanently delete the selected item(s)?"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Failed to delete optin"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Are you sure you want to permanently delete selected optin(s)?"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Are you sure you want to move the selected optin(s) to the trash?"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Failed to delete optin(s)"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Failed to move selected optin(s) to the trash"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Failed to restore optin(s)"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Are you sure you want to reset the statistics for this Optin? This action cannot be undone."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Total Social Clicks"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Google Fonts"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "IP Tracking"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Settings saved successfully"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Error saving settings"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Save Settings"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "WowOptin Blog"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Getting Started with WowOptin"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Create your first optin"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Audience Targeting"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Roadmap and Feature Request"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "We are working on more exciting features. Check out what’s coming next and share your requirements."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Explore Roadmap"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "WowCommerce Community"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Join our Facebook community to stay up-to-date and share your thoughts & ideas."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Join Community"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "News, Tips, and Updates"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Sticky and highly noticeable optin!"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Best way to grab your visitor's attention!"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Polite and stylish way to attract attention!"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Inline/Embedded"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Attach Optin anywhere in your page or use shortcodes!"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Start from Scratch"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Choose Optin Type"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Or,"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Start with a Template (Recommended)"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Free"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Single Step"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Multiple Steps"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Hot"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Popular"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Use Template"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Preview"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Blank Template"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Create your own"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Search Templates…"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Optin Types"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Number of Steps"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Sort by Trend"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Template Type"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Filter by Industries"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Filter by Seasons"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "(Coming Soon)"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "See Less"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "See More"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Unable to install/activate plugin. Please try again later."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Activate"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Install"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Plugin Details"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "License Activated!"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "An error occured while activating license. Please try again later."
+msgstr ""
