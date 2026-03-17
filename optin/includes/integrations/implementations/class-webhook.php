@@ -31,26 +31,43 @@ class Webhook extends BaseMailIntegration {
 	 */
 	public function add_subscriber( $data ): bool {
 
+		if ( empty( $data['link'] ) || empty( $data['reqType'] ) ) {
+			return false;
+		}
+
+		$url = wp_http_validate_url( esc_url_raw( $data['link'] ) );
+
+		if ( false === $url ) {
+			return false;
+		}
+
 		$res = null;
 
 		if ( 'GET' === $data['reqType'] ) {
-			$url = add_query_arg( $data['fields'], $data['link'] );
-			$res = wp_remote_get(
+			$url = add_query_arg( is_array( $data['fields'] ) ? $data['fields'] : array(), $url );
+
+			if ( false === wp_http_validate_url( $url ) ) {
+				return false;
+			}
+
+			$res = wp_safe_remote_get(
 				$url,
 				array(
 					'timeout' => 45,
 				)
 			);
 		} elseif ( 'POST' === $data['reqType'] ) {
-			$res = wp_remote_post(
-				$data['link'],
+			$res = wp_safe_remote_post(
+				$url,
 				array(
 					'method'  => 'POST',
 					'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
-					'body'    => wp_json_encode( $data['fields'] ),
+					'body'    => wp_json_encode( isset( $data['fields'] ) && is_array( $data['fields'] ) ? $data['fields'] : array() ),
 					'timeout' => 45,
 				)
 			);
+		} else {
+			return false;
 		}
 
 		if ( ! is_null( $res ) && ! is_wp_error( $res ) ) {
