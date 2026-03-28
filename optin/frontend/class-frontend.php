@@ -543,8 +543,54 @@ class Frontend {
 		}
 
 		if ( ! empty( $filtered_posts ) ) {
+			if ( $this->contains_ab_test_variant( $filtered_posts ) ) {
+				$this->disable_page_cache();
+			}
+
 			$this->set_allow_enqueuing( true );
 			$this->renderer->render_optins( $filtered_posts );
+		}
+	}
+
+	/**
+	 * Determine whether the rendered optins contain an A/B test variant.
+	 *
+	 * @param array $posts Optins selected for rendering.
+	 * @return bool
+	 */
+	private function contains_ab_test_variant( $posts ) {
+		foreach ( $posts as $post ) {
+			if ( ! empty( $post->test_id ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Prevent page caches from reusing a server-rendered A/B test response.
+	 *
+	 * @return void
+	 */
+	private function disable_page_cache() {
+		if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+			define( 'DONOTCACHEPAGE', true );
+		}
+
+		if ( ! defined( 'DONOTCACHEDB' ) ) {
+			define( 'DONOTCACHEDB', true );
+		}
+
+		if ( ! defined( 'DONOTCACHEOBJECT' ) ) {
+			define( 'DONOTCACHEOBJECT', true );
+		}
+
+		if ( ! headers_sent() ) {
+			nocache_headers();
+			header( 'Cache-Control: private, no-store, no-cache, must-revalidate, max-age=0', true );
+			header( 'Pragma: no-cache', true );
+			header( 'Expires: Wed, 11 Jan 1984 05:00:00 GMT', true );
 		}
 	}
 

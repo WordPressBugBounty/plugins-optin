@@ -112,9 +112,7 @@ class AbTesting {
 			$this->schedule_winner_selection( $id, $dto->started_at, $dto->duration );
 		}
 
-		if ( 'active' === $dto->status ) {
-			self::create_variant_view_history( $id );
-		}
+		$this->sync_variant_view_history( $id, $dto->status );
 	}
 
 	/**
@@ -131,12 +129,13 @@ class AbTesting {
 			'active' === $dto->status
 		) {
 			$this->schedule_winner_selection( $dto->id, $dto->started_at, $dto->duration );
-		}
-
-		// Unschedule if type is changed to manual.
-		elseif ( 'manual' === $dto->type ) {
+		} elseif ( 'manual' === $dto->type ) {
+			// Unschedule if type is changed to manual.
 			$this->unschedule_winner_selection( $dto->id );
 		}
+
+		// Reset sticky assignments so updated tests can rebalance traffic.
+		$this->sync_variant_view_history( $dto->id, $dto->status );
 	}
 
 	/**
@@ -148,6 +147,21 @@ class AbTesting {
 	public function test_deleted( $id ) {
 		$this->unschedule_winner_selection( $id );
 		self::delete_variant_view_history( $id );
+	}
+
+	/**
+	 * Sync variant view history with the current test status.
+	 *
+	 * @param int    $test_id Test ID.
+	 * @param string $status Test status.
+	 * @return void
+	 */
+	private function sync_variant_view_history( $test_id, $status ) {
+		self::delete_variant_view_history( $test_id );
+
+		if ( 'active' === $status ) {
+			self::create_variant_view_history( $test_id );
+		}
 	}
 
 	/**

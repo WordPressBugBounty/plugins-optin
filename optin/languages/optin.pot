@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowOptin 1.4.30\n"
+"Project-Id-Version: WowOptin 1.4.31\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/optin\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-03-17T03:46:53+00:00\n"
+"POT-Creation-Date: 2026-03-28T03:44:10+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: optin\n"
@@ -2144,6 +2144,10 @@ msgid "Tags"
 msgstr ""
 
 #: build/admin/index.js:3
+msgid "Double Opt-in"
+msgstr ""
+
+#: build/admin/index.js:3
 msgid "FluentCRM Field"
 msgstr ""
 
@@ -2170,10 +2174,6 @@ msgstr ""
 #: build/admin/index.js:227
 #: build/admin/index.js:310
 msgid "Loading…"
-msgstr ""
-
-#: build/admin/index.js:3
-msgid "Double Opt-in"
 msgstr ""
 
 #: build/admin/index.js:3

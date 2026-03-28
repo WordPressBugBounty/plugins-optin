@@ -2,7 +2,6 @@
 
 namespace OPTN\Includes\Integrations\Implementations;
 
-use OPTN\Includes\Db;
 use OPTN\Includes\Integrations\Base\BaseMailIntegration;
 use OPTN\Includes\Utils\Utils;
 
@@ -93,7 +92,7 @@ class FluentCrm extends BaseMailIntegration {
 	);
 
 	/**
-	 * Adds a subscribe to MailerLite
+	 * Adds a subscribe to FluentCRM
 	 *
 	 * @param array $data data.
 	 * @return bool
@@ -101,6 +100,14 @@ class FluentCrm extends BaseMailIntegration {
 	public function add_subscriber( $data ): bool {
 		$fluent_data       = $data['fields'];
 		$fluent_data['ip'] = Utils::get_user_info()['ip'];
+
+		if ( isset( $fluent_data['doubleOpt'] ) && $fluent_data['doubleOpt'] ) {
+			$fluent_data['status'] = 'pending';
+		} else {
+			$fluent_data['status'] = 'subscribed';
+		}
+
+		unset( $fluent_data['doubleOpt'] );
 
 		if ( function_exists( 'FluentCrmApi' ) ) {
 			$contact_api = FluentCrmApi( 'contacts' );
