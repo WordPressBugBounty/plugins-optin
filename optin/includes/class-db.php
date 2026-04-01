@@ -2503,7 +2503,11 @@ class Db {
 			$wpdb->prepare(
 				' SELECT c.*, v.test_id, v.t_dist ' .
 				" FROM {$this->optins_table} c " . // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				" LEFT JOIN {$this->ab_test_variants_table} v ON v.optin_id = c.id " . // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				' LEFT JOIN (' .
+					' SELECT av.optin_id, av.test_id, av.t_dist' .
+					" FROM {$this->ab_test_variants_table} av" . // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					" INNER JOIN {$this->ab_tests_table} at ON at.id = av.test_id AND at.status = %d" . // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				') v ON v.optin_id = c.id ' .
 				" WHERE
 					c.enabled = 1 AND
 					c.device & %d > 0 AND
@@ -2513,6 +2517,7 @@ class Db {
 					( c.end_datetime IS NULL OR c.end_datetime > NOW() ) AND
 					( c.traffic_url IS NULL OR c.traffic_url = %s )
 					{$id_cond}", // phpcs:ignore
+				AbTesting::ACTIVE_STATUS,
 				$device,
 				$os,
 				$visitor_types,
