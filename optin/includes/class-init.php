@@ -68,6 +68,8 @@ class Init {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
+		new WowShippingPromotion();
+
 		Db::get_instance()->maybe_install();
 	}
 

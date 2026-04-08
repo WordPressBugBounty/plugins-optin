@@ -4,7 +4,7 @@
  * Description:       A WordPress Optin plugin helps capture visitor info through customizable forms to grow your email list and boost lead generation!
  * Requires at least: 6.4
  * Requires PHP:      7.4
- * Version:           1.4.32
+ * Version:           1.4.33
  * Author:            WPXPO
  * Author URI:        https://wpxpo.com/
  * License:           GPLv3
@@ -21,7 +21,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 
-define( 'OPTN_VERSION', '1.4.32' );
+define( 'OPTN_VERSION', '1.4.33' );
 define( 'OPTN_BASE', plugin_basename( __FILE__ ) );
 define( 'OPTN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'OPTN_URL', plugin_dir_url( __FILE__ ) );
