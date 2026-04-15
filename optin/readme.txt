@@ -4,7 +4,7 @@ Tags: popup, optin, lead generation, email newsletter, pop-ups
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.4.33
+Stable tag: 1.4.34
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -127,6 +127,10 @@ Interval is a very effective control to have if you don’t want to annoy the vi
 
 As you are considering WowOptin, make sure to check out our other plugins that can also help you make your business WOW.
 
+🚚 [**WowShipping** 🔥](https://wordpress.org/plugins/wow-table-rate-shipping/): The most advanced and flexible table rate shipping plugin for WooCommerce with live rates from UPS, USPS, FedEx, DHL Express, Australia Post, Canada Post, and Sendle.
+
+➕ [**WowAddons** 🔥](https://wordpress.org/plugins/product-addons/): The best product addons plugin for WooCommerce with 25+ extra options, custom fields, and conditional logic, allowing you to sell customizable products with ease.
+
 📃 [**PostX**](https://wordpress.org/plugins/ultimate-post/): The first ever Gutenberg dynamic site builder plugin specially designed & developed for News, Magazine, and Blogging sites.
 
 🏪 [**WowStore**](https://wordpress.org/plugins/product-blocks/): Give your WooCommerce store the look and professional style it deserves. On top of that enjoy exclusive features to increase conversion and boost sales.
@@ -134,8 +138,6 @@ As you are considering WowOptin, make sure to check out our other plugins that c
 🤑 [**WowRevenue**](https://wordpress.org/plugins/revenue/): The most advanced and unique WooCommerce plugin that boosts your revenue by increasing the order value without any extra marketing costs.
 
 📦 [**WholesaleX**](https://wordpress.org/plugins/wholesalex/): The complete solution for creating and managing WooCommerce B2B or B2B + B2C hybrid stores without breaking your bank.
-
-➕ [**WowAddons**](https://wordpress.org/plugins/product-addons/): The most advanced product addons plugin for WooCommerce that helps you add extra fields & options to product pages with ease.
 
 == Author ==
 
@@ -210,6 +212,9 @@ Yes, WowOptin has exit intent popups. Not only that, but you can also trigger po
 9. Dashboard
 
 == Changelog ==
+
+= 1.4.34 - 15 Apr 2026 =
+* Fix: Performance improvement.
 
 = 1.4.33 - 08 Apr 2026 =
 * Fix: Performance improvement.

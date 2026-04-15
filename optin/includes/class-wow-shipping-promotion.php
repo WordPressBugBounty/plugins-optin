@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class WowShippingPromotion {
 
-	private const VERSION              = '10'; // Cache buster.
+	private const VERSION              = '20'; // Cache buster.
 	private const MENU_SLUG            = 'wowoptin'; // CHANGE THIS.
 	private const PROMOTED_PLUGIN_SLUG = 'wow-table-rate-shipping';
 	private const PROMOTED_PLUGIN_FILE = 'wow-table-rate-shipping/wow-table-rate-shipping.php';
@@ -22,22 +22,23 @@ class WowShippingPromotion {
 	 * Setup class.
 	 */
 	public function __construct() {
-		add_action( 'plugins_loaded', array( $this, 'load' ) );
+		add_filter( 'wtrs_promotion_hooks', array( $this, 'load' ) );
+		add_action( 'plugins_loaded', array( $this, 'run_promotions' ) );
 	}
 
 	/**
-	 * Load plugin
+	 * Run promotions.
 	 *
 	 * @return void
 	 */
-	public function load() {
+	public function run_promotions() {
 		if ( ! class_exists( '\WooCommerce' ) ||
 			defined( 'WTRS_VER' )
 		) {
 			return;
 		}
 
-		// Plugin sidemenu.
+		// Plugin sidemenu (Plugin Specific, Always run).
 		add_action( 'admin_menu', array( $this, 'add_submenu' ), 9999 );
 
 		if ( $GLOBALS['wtrs_promotion']['init'] ?? false ) {
@@ -48,29 +49,62 @@ class WowShippingPromotion {
 			'init' => true,
 		);
 
-		// Dismiss actions.
-		add_action( 'wp_ajax_wtrs_dismiss_promotion', array( $this, 'ajax_dismiss_promotion' ) );
-		add_action( 'wp_ajax_wtrs_install_promotion_plugin', array( $this, 'ajax_install_promotion_plugin' ) );
+		$hooks = apply_filters( 'wtrs_promotion_hooks', array() );
 
-		// Promotions.
-		// ------------------.
+		if ( ! is_array( $hooks ) ) {
+			return;
+		}
 
-		// Product edit shipping tab.
-		add_action( 'woocommerce_product_options_shipping', array( $this, 'render_shipping_notice' ) );
+		uksort( $hooks, 'version_compare' );
 
-		// Product category page.
-		add_action( 'product_cat_add_form_fields', array( $this, 'render_product_category_add_notice' ) );
+		$latest_hook = end( $hooks );
 
-		// WC General settings.
-		add_filter( 'woocommerce_general_settings', array( $this, 'register_general_shipping_location_notice' ) );
-		add_action( 'woocommerce_admin_field_wtrs_promotion_notice', array( $this, 'render_settings_promotion_field' ) );
-
-		// Order Page.
-		add_action( 'admin_notices', array( $this, 'render_orders_page_notice' ) );
-
-		// Shipping Settings page.
-		add_action( 'admin_notices', array( $this, 'render_shipping_page_notice' ) );
+		if ( is_callable( $latest_hook ) ) {
+			$latest_hook();
+		}
 	}
+
+	/**
+	 * Load plugin
+	 *
+	 * @param array $callbacks Callbacks.
+	 * @return array
+	 */
+	public function load( $callbacks ) {
+
+		if ( isset( $callbacks[ self::VERSION ] ) ) {
+			return $callbacks;
+		}
+
+		$callbacks[ self::VERSION ] = function () {
+			// Dismiss actions.
+			add_action( 'wp_ajax_wtrs_dismiss_promotion', array( $this, 'ajax_dismiss_promotion' ) );
+			add_action( 'wp_ajax_wtrs_install_promotion_plugin', array( $this, 'ajax_install_promotion_plugin' ) );
+
+			// Promotions.
+			// ------------------.
+
+			// Product edit shipping tab.
+			add_action( 'woocommerce_product_options_shipping', array( $this, 'render_shipping_notice' ) );
+
+			// Product category page.
+			add_action( 'product_cat_add_form_fields', array( $this, 'render_product_category_add_notice' ) );
+
+			// WC General settings.
+			add_filter( 'woocommerce_general_settings', array( $this, 'register_general_shipping_location_notice' ) );
+			add_filter( 'woocommerce_product_settings', array( $this, 'register_product_dimensions_notice' ) );
+			add_action( 'woocommerce_admin_field_wtrs_promotion_notice', array( $this, 'render_settings_promotion_field' ) );
+
+			// Order Page.
+			add_action( 'admin_notices', array( $this, 'render_orders_page_notice' ) );
+
+			// Shipping Settings page.
+			add_action( 'admin_notices', array( $this, 'render_shipping_page_notice' ) );
+		};
+
+		return $callbacks;
+	}
+
 
 	/**
 	 * Add promotinal submenu link for the promoted plugin dashboard.
@@ -213,9 +247,15 @@ class WowShippingPromotion {
 
 		global $pagenow;
 		$post_type = get_post_type();
-		$action    = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( empty( $post_type ) ) {
+			$post_type = sanitize_text_field( wp_unslash( $_GET['post_type'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		}
+		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
-		if ( 'edit' !== $action || 'product' !== $post_type || 'post.php' !== $pagenow ) {
+		$is_edit_product_page = 'post.php' === $pagenow && 'edit' === $action;
+		$is_new_product_page  = 'post-new.php' === $pagenow;
+
+		if ( 'product' !== $post_type || ( ! $is_edit_product_page && ! $is_new_product_page ) ) {
 			return;
 		}
 
@@ -226,8 +266,8 @@ class WowShippingPromotion {
 			'margin-inline:10px;',
 			true,
 			array(
-				'default' => 'Configure Now',
-				'loading' => 'Configuring...',
+				'default' => 'Get Started',
+				'loading' => 'Starting...',
 			)
 		);
 	}
@@ -298,6 +338,36 @@ class WowShippingPromotion {
 	}
 
 	/**
+	 * Insert a promotion field after the Dimensions unit setting.
+	 *
+	 * @param array $settings WooCommerce products settings.
+	 * @return array
+	 */
+	public function register_product_dimensions_notice( $settings ) {
+		if ( ! is_array( $settings ) || ! $this->should_show_promotion( 'product_dimensions_unit' ) ) {
+			return $settings;
+		}
+
+		$notice = array(
+			'title' => '',
+			'type'  => 'wtrs_promotion_notice',
+			'id'    => 'wtrs-product-dimensions-unit',
+		);
+
+		$updated_settings = array();
+
+		foreach ( $settings as $setting ) {
+			$updated_settings[] = $setting;
+
+			if ( 'woocommerce_dimension_unit' === ( $setting['id'] ?? '' ) ) {
+				$updated_settings[] = $notice;
+			}
+		}
+
+		return $updated_settings;
+	}
+
+	/**
 	 * Render the WooCommerce settings promotion row.
 	 *
 	 * @param array $field Custom field definition.
@@ -305,7 +375,27 @@ class WowShippingPromotion {
 	 */
 	public function render_settings_promotion_field( $field ) {
 
-		if ( 'wtrs-general-shipping-location' !== ( $field['id'] ?? '' ) ) {
+		$field_id = $field['id'] ?? '';
+
+		if ( 'wtrs-general-shipping-location' === $field_id ) {
+			$message = 'Set Shipping Rules for Specific Location';
+			$type    = 'general_shipping_location';
+			$id      = 'wtrs-general-shipping-location';
+			$style   = 'width:400px;';
+			$labels  = array(
+				'default' => 'Quick Setup',
+				'loading' => 'Setting up...',
+			);
+		} elseif ( 'wtrs-product-dimensions-unit' === $field_id ) {
+			$message = 'Set shipping rates based on <strong>cart weight</strong> and <strong>dimension</strong>';
+			$type    = 'product_dimensions_unit';
+			$id      = 'wtrs-product-dimensions-unit';
+			$style   = 'width:400px;';
+			$labels  = array(
+				'default' => 'Get Started',
+				'loading' => 'Starting...',
+			);
+		} else {
 			return;
 		}
 
@@ -315,16 +405,12 @@ class WowShippingPromotion {
 			<td>
 				<?php
 				$this->render_promotion_notice(
-					'wtrs-general-shipping-location',
-					'general_shipping_location',
-					'Set Shipping Rules for Specific Location',
-					'width:400px;',
+					$id,
+					$type,
+					$message,
+					$style,
 					true,
-					array(
-						'default'   => 'Quick Setup',
-						'loading'   => 'Setting up...',
-						'installed' => 'Installed',
-					)
+					$labels
 				);
 				?>
 			</td>
@@ -441,8 +527,8 @@ class WowShippingPromotion {
 		$button_labels = wp_parse_args(
 			is_array( $button_labels ) ? $button_labels : array(),
 			array(
-				'default' => 'Install WowShipping - Free',
-				'loading' => 'Installing...',
+				'default' => 'Start Now',
+				'loading' => 'Starting...',
 			)
 		);
 
@@ -657,7 +743,7 @@ class WowShippingPromotion {
 			return false;
 		}
 
-		$upgrader       = new \Plugin_Upgrader( new \WP_Ajax_Upgrader_Skin( compact( 'title', 'url', 'nonce', 'plugin', 'api' ) ) );
+		$upgrader       = new \Plugin_Upgrader( new \WP_Ajax_Upgrader_Skin() );
 		$install_result = $upgrader->install( $api->download_link );
 
 		return is_wp_error( $install_result ) || false === $install_result ? false : true;
