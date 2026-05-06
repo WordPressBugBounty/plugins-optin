@@ -4,7 +4,7 @@ Tags: popup, optin, lead generation, email newsletter, pop-ups
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.4.34
+Stable tag: 1.4.35
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -197,7 +197,7 @@ Yes, we have a dedicated support team ready to answer all your questions and ass
 
 = Does WowOptin have exit intent popups? =
 
-Yes, WowOptin has exit intent popups. Not only that, but you can also trigger popups in many other ways including time, scrolling, inactivity, etc. 
+Yes, WowOptin has exit intent popups. Not only that, but you can also trigger popups in many other ways including time, scrolling, inactivity, etc.
 
 == Screenshots ==
 
@@ -212,6 +212,9 @@ Yes, WowOptin has exit intent popups. Not only that, but you can also trigger po
 9. Dashboard
 
 == Changelog ==
+
+= 1.4.35 - 06 May 2026 =
+* Fix: Code cleanup.
 
 = 1.4.34 - 15 Apr 2026 =
 * Fix: Performance improvement.

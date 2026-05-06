@@ -29,13 +29,40 @@ class PluginActions {
 
 		$offer_config = array(
 			array(
-				'start'  => '2026-03-16 00:00 Asia/Dhaka',
-				'end'    => '2026-04-14 23:59 Asia/Dhaka',
+				'start'  => '2026-05-07 00:00 Asia/Dhaka',
+				'end'    => '2026-05-21 23:59 Asia/Dhaka',
 				'text'   => __(
-					'Spring Sale - Up to 60% OFF',
+					'Flash Sale - Up to 55% OFF',
 					'optin'
 				),
-				'utmKey' => 'spring_meta',
+				'utmKey' => 'flash',
+			),
+			array(
+				'start'  => '2026-05-22 00:00 Asia/Dhaka',
+				'end'    => '2026-06-01 23:59 Asia/Dhaka',
+				'text'   => __(
+					'Surprise Sale - Up to 60% OFF',
+					'optin'
+				),
+				'utmKey' => 'surprise',
+			),
+			array(
+				'start'  => '2026-06-02 00:00 Asia/Dhaka',
+				'end'    => '2026-06-20 23:59 Asia/Dhaka',
+				'text'   => __(
+					'Massive Sale - Up to 60% OFF',
+					'optin'
+				),
+				'utmKey' => 'massive',
+			),
+			array(
+				'start'  => '2026-06-21 00:00 Asia/Dhaka',
+				'end'    => '2026-06-30 23:59 Asia/Dhaka',
+				'text'   => __(
+					'Final Hour Sale - Up to 60% OFF',
+					'optin'
+				),
+				'utmKey' => 'final-hour',
 			),
 		);
 
@@ -45,7 +72,7 @@ class PluginActions {
 		$upgrade_link = array();
 
 		// Free user or expired license user.
-		if ( ! defined( 'OPTN_PRO_VERSION' ) || Xpo::is_lc_expired() ) {
+		if ( ! defined( 'OPTN_PRO_VERSION' ) || Xpo::is_lc_expired() || true ) {
 
 			$license_key = Utils::get_license_key() ?? '';
 

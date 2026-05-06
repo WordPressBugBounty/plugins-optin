@@ -197,34 +197,24 @@ class Xpo {
 	 */
 	public static function generate_utm_link( $params = array() ) {
 		$default_config = array(
-			'flash_sale'      => array(
-				'source'   => 'db-wowoptin-notice',
+			'flash'      => array(
+				'source'   => 'db-wowoptin',
 				'medium'   => 'flash-sale',
 				'campaign' => 'wowoptin-dashboard',
 			),
-			'final_hour'      => array(
-				'source'   => 'db-wowoptin-notice',
+			'surprise'   => array(
+				'source'   => 'db-wowoptin',
+				'medium'   => 'surprise-sale',
+				'campaign' => 'wowoptin-dashboard',
+			),
+			'massive'    => array(
+				'source'   => 'db-wowoptin',
+				'medium'   => 'massive-sale',
+				'campaign' => 'wowoptin-dashboard',
+			),
+			'final-hour' => array(
+				'source'   => 'db-wowoptin',
 				'medium'   => 'final-hour-sale',
-				'campaign' => 'wowoptin-dashboard',
-			),
-			'flash_sale_meta' => array(
-				'source'   => 'db-wowoptin-plugin-meta',
-				'medium'   => 'flash-sale',
-				'campaign' => 'wowoptin-dashboard',
-			),
-			'final_hour_meta' => array(
-				'source'   => 'db-wowoptin-plugin-meta',
-				'medium'   => 'final-hour-sale',
-				'campaign' => 'wowoptin-dashboard',
-			),
-			'spring'          => array(
-				'source'   => 'db-wowoptin-notice',
-				'medium'   => 'spring-sale',
-				'campaign' => 'wowoptin-dashboard',
-			),
-			'spring_meta'     => array(
-				'source'   => 'db-wowoptin-plugin-meta',
-				'medium'   => 'spring-sale',
 				'campaign' => 'wowoptin-dashboard',
 			),
 		);
