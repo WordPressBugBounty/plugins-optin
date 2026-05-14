@@ -19,16 +19,17 @@ class Settings {
 	private static $default_settings = array(
 
 		// Integrations.
-		'int_enable_fluentcrm' => false,
-		'int_enable_mailpoet'  => false,
-		'int_enable_webhook'   => true,
+		'int_enable_fluentcrm'       => false,
+		'int_enable_mailpoet'        => false,
+		'int_enable_webhook'         => true,
 
-		'int_bg_enable_ga'     => false,
-		'int_bg_enable_zapier' => false,
+		'int_bg_enable_ga'           => false,
+		'int_bg_enable_zapier'       => false,
 
 		// Global.
-		'global_google_fonts'  => true,
-		'global_ip_tracking'   => true,
+		'global_google_fonts'        => true,
+		'global_ip_tracking'         => true,
+		'global_alt_render_strategy' => false,
 	);
 
 	/**

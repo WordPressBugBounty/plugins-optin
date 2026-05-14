@@ -222,6 +222,10 @@ class Frontend {
 			return;
 		}
 
+		if ( $this->use_alternate_render_strategy() ) {
+			echo $this->get_optin_html(); // phpcs:ignore
+		}
+
 		// Fonts.
 		echo $this->get_optin_fonts(); // phpcs:ignore
 
@@ -359,7 +363,7 @@ class Frontend {
 	private function get_optin_html() {
 		$html  = '';
 		$html .= '<!-- OPTIN HTML START -->';
-		$html .= Sanitizer::sanitize( apply_filters( 'optn_html', '' ) );
+		$html .= apply_filters( 'optn_html', '' );
 		$html .= '<!-- OPTIN HTML END -->';
 		return $html;
 	}
@@ -370,26 +374,32 @@ class Frontend {
 	 * @return string
 	 */
 	private function get_optin_data() {
+		$use_alternate_render_strategy = $this->use_alternate_render_strategy();
+
 		ob_start();
 		echo '<!-- OPTIN JS START -->';
 		?>
 			<script>
 				window._optn = {
 					attrs: <?php echo wp_json_encode( apply_filters( 'optn_block_attrs', array() ) ); ?>,
-					data: <?php echo wp_json_encode( apply_filters( 'optn_data', array() ) ); ?>,
-					html: 
-					<?php
-					echo wp_json_encode(
-						Sanitizer::sanitize( apply_filters( 'optn_html', '' ) ),
-						JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
-					);
-					?>
-					,
+					data: <?php echo wp_json_encode( apply_filters( 'optn_data', array() ) ); ?><?php echo $use_alternate_render_strategy ? '' : ','; ?>
+					<?php if ( ! $use_alternate_render_strategy ) : ?>
+					html: <?php echo wp_json_encode( Sanitizer::sanitize( apply_filters( 'optn_html', '' ) ), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>,
+					<?php endif; ?>
 				}
 			</script>
 		<?php
 		echo '<!-- OPTIN JS END -->';
 		return ob_get_clean();
+	}
+
+	/**
+	 * Whether the alternate render strategy is enabled.
+	 *
+	 * @return boolean
+	 */
+	private function use_alternate_render_strategy() {
+		return (bool) Settings::get_settings( 'global_alt_render_strategy' );
 	}
 
 	/**
