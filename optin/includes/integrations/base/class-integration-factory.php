@@ -9,6 +9,7 @@
 namespace OPTN\Includes\Integrations\Base;
 
 use OPTN\Includes\Integrations\Implementations\ActiveCampaign;
+use OPTN\Includes\Integrations\Implementations\Acumbamail;
 use OPTN\Includes\Integrations\Implementations\Brevo;
 use OPTN\Includes\Integrations\Implementations\CampaignMonitor;
 use OPTN\Includes\Integrations\Implementations\Chatgpt;
@@ -53,6 +54,7 @@ class IntegrationFactory {
 		'drip'            => Drip::class,
 		'sendfox'         => Sendfox::class,
 		'activecampaign'  => ActiveCampaign::class,
+		'acumbamail'      => Acumbamail::class,
 		'chatgpt'         => Chatgpt::class,
 		'gemini'          => Gemini::class,
 		'grok'            => Grok::class,

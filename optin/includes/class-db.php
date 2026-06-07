@@ -2765,6 +2765,8 @@ class Db {
 				return 'SendFox';
 			case 'activecampaign':
 				return 'ActiveCampaign';
+			case 'acumbamail':
+				return 'Acumbamail';
 			default:
 				return __( 'Unknown', 'optin' );
 		}
