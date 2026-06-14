@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
  */
 class WowRevenuePromotion {
 
-	private const VERSION              = '10'; // Cache buster.
+	private const VERSION              = '20'; // Cache buster.
 	private const PRODUCTS_MENU_SLUG   = 'revx-promo-wc-menu';
 	private const PROMOTED_PLUGIN_SLUG = 'revenue';
 	private const PROMOTED_PLUGIN_FILE = 'revenue/revenue.php';
@@ -182,7 +182,7 @@ class WowRevenuePromotion {
 			'label'    => 'Upsell & Bundle',
 			'target'   => 'revx-promo-add-product-options',
 			'class'    => array( 'hide_if_grouped' ),
-			'priority' => 65,
+			'priority' => 10,
 		);
 
 		return $tabs;
@@ -232,7 +232,7 @@ class WowRevenuePromotion {
 						</li>
 					</ul>
 				',
-				'margin-inline: 20px;',
+				'margin-inline: 20px;background:#f2f2f2;',
 				true,
 				array(
 					'default' => 'Start Now',
@@ -259,7 +259,7 @@ class WowRevenuePromotion {
 			'revx-promo-linked-products',
 			'linked_products_section',
 			'Create Smart Bundles & Upsells',
-			'margin:12px;width:fit-content;',
+			'margin:12px;width:fit-content;padding-right:50px;background:#f2f2f2;',
 			true,
 			array(
 				'default' => 'Start Now',
@@ -290,7 +290,7 @@ class WowRevenuePromotion {
 			'revx-promo-settings-header',
 			'settings_header',
 			'Add Upsells & Bundle Offers',
-			'margin:12px 0;width:fit-content;',
+			'margin:12px 0;width:fit-content;padding-right:50px;',
 			false,
 			array(
 				'default' => 'Configure Offers',
@@ -322,7 +322,7 @@ class WowRevenuePromotion {
 				'revx-promo-coupons-page',
 				'coupons_page',
 				'Go Beyond Coupons with Smart Offers',
-				'margin:20px 0 0; width: fit-content;',
+				'margin:20px 0 0; width: fit-content;padding-right:50px;',
 				true,
 				array(
 					'default' => 'Set Up Offers',
@@ -532,29 +532,83 @@ class WowRevenuePromotion {
 				font-size: 16px;
 			}
 
-			@media (max-width: 520px) {
-				.revx-promo-products-modal {
-					padding: 14px;
+			@media (max-height: 760px) {
+				.revx-promo-products-modal__dialog {
+					padding: 22px 22px 18px;
 				}
 
-				.revx-promo-products-modal__dialog {
-					padding: 24px 18px 18px;
-					border-radius: 18px;
+				.revx-promo-products-modal__img {
+					max-height: 160px;
+					margin-bottom: 18px;
 				}
 
 				.revx-promo-products-modal__title {
 					font-size: 28px;
+					margin-bottom: 8px;
 				}
 
-				.revx-promo-products-modal__footer {
-					grid-template-columns: 1fr;
+				.revx-promo-products-modal__text {
+					margin-bottom: 16px;
+					font-size: 14px;
+					line-height: 1.45;
 				}
 
+				.revx-promo-products-modal__list {
+					margin-bottom: 18px;
+				}
+
+				.revx-promo-products-modal__list li {
+					gap: 10px;
+					padding: 8px 0;
+					font-size: 13px;
+				}
+
+				.revx-promo-products-modal__button {
+					padding: 13px 16px;
+					font-size: 14px;
+				}
 			}
+
+			@media (max-height: 680px) {
+				.revx-promo-products-modal__dialog {
+					padding: 18px 18px 16px;
+				}
+
+				.revx-promo-products-modal__img {
+					max-height: 120px;
+					margin-bottom: 14px;
+				}
+
+				.revx-promo-products-modal__title {
+					font-size: 24px;
+				}
+
+				.revx-promo-products-modal__text {
+					max-width: 100%;
+					margin-bottom: 12px;
+					font-size: 13px;
+				}
+
+				.revx-promo-products-modal__list {
+					margin-bottom: 14px;
+				}
+
+				.revx-promo-products-modal__list li {
+					padding: 6px 0;
+					font-size: 12px;
+				}
+
+				.revx-promo-products-modal__button {
+					padding: 12px 14px;
+					font-size: 13px;
+				}
+			}
+
 			.revx-promo-products-modal__img {
 				max-width: 100%;
 				height: auto;
 				margin-bottom: 24px;
+				margin-inline: auto;
 			}
 		</style>
 

@@ -286,6 +286,7 @@ class Xpo {
 				'wholesale_x'  => file_exists( WP_PLUGIN_DIR . '/wholesalex/wholesalex.php' ),
 				'wow_addon'    => file_exists( WP_PLUGIN_DIR . '/product-addons/product-addons.php' ),
 				'wow_shipping' => file_exists( WP_PLUGIN_DIR . '/wow-table-rate-shipping/wow-table-rate-shipping.php' ),
+				'wow_invoice'  => file_exists( WP_PLUGIN_DIR . '/wow-pdf-invoices-packing-slips/wow-pdf-invoices-packing-slips.php' ),
 			),
 			'products_active' => array(
 				'post_x'       => defined( 'ULTP_VER' ),
@@ -294,6 +295,7 @@ class Xpo {
 				'wholesale_x'  => defined( 'WHOLESALEX_VER' ),
 				'wow_addon'    => defined( 'PRAD_VER' ),
 				'wow_shipping' => defined( 'WTRS_VER' ),
+				'wow_invoice'  => defined( 'WINV_VER' ),
 			),
 		);
 	}
@@ -328,6 +330,9 @@ class Xpo {
 				break;
 			case 'wow_shipping':
 				$plugin_slug = 'wow-table-rate-shipping';
+				break;
+			case 'wow_invoice':
+				$plugin_slug = 'wow-pdf-invoices-packing-slips';
 				break;
 		}
 

@@ -4,7 +4,7 @@ Tags: popup, optin, lead generation, email newsletter, pop-ups
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.4.38
+Stable tag: 1.4.39
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -127,6 +127,8 @@ Interval is a very effective control to have if you don’t want to annoy the vi
 
 As you are considering WowOptin, make sure to check out our other plugins that can also help you make your business WOW.
 
+📄 [**WowInvoice**](https://wordpress.org/plugins/wow-pdf-invoices-packing-slips/): A reliable PDF invoices & packing slips plugin for WooCommerce that keeps your order documents organized and ready.
+
 🚚 [**WowShipping** 🔥](https://wordpress.org/plugins/wow-table-rate-shipping/): The most advanced and flexible table rate shipping plugin for WooCommerce with live rates from UPS, USPS, FedEx, DHL Express, Australia Post, Canada Post, and Sendle.
 
 ➕ [**WowAddons** 🔥](https://wordpress.org/plugins/product-addons/): The best product addons plugin for WooCommerce with 25+ extra options, custom fields, and conditional logic, allowing you to sell customizable products with ease.
@@ -212,6 +214,9 @@ Yes, WowOptin has exit intent popups. Not only that, but you can also trigger po
 9. Dashboard
 
 == Changelog ==
+
+= 1.4.39 - 14 Jun 2026 =
+* Fix: Performance improvement.
 
 = 1.4.38 - 07 Jun 2026 =
 * New: Integration with Acumbamail
