@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowOptin 1.4.39\n"
+"Project-Id-Version: WowOptin 1.4.40\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/optin\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-14T10:10:22+00:00\n"
+"POT-Creation-Date: 2026-06-18T06:04:59+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: optin\n"
@@ -317,7 +317,7 @@ msgid "Nonce is missing."
 msgstr ""
 
 #: includes/class-wpxpo-plugins.php:35
-#: includes/utils/class-notice.php:1017
+#: includes/utils/class-notice.php:1090
 msgid "Invalid nonce."
 msgstr ""
 
@@ -484,73 +484,73 @@ msgstr ""
 msgid "EDD"
 msgstr ""
 
-#: includes/utils/class-notice.php:110
+#: includes/utils/class-notice.php:158
 msgid "Hello Bar Action performed"
 msgstr ""
 
-#: includes/utils/class-notice.php:193
-#: includes/utils/class-notice.php:211
+#: includes/utils/class-notice.php:245
+#: includes/utils/class-notice.php:263
 msgid "Flash Sale:"
 msgstr ""
 
-#: includes/utils/class-notice.php:194
-#: includes/utils/class-notice.php:212
-#: includes/utils/class-notice.php:232
-#: includes/utils/class-notice.php:250
-#: includes/utils/class-notice.php:270
-#: includes/utils/class-notice.php:288
-#: includes/utils/class-notice.php:308
-#: includes/utils/class-notice.php:326
+#: includes/utils/class-notice.php:246
+#: includes/utils/class-notice.php:264
+#: includes/utils/class-notice.php:284
+#: includes/utils/class-notice.php:302
+#: includes/utils/class-notice.php:322
+#: includes/utils/class-notice.php:340
+#: includes/utils/class-notice.php:360
+#: includes/utils/class-notice.php:378
 msgid "Enjoy up to %s off on WowOptin Pro."
 msgstr ""
 
-#: includes/utils/class-notice.php:198
-#: includes/utils/class-notice.php:216
-#: includes/utils/class-notice.php:236
-#: includes/utils/class-notice.php:254
-#: includes/utils/class-notice.php:274
-#: includes/utils/class-notice.php:292
-#: includes/utils/class-notice.php:312
-#: includes/utils/class-notice.php:330
+#: includes/utils/class-notice.php:250
+#: includes/utils/class-notice.php:268
+#: includes/utils/class-notice.php:288
+#: includes/utils/class-notice.php:306
+#: includes/utils/class-notice.php:326
+#: includes/utils/class-notice.php:344
+#: includes/utils/class-notice.php:364
+#: includes/utils/class-notice.php:382
 msgid "Claim Your Discount!"
 msgstr ""
 
-#: includes/utils/class-notice.php:231
-#: includes/utils/class-notice.php:249
+#: includes/utils/class-notice.php:283
+#: includes/utils/class-notice.php:301
 msgid "Surprise Sale:"
 msgstr ""
 
-#: includes/utils/class-notice.php:269
-#: includes/utils/class-notice.php:287
+#: includes/utils/class-notice.php:321
+#: includes/utils/class-notice.php:339
 msgid "Massive Sale:"
 msgstr ""
 
-#: includes/utils/class-notice.php:307
-#: includes/utils/class-notice.php:325
+#: includes/utils/class-notice.php:359
+#: includes/utils/class-notice.php:377
 msgid "Final Hour Sale:"
 msgstr ""
 
-#: includes/utils/class-notice.php:749
+#: includes/utils/class-notice.php:821
 msgid "Close Banner"
 msgstr ""
 
-#: includes/utils/class-notice.php:955
+#: includes/utils/class-notice.php:1027
 msgid "Want to help make WowOptin even more awesome?"
 msgstr ""
 
-#: includes/utils/class-notice.php:957
+#: includes/utils/class-notice.php:1029
 msgid "Allow us to collect diagnostic data and usage information. see "
 msgstr ""
 
-#: includes/utils/class-notice.php:958
+#: includes/utils/class-notice.php:1030
 msgid "what we collect."
 msgstr ""
 
-#: includes/utils/class-notice.php:976
+#: includes/utils/class-notice.php:1048
 msgid "Accept & Close"
 msgstr ""
 
-#: includes/utils/class-notice.php:1021
+#: includes/utils/class-notice.php:1094
 msgid "Invalid request."
 msgstr ""
 

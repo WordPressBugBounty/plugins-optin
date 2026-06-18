@@ -26,6 +26,20 @@ class Notice {
 	 */
 	private $notice_js_css_applied = false;
 
+	/**
+	 * Notice Priority
+	 *
+	 * @var string $plugin_notice_priority
+	 */
+	private $plugin_notice_priority = 7;
+
+	/**
+	 * Notice Priority
+	 *
+	 * @var string $plugin_notice_priority
+	 */
+	private $plugin_notice_priority_key = 'wow_optin';
+
 
 	/**
 	 * Notice Constructor
@@ -39,6 +53,40 @@ class Notice {
 
 		// Woocommerce Install Action.
 		add_action( 'wp_ajax_optn_install', array( $this, 'install_activate_plugin' ) );
+
+		add_filter( 'xpo_active_notice_lists', array( $this, 'handle_xpo_active_notice_lists' ), 99, 1 );
+	}
+
+		/**
+		 * Handle Plugin Notice for all plugins
+		 *
+		 * @param array $active_lists Lists of all active plugin notice.
+		 * @return array
+		 */
+	public function handle_xpo_active_notice_lists( $active_lists ) {
+
+		if ( $this->optn_dashboard_banner_notice( true ) || $this->optn_dashboard_content_notice( true ) ) {
+			$active_lists[ $this->plugin_notice_priority_key ] = $this->plugin_notice_priority;
+		}
+
+		return $active_lists;
+	}
+
+	/**
+	 * Handle Plugin Notice for all plugins
+	 *
+	 * @return bool
+	 */
+	public function is_available_for_notice() {
+		$active_notices = apply_filters( 'xpo_active_notice_lists', array() );
+
+		if ( empty( $active_notices ) ) {
+			return true;
+		}
+
+		asort( $active_notices );
+
+		return array_key_first( $active_notices ) === $this->plugin_notice_priority_key;
 	}
 
 
@@ -160,7 +208,6 @@ class Notice {
 	public function admin_notices_callback() {
 		$this->optn_dashboard_notice_callback();
 		$this->optn_dashboard_durbin_notice_callback();
-		$this->optn_dashboard_content_notice();
 	}
 
 	/**
@@ -169,15 +216,20 @@ class Notice {
 	 * @return void
 	 */
 	public function optn_dashboard_notice_callback() {
-		$this->optn_dashboard_banner_notice();
+		if ( $this->is_available_for_notice() ) {
+			$this->optn_dashboard_banner_notice();
+			$this->optn_dashboard_content_notice();
+		}
 	}
 
-		/**
-		 * Dashboard Content Notice
-		 *
-		 * @return void
-		 */
-	public function optn_dashboard_content_notice() {
+	/**
+	 * Dashboard Content Notice
+	 *
+	 * @param bool $return_bool Return bool.
+	 *
+	 * @return void|bool
+	 */
+	public function optn_dashboard_content_notice( $return_bool = false ) {
 
 		$content_notices = array(
 			array(
@@ -361,13 +413,17 @@ class Notice {
 				if ( 'off' === $notice_transient ) {
 					continue;
 				}
+
+				if ( $return_bool ) { // Early return for Other plugin notice.
+					return true;
+				}
 			}
 
 			$border_color = $notice['border_color'];
 
 			$query_args = array(
 				'disable_optn_notice' => $notice_key,
-				'optn_db_nonce'       => $optn_db_nonce,
+				'wpnonce'             => $optn_db_nonce,
 			);
 			if ( isset( $notice['repeat_interval'] ) && $notice['repeat_interval'] ) {
 				$query_args['optn_interval'] = $notice['repeat_interval'];
@@ -526,9 +582,10 @@ class Notice {
 	/**
 	 * Dashboard Banner Notice
 	 *
-	 * @return void
+	 * @param bool $return_bool Return bool.
+	 * @return void|bool
 	 */
-	public function optn_dashboard_banner_notice() {
+	public function optn_dashboard_banner_notice( $return_bool = false ) {
 		$optn_db_nonce  = wp_create_nonce( 'optn-nonce' );
 		$is_testing     = false;
 		$banner_notices = array(
@@ -643,6 +700,10 @@ class Notice {
 				if ( 'off' === $notice_transient ) {
 					continue;
 				}
+
+				if ( $return_bool ) { // Early return for Other plugin notice.
+					return true;
+				}
 			}
 
 			if ( ! $this->notice_js_css_applied ) {
@@ -660,7 +721,6 @@ class Notice {
 				<style type="text/css">
 					.optn-notice-wrapper.optn-banner-notice {
 						height: auto !important;
-						min-height: 90px;
 						padding: 0 !important;
 						position: relative;
 						box-sizing: border-box;
@@ -677,7 +737,7 @@ class Notice {
 						display: flex;
 						justify-content: space-between;
 						align-items: center;
-						max-width: 1358px;
+						max-width: 700px;
 						margin: 0 auto;
 						padding: 10px 16px;
 						gap: 16px;
@@ -686,6 +746,7 @@ class Notice {
 						display: block;
 						max-width: 100%;
 						height: auto;
+						max-height: 32px;
 					}
 					.optn-notice-wrapper.optn-banner-notice .optn-banner-main {
 						display: flex;
@@ -694,15 +755,25 @@ class Notice {
 						align-items: center;
 						justify-content: center;
 						font-weight: 700;
-						font-size: 28px;
+						font-size: 18px;
 						color: #fff;
-						line-height: 32px;
+						line-height: 1.2;
 						text-align: center;
 					}
 
 					@media screen and (max-width: 1100px) {
-						.optn-notice-wrapper.optn-banner-notice .optn-banner-content {
+						/* .optn-notice-wrapper.optn-banner-notice .optn-banner-content {
 							flex-direction: column;
+						} */
+
+						.optn-notice-wrapper.optn-banner-notice .optn-banner-main {
+							display: none;
+						}
+					}
+
+					@media screen and (max-width: 490px) {
+						.optn-notice-wrapper.optn-banner-notice {
+							display: none;
 						}
 					}
 
@@ -745,6 +816,7 @@ class Notice {
 							display: flex;
 							align-items: center;
 							justify-content: center;
+							text-decoration: none;
 						"
 						aria-label="<?php esc_html_e( 'Close Banner', 'optin' ); ?>"
 						href="<?php echo esc_url( add_query_arg( $query_args ) ); ?>">
@@ -998,6 +1070,7 @@ class Notice {
 					font-style: normal;
 					font-weight: 400;
 					line-height: 20px;
+					text-decoration: none;
 				"
 			>
 				<span 
