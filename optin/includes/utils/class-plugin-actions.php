@@ -78,7 +78,7 @@ class PluginActions {
 
 			if ( Xpo::is_lc_expired() ) {
 				$text = esc_html__( 'Renew License', 'optin' );
-				$url  = 'https://account.wpxpo.com/checkout/?edd_license_key=' . $license_key;
+				$url  = Xpo::get_renew_link();
 			} else {
 
 				$text = esc_html__( 'Upgrade to Pro', 'optin' );

@@ -76,6 +76,21 @@ class Admin {
 		new WpxpoPlugins();
 		new PluginActions();
 		CachingPlugins::init();
+		add_action( 'in_admin_header', array( $this, 'remove_all_notices' ) );
+	}
+
+	/**
+	 * Remove All Notification From Menu Page
+	 *
+	 * @return void
+	 */
+	public function remove_all_notices() {
+		$page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash($_GET['page']) ) : ''; // phpcs:ignore
+		if ( strpos( $page, 'wowoptin' ) !== false ) {
+			remove_all_actions( 'admin_notices' );
+			remove_all_actions( 'all_admin_notices' );
+			remove_all_actions( 'in_admin_header' );
+		}
 	}
 
 	/**
@@ -439,6 +454,8 @@ class Admin {
 					'curr_user'      => wp_get_current_user()->display_name,
 					'dev_mode'       => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? 'true' : 'false',
 					'pro'            => $lic_info['is_active'] ? 'true' : 'false',
+					'isExpired'      => Xpo::is_lc_expired() ? 'true' : 'false',
+					'renewLink'      => Xpo::get_renew_link(),
 					'settings'       => Settings::get_settings(),
 					'audio'          => Utils::get_audio_urls(),
 					'show_lic_page'  => Utils::is_show_license_page() ? 'true' : 'false',

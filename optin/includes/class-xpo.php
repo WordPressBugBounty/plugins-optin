@@ -2,6 +2,8 @@
 
 namespace OPTN\Includes;
 
+use OPTN\Includes\Utils\Utils;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -30,6 +32,15 @@ class Xpo {
 	public static function is_lc_expired() {
 		$license_data = get_option( 'edd_optin_license_data', array() );
 		return isset( $license_data['license'] ) && 'expired' === $license_data['license'];
+	}
+
+	/**
+	 * Get renew link
+	 *
+	 * @return string
+	 */
+	public static function get_renew_link() {
+		return 'https://account.wpxpo.com/checkout/?edd_license_key=' . Utils::get_license_key() . '&renew=1';
 	}
 
 	/**
