@@ -208,24 +208,9 @@ class Xpo {
 	 */
 	public static function generate_utm_link( $params = array() ) {
 		$default_config = array(
-			'flash'      => array(
-				'source'   => 'db-wowoptin-hellobar',
-				'medium'   => 'summer-flash-sale',
-				'campaign' => 'wowoptin-dashboard',
-			),
-			'surprise'   => array(
-				'source'   => 'db-wowoptin-hellobar',
-				'medium'   => 'summer-surprise-sale',
-				'campaign' => 'wowoptin-dashboard',
-			),
-			'massive'    => array(
-				'source'   => 'db-wowoptin-hellobar',
-				'medium'   => 'summer-massive-sale',
-				'campaign' => 'wowoptin-dashboard',
-			),
-			'final-hour' => array(
-				'source'   => 'db-wowoptin-hellobar',
-				'medium'   => 'summer-final-sale',
+			'summer' => array(
+				'source'   => 'db-wowoptin-notice',
+				'medium'   => 'summer-sale',
 				'campaign' => 'wowoptin-dashboard',
 			),
 		);

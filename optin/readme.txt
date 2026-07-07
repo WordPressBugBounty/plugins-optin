@@ -4,7 +4,7 @@ Tags: popup, optin, lead generation, email newsletter, pop-ups
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.4.41
+Stable tag: 1.4.42
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -215,6 +215,9 @@ Yes, WowOptin has exit intent popups. Not only that, but you can also trigger po
 
 == Changelog ==
 
+= 1.4.42 - 07 Jul 2026 =
+* Fix: Performance improvement.
+
 = 1.4.41 - 29 Jun 2026 =
 * Fix: Optimized rendering.
 
@@ -227,24 +230,5 @@ Yes, WowOptin has exit intent popups. Not only that, but you can also trigger po
 = 1.4.38 - 07 Jun 2026 =
 * New: Integration with Acumbamail
 * Fix: Missing permission check of a rest endpoint.
-
-= 1.4.37 - 18 May 2026 =
-* Fix: Code optimization.
-
-= 1.4.36 - 13 May 2026 =
-* New: Added a global setting to use an alternate render strategy when optin content is not displaying properly.
-* Fix: Improved FluentForms compatibility in Shortcode Element.
-
-= 1.4.35 - 06 May 2026 =
-* Fix: Code cleanup.
-
-= 1.4.34 - 15 Apr 2026 =
-* Fix: Performance improvement.
-
-= 1.4.33 - 08 Apr 2026 =
-* Fix: Performance improvement.
-
-= 1.4.32 - 01 Apr 2026 =
-* Fix: A/B testing variant duplication issue.
 
 [View the changelogs for older versions.](https://bitbucket.org/wpstabon/optin/src/release/changelog.txt)

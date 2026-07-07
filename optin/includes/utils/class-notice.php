@@ -65,7 +65,7 @@ class Notice {
 		 */
 	public function handle_xpo_active_notice_lists( $active_lists ) {
 
-		if ( $this->optn_dashboard_banner_notice( true ) || $this->optn_dashboard_content_notice( true ) ) {
+		if ( $this->optn_dashboard_banner_notice( true ) || $this->optn_dashboard_content_notice( true ) || $this->optn_dashboard_image_banner_notice( true ) ) {
 			$active_lists[ $this->plugin_notice_priority_key ] = $this->plugin_notice_priority;
 		}
 
@@ -130,10 +130,7 @@ class Notice {
 	 */
 	public static function get_hellobar_config() {
 		return array(
-			'optn_helloBar_flash_sale_2026_2'    => Xpo::get_transient_without_cache( 'optn_helloBar_flash_sale_2026_2' ),
-			'optn_helloBar_surprise_sale_2026'   => Xpo::get_transient_without_cache( 'optn_helloBar_surprise_sale_2026' ),
-			'optn_helloBar_massive_sale_2026'    => Xpo::get_transient_without_cache( 'optn_helloBar_massive_sale_2026' ),
-			'optn_helloBar_final_hour_sale_2026' => Xpo::get_transient_without_cache( 'optn_helloBar_final_hour_sale_2026' ),
+			'optn_helloBar_summer_sale_2026_jul' => Xpo::get_transient_without_cache( 'optn_helloBar_summer_sale_2026_jul' ),
 		);
 	}
 
@@ -219,6 +216,120 @@ class Notice {
 		if ( $this->is_available_for_notice() ) {
 			$this->optn_dashboard_banner_notice();
 			$this->optn_dashboard_content_notice();
+			$this->optn_dashboard_image_banner_notice();
+		}
+	}
+
+	/**
+	 * Image banner
+	 *
+	 * @param boolean $return_bool should return bool.
+	 * @return void|bool
+	 */
+	public function optn_dashboard_image_banner_notice( $return_bool = false ) {
+		$optn_db_nonce  = wp_create_nonce( 'optn-nonce' );
+		$banner_notices = array(
+			array(
+				'key'         => 'optn_image_banner_summer_sale_july',
+				'start'       => '2026-07-20 00:00 Asia/Dhaka', // format YY-MM-DD always set time 00:00 and zone Asia/Dhaka.
+				'end'         => '2026-08-01 23:59 Asia/Dhaka', // format YY-MM-DD always set time 23:59 and zone Asia/Dhaka.
+				'banner_src'  => OPTN_URL . 'assets/images/banners/summer.png',
+				'url'         => Xpo::generate_utm_link(
+					array(
+						'utmKey' => 'summer',
+					)
+				),
+				'close_color' => '#000000',
+				'visibility'  => ! Xpo::is_lc_active(),
+			),
+		);
+
+		foreach ( $banner_notices as $notice ) {
+			$notice_key = isset( $notice['key'] ) ? $notice['key'] : $this->notice_version;
+			if ( isset( $_GET['disable_optn_notice'] ) && $notice_key === sanitize_text_field(wp_unslash($_GET['disable_optn_notice'])) ) { // phpcs:ignore
+				continue;
+			}
+
+			$current_time = gmdate( 'U' );
+			$notice_start = gmdate( 'U', strtotime( $notice['start'] ) );
+			$notice_end   = gmdate( 'U', strtotime( $notice['end'] ) );
+			if ( $current_time >= $notice_start && $current_time <= $notice_end && $notice['visibility'] ) {
+
+				$notice_transient = Xpo::get_transient_without_cache( 'optn_get_pro_notice_' . $notice_key );
+
+				if ( 'off' === $notice_transient ) {
+					continue;
+				}
+
+				if ( $return_bool ) { // Early return for Other plugin notice.
+					return true;
+				}
+
+				if ( ! $this->notice_js_css_applied ) {
+					$this->optn_banner_notice_js();
+					$this->notice_js_css_applied = true;
+				}
+				$query_args = array(
+					'disable_optn_notice' => $notice_key,
+					'wpnonce'       => $optn_db_nonce,
+				);
+				if ( isset( $notice['repeat_interval'] ) && $notice['repeat_interval'] ) {
+					$query_args['optn_interval'] = $notice['repeat_interval'];
+				}
+				?>
+				<style type="text/css">
+					.optn-notice-wrapper.optn-image-notice-wrapper {
+						padding: 0 !important;
+						position: relative;
+						box-sizing: border-box;
+						overflow: hidden;
+						border-radius: 0px;
+						border: none !important;
+					}
+					.optn-notice-wrapper.optn-image-notice-wrapper .optn-image-banner {
+						position: relative;
+						line-height: 0;
+					}
+					.optn-notice-wrapper.optn-image-notice-wrapper .optn-btn-image {
+						display: block;
+					}
+					.optn-notice-wrapper.optn-image-notice-wrapper .optn-btn-image img {
+						display: block;
+						width: 100%;
+						height: auto;
+						border-radius: 0;
+					}
+					.optn-notice-wrapper.optn-image-notice-wrapper .optn-content-notice-close {
+						top: 4px;
+						right: 4px;
+						position: absolute;
+						z-index: 999;
+					}
+					@media screen and (max-width: 650px) {
+						.optn-image-notice-wrapper {
+							display: none;
+						}
+					}
+				</style>
+				<div class="optn-notice-wrapper optn-image-notice-wrapper notice wc-install optn-free-notice">
+					<div class="wc-install-body optn-image-banner">
+						<a class="wc-dismiss-notice optn-content-notice-close"  href="
+						<?php
+						echo esc_url(
+							add_query_arg(
+								$query_args
+							)
+						);
+						?>
+						"><span class="optn-content-notice-close-icon dashicons dashicons-dismiss" style="color: <?php echo esc_attr( $notice['close_color'] ); ?>;"> </span></a>
+						<a class="optn-btn-image" target="_blank" href="<?php echo esc_url( $notice['url'] ); ?>">
+							<img loading="lazy" src="<?php echo esc_url( $notice['banner_src'] ); ?>" alt="Discount Banner"/>
+						</a>
+					</div>
+				</div>
+				
+				<?php
+			}
 		}
 	}
 
@@ -233,156 +344,41 @@ class Notice {
 
 		$content_notices = array(
 			array(
-				'key'                => 'optn_text_banner_flash_sale_2026_1',
-				'start'              => '2026-05-07 00:00 Asia/Dhaka',
-				'end'                => '2026-05-12 23:59 Asia/Dhaka',
+				'key'                => 'optn_text_banner_summer_sale_26_jul_1',
+				'start'              => '2026-07-06 00:00 Asia/Dhaka',
+				'end'                => '2026-07-12 23:59 Asia/Dhaka',
 				'url'                => Xpo::generate_utm_link(
 					array(
-						'utmKey' => 'flash',
+						'utmKey' => 'summer',
 					)
 				),
 				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Flash Sale:', 'optin' ),
-				'content_subheading' => __( 'Enjoy up to %s off on WowOptin Pro.', 'optin' ),
-				'discount_content'   => '55% OFF',
-				'border_color'       => '#f97415',
-				'icon'               => OPTN_URL . 'assets/images/banners/discount_55.svg',
-				'button_text'        => __( 'Claim Your Discount!', 'optin' ),
-				'is_discount_logo'   => true,
-			),
-			array(
-				'key'                => 'optn_text_banner_flash_sale_2026_2',
-				'start'              => '2026-05-18 00:00 Asia/Dhaka',
-				'end'                => '2026-05-21 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'flash',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Flash Sale:', 'optin' ),
-				'content_subheading' => __( 'Enjoy up to %s off on WowOptin Pro.', 'optin' ),
-				'discount_content'   => '55% OFF',
+				'content_heading'    => '',
+				'content_subheading' => 'WowOptin Summer Sale Offer is Live - Enjoy Up to %s Now',
+				'discount_content'   => '60% OFF',
 				'border_color'       => '#f97415',
 				'icon'               => OPTN_URL . 'assets/images/banners/icon.svg',
 				'button_text'        => __( 'Claim Your Discount!', 'optin' ),
 				'is_discount_logo'   => true,
 			),
-
-			// Surprise Sale.
 			array(
-				'key'                => 'optn_text_banner_surprise_sale_2026_1',
-				'start'              => '2026-05-22 00:00 Asia/Dhaka',
-				'end'                => '2026-05-25 23:59 Asia/Dhaka',
+				'key'                => 'optn_text_banner_summer_sale_26_jul_2',
+				'start'              => '2026-07-13 00:00 Asia/Dhaka',
+				'end'                => '2026-07-19 23:59 Asia/Dhaka',
 				'url'                => Xpo::generate_utm_link(
 					array(
-						'utmKey' => 'surprise',
+						'utmKey' => 'summer',
 					)
 				),
 				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Surprise Sale:', 'optin' ),
-				'content_subheading' => __( 'Enjoy up to %s off on WowOptin Pro.', 'optin' ),
+				'content_heading'    => '',
+				'content_subheading' => 'WowOptin Summer Sale Offer is Live - Enjoy Up to %s Now',
 				'discount_content'   => '60% OFF',
 				'border_color'       => '#f97415',
 				'icon'               => OPTN_URL . 'assets/images/banners/discount_60.svg',
 				'button_text'        => __( 'Claim Your Discount!', 'optin' ),
 				'is_discount_logo'   => true,
 			),
-			array(
-				'key'                => 'optn_text_banner_surprise_sale_2026_2',
-				'start'              => '2026-05-29 00:00 Asia/Dhaka',
-				'end'                => '2026-06-01 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'surprise',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Surprise Sale:', 'optin' ),
-				'content_subheading' => __( 'Enjoy up to %s off on WowOptin Pro.', 'optin' ),
-				'discount_content'   => '60% OFF',
-				'border_color'       => '#f97415',
-				'icon'               => OPTN_URL . 'assets/images/banners/icon.svg',
-				'button_text'        => __( 'Claim Your Discount!', 'optin' ),
-				'is_discount_logo'   => true,
-			),
-
-			// Massive Sale.
-			array(
-				'key'                => 'optn_text_banner_massive_sale_2026_1',
-				'start'              => '2026-06-02 00:00 Asia/Dhaka',
-				'end'                => '2026-06-10 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'massive',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Massive Sale:', 'optin' ),
-				'content_subheading' => __( 'Enjoy up to %s off on WowOptin Pro.', 'optin' ),
-				'discount_content'   => '60% OFF',
-				'border_color'       => '#f97415',
-				'icon'               => OPTN_URL . 'assets/images/banners/discount_60.svg',
-				'button_text'        => __( 'Claim Your Discount!', 'optin' ),
-				'is_discount_logo'   => true,
-			),
-			array(
-				'key'                => 'optn_text_banner_massive_sale_2026_2',
-				'start'              => '2026-06-17 00:00 Asia/Dhaka',
-				'end'                => '2026-06-20 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'massive',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Massive Sale:', 'optin' ),
-				'content_subheading' => __( 'Enjoy up to %s off on WowOptin Pro.', 'optin' ),
-				'discount_content'   => '60% OFF',
-				'border_color'       => '#f97415',
-				'icon'               => OPTN_URL . 'assets/images/banners/icon.svg',
-				'button_text'        => __( 'Claim Your Discount!', 'optin' ),
-				'is_discount_logo'   => true,
-			),
-
-			// Final Hour Sale.
-			array(
-				'key'                => 'optn_text_banner_final_hour_sale_2026_1',
-				'start'              => '2026-06-21 00:00 Asia/Dhaka',
-				'end'                => '2026-06-24 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'final-hour',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Final Hour Sale:', 'optin' ),
-				'content_subheading' => __( 'Enjoy up to %s off on WowOptin Pro.', 'optin' ),
-				'discount_content'   => '60% OFF',
-				'border_color'       => '#f97415',
-				'icon'               => OPTN_URL . 'assets/images/banners/discount_60.svg',
-				'button_text'        => __( 'Claim Your Discount!', 'optin' ),
-				'is_discount_logo'   => true,
-			),
-			array(
-				'key'                => 'optn_text_banner_final_hour_sale_2026_2',
-				'start'              => '2026-06-28 00:00 Asia/Dhaka',
-				'end'                => '2026-06-30 23:59 Asia/Dhaka',
-				'url'                => Xpo::generate_utm_link(
-					array(
-						'utmKey' => 'final-hour',
-					)
-				),
-				'visibility'         => ! Xpo::is_lc_active(),
-				'content_heading'    => __( 'Final Hour Sale:', 'optin' ),
-				'content_subheading' => __( 'Enjoy up to %s off on WowOptin Pro.', 'optin' ),
-				'discount_content'   => '60% OFF',
-				'border_color'       => '#f97415',
-				'icon'               => OPTN_URL . 'assets/images/banners/icon.svg',
-				'button_text'        => __( 'Claim Your Discount!', 'optin' ),
-				'is_discount_logo'   => true,
-			),
-
 		);
 
 		$optn_db_nonce = wp_create_nonce( 'optn-nonce' );
@@ -503,7 +499,7 @@ class Notice {
 
 							.optn-content-discount_btn {
 								background-color: #ffffff;
-								text-decoration: none;
+								text-decoration: none !important;
 								border: 1px solid #f97415;
 								padding: 5px 10px;
 								border-radius: 5px;
@@ -516,7 +512,7 @@ class Notice {
 								position: absolute;
 								right: 2px;
 								top: 5px;
-								text-decoration: none;
+								text-decoration: none !important;
 								color: #b6b6b6;
 								font-family: dashicons;
 								font-size: 16px;

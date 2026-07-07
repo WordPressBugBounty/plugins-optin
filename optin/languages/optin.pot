@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowOptin 1.4.41\n"
+"Project-Id-Version: WowOptin 1.4.42\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/optin\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-29T09:57:51+00:00\n"
+"POT-Creation-Date: 2026-07-07T04:46:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: optin\n"
@@ -52,7 +52,7 @@ msgid "WowOptin Optins"
 msgstr ""
 
 #: admin/class-admin.php:203
-#: includes/utils/class-plugin-actions.php:70
+#: includes/utils/class-plugin-actions.php:40
 #: build/admin/index.js:1
 msgid "Optins"
 msgstr ""
@@ -137,13 +137,13 @@ msgid "Builder"
 msgstr ""
 
 #: admin/class-admin.php:253
-#: includes/utils/class-plugin-actions.php:84
+#: includes/utils/class-plugin-actions.php:54
 #: build/admin/index.js:1
 msgid "Upgrade to Pro"
 msgstr ""
 
 #: admin/class-admin.php:257
-#: includes/utils/class-plugin-actions.php:80
+#: includes/utils/class-plugin-actions.php:50
 #: build/admin/index.js:1
 #: build/admin/index.js:1082
 msgid "Renew License"
@@ -318,7 +318,7 @@ msgid "Nonce is missing."
 msgstr ""
 
 #: includes/class-wpxpo-plugins.php:35
-#: includes/utils/class-notice.php:1090
+#: includes/utils/class-notice.php:1086
 msgid "Invalid nonce."
 msgstr ""
 
@@ -485,97 +485,44 @@ msgstr ""
 msgid "EDD"
 msgstr ""
 
-#: includes/utils/class-notice.php:158
+#: includes/utils/class-notice.php:155
 msgid "Hello Bar Action performed"
 msgstr ""
 
-#: includes/utils/class-notice.php:245
-#: includes/utils/class-notice.php:263
-msgid "Flash Sale:"
-msgstr ""
-
-#: includes/utils/class-notice.php:246
-#: includes/utils/class-notice.php:264
-#: includes/utils/class-notice.php:284
-#: includes/utils/class-notice.php:302
-#: includes/utils/class-notice.php:322
-#: includes/utils/class-notice.php:340
-#: includes/utils/class-notice.php:360
-#: includes/utils/class-notice.php:378
-msgid "Enjoy up to %s off on WowOptin Pro."
-msgstr ""
-
-#: includes/utils/class-notice.php:250
-#: includes/utils/class-notice.php:268
-#: includes/utils/class-notice.php:288
-#: includes/utils/class-notice.php:306
-#: includes/utils/class-notice.php:326
-#: includes/utils/class-notice.php:344
-#: includes/utils/class-notice.php:364
-#: includes/utils/class-notice.php:382
+#: includes/utils/class-notice.php:361
+#: includes/utils/class-notice.php:379
 msgid "Claim Your Discount!"
 msgstr ""
 
-#: includes/utils/class-notice.php:283
-#: includes/utils/class-notice.php:301
-msgid "Surprise Sale:"
-msgstr ""
-
-#: includes/utils/class-notice.php:321
-#: includes/utils/class-notice.php:339
-msgid "Massive Sale:"
-msgstr ""
-
-#: includes/utils/class-notice.php:359
-#: includes/utils/class-notice.php:377
-msgid "Final Hour Sale:"
-msgstr ""
-
-#: includes/utils/class-notice.php:821
+#: includes/utils/class-notice.php:817
 msgid "Close Banner"
 msgstr ""
 
-#: includes/utils/class-notice.php:1027
+#: includes/utils/class-notice.php:1023
 msgid "Want to help make WowOptin even more awesome?"
 msgstr ""
 
-#: includes/utils/class-notice.php:1029
+#: includes/utils/class-notice.php:1025
 msgid "Allow us to collect diagnostic data and usage information. see "
 msgstr ""
 
-#: includes/utils/class-notice.php:1030
+#: includes/utils/class-notice.php:1026
 msgid "what we collect."
 msgstr ""
 
-#: includes/utils/class-notice.php:1048
+#: includes/utils/class-notice.php:1044
 msgid "Accept & Close"
 msgstr ""
 
-#: includes/utils/class-notice.php:1094
+#: includes/utils/class-notice.php:1090
 msgid "Invalid request."
 msgstr ""
 
-#: includes/utils/class-plugin-actions.php:34
-msgid "Flash Sale - Up to 55% OFF"
-msgstr ""
-
-#: includes/utils/class-plugin-actions.php:43
-msgid "Surprise Sale - Up to 60% OFF"
-msgstr ""
-
-#: includes/utils/class-plugin-actions.php:52
-msgid "Massive Sale - Up to 60% OFF"
-msgstr ""
-
-#: includes/utils/class-plugin-actions.php:61
-msgid "Final Hour Sale - Up to 60% OFF"
-msgstr ""
-
-#: includes/utils/class-plugin-actions.php:120
+#: includes/utils/class-plugin-actions.php:90
 msgid "Docs"
 msgstr ""
 
-#: includes/utils/class-plugin-actions.php:122
+#: includes/utils/class-plugin-actions.php:92
 msgid "Support"
 msgstr ""
 
