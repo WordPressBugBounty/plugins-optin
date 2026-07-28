@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowOptin 1.4.43\n"
+"Project-Id-Version: WowOptin 1.4.44\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/optin\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-09T08:20:46+00:00\n"
+"POT-Creation-Date: 2026-07-28T09:26:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: optin\n"
@@ -52,7 +52,7 @@ msgid "WowOptin Optins"
 msgstr ""
 
 #: admin/class-admin.php:203
-#: includes/utils/class-plugin-actions.php:40
+#: includes/utils/class-plugin-actions.php:32
 #: build/admin/index.js:1
 msgid "Optins"
 msgstr ""
@@ -137,13 +137,13 @@ msgid "Builder"
 msgstr ""
 
 #: admin/class-admin.php:253
-#: includes/utils/class-plugin-actions.php:54
+#: includes/utils/class-plugin-actions.php:46
 #: build/admin/index.js:1
 msgid "Upgrade to Pro"
 msgstr ""
 
 #: admin/class-admin.php:257
-#: includes/utils/class-plugin-actions.php:50
+#: includes/utils/class-plugin-actions.php:42
 #: build/admin/index.js:1
 #: build/admin/index.js:1082
 msgid "Renew License"
@@ -255,38 +255,38 @@ msgid "Mobile"
 msgstr ""
 
 #: includes/class-db.php:1519
-#: includes/class-db.php:2771
+#: includes/class-db.php:2770
 msgid "Unknown"
 msgstr ""
 
-#: includes/class-db.php:2239
+#: includes/class-db.php:2238
 msgid "Recipe not found"
 msgstr ""
 
-#: includes/class-db.php:2243
+#: includes/class-db.php:2242
 msgid "Update required"
 msgstr ""
 
-#: includes/class-db.php:2334
+#: includes/class-db.php:2333
 msgid "New Optin"
 msgstr ""
 
-#: includes/class-db.php:2716
+#: includes/class-db.php:2715
 #: build/admin/index.js:1088
 msgid "Popup"
 msgstr ""
 
-#: includes/class-db.php:2718
+#: includes/class-db.php:2717
 #: build/admin/index.js:1088
 msgid "Banner"
 msgstr ""
 
-#: includes/class-db.php:2720
+#: includes/class-db.php:2719
 #: build/admin/index.js:1088
 msgid "Slide"
 msgstr ""
 
-#: includes/class-db.php:2722
+#: includes/class-db.php:2721
 #: build/admin/index.js:375
 #: build/admin/index.js:1088
 msgid "Inline"
@@ -318,12 +318,71 @@ msgid "Nonce is missing."
 msgstr ""
 
 #: includes/class-wpxpo-plugins.php:35
-#: includes/utils/class-notice.php:1086
 msgid "Invalid nonce."
 msgstr ""
 
 #: includes/class-wpxpo-plugins.php:39
 msgid "Insufficient permissions."
+msgstr ""
+
+#: includes/notice/class-notice.php:351
+msgid "Hello Bar Action performed"
+msgstr ""
+
+#. translators: %s: plugin brand name, from config.php.
+#: includes/notice/class-notice.php:525
+msgid "Want to help make %s even more awesome?"
+msgstr ""
+
+#: includes/notice/class-notice.php:529
+msgid "Allow us to collect diagnostic data and usage information. see "
+msgstr ""
+
+#: includes/notice/class-notice.php:530
+msgid "what we collect."
+msgstr ""
+
+#: includes/notice/class-notice.php:548
+msgid "Accept & Close"
+msgstr ""
+
+#: includes/notice/promos/hellobar.php:32
+#: includes/notice/promos/hellobar.php:50
+msgid "Summer Sale: Enjoy Up to 60% Off on"
+msgstr ""
+
+#: includes/notice/promos/hellobar.php:33
+#: includes/notice/promos/hellobar.php:51
+#: build/admin/index.js:1
+#: build/admin/index.js:1088
+msgid "Pro"
+msgstr ""
+
+#: includes/notice/promos/notice.php:41
+#: includes/notice/promos/notice.php:64
+#: includes/notice/promos/notice.php:87
+#: includes/notice/promos/notice.php:110
+msgid "Deal ending soon"
+msgstr ""
+
+#: includes/notice/promos/notice.php:141
+#: includes/notice/promos/notice.php:163
+#: includes/notice/promos/notice.php:185
+msgid " Summer Sale Offer is Live - Enjoy Up to %s Now"
+msgstr ""
+
+#: includes/notice/promos/notice.php:145
+#: includes/notice/promos/notice.php:167
+#: includes/notice/promos/notice.php:189
+msgid "Claim Your Discount!"
+msgstr ""
+
+#: includes/notice/promos/plugin-meta.php:27
+msgid "Summer Sale - Up to 60% OFF"
+msgstr ""
+
+#: includes/notice/templates/split-countdown.php:124
+msgid "Close Banner"
 msgstr ""
 
 #: includes/utils/class-deactive.php:62
@@ -485,44 +544,11 @@ msgstr ""
 msgid "EDD"
 msgstr ""
 
-#: includes/utils/class-notice.php:155
-msgid "Hello Bar Action performed"
-msgstr ""
-
-#: includes/utils/class-notice.php:361
-#: includes/utils/class-notice.php:379
-msgid "Claim Your Discount!"
-msgstr ""
-
-#: includes/utils/class-notice.php:817
-msgid "Close Banner"
-msgstr ""
-
-#: includes/utils/class-notice.php:1023
-msgid "Want to help make WowOptin even more awesome?"
-msgstr ""
-
-#: includes/utils/class-notice.php:1025
-msgid "Allow us to collect diagnostic data and usage information. see "
-msgstr ""
-
-#: includes/utils/class-notice.php:1026
-msgid "what we collect."
-msgstr ""
-
-#: includes/utils/class-notice.php:1044
-msgid "Accept & Close"
-msgstr ""
-
-#: includes/utils/class-notice.php:1090
-msgid "Invalid request."
-msgstr ""
-
-#: includes/utils/class-plugin-actions.php:90
+#: includes/utils/class-plugin-actions.php:78
 msgid "Docs"
 msgstr ""
 
-#: includes/utils/class-plugin-actions.php:92
+#: includes/utils/class-plugin-actions.php:80
 msgid "Support"
 msgstr ""
 
@@ -1168,11 +1194,6 @@ msgstr ""
 
 #: build/admin/index.js:1
 msgid "Renew"
-msgstr ""
-
-#: build/admin/index.js:1
-#: build/admin/index.js:1088
-msgid "Pro"
 msgstr ""
 
 #: build/admin/index.js:1

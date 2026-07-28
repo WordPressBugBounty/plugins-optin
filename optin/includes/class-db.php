@@ -1610,7 +1610,7 @@ class Db {
 				$o_data['cr']          = ( round( floatval( $od['cr'] ), 2 ) * 100 ) . '%';
 				$o_data['leads']       = Utils::format_number( $leads );
 				$o_data['revenue']     = Utils::get_currency_symbol() . Utils::format_number( $revenue );
-				$o_data['optin_type']  = $this->get_decoded_conv_type2( $od['type'] );
+				// $o_data['optin_type']  = $this->get_decoded_conv_type2( $od['type'] );
 
 				$total['views']       += $od['views'];
 				$total['conversions'] += $od['conversions'];
@@ -2139,7 +2139,6 @@ class Db {
 			$updated_data,
 			array( 'id' => $id )
 		);
-
 		do_action( 'optn_compat_purge_cache' );
 
 		return array( $res );
