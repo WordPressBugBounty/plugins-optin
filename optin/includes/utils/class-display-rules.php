@@ -1058,33 +1058,39 @@ class DisplayRules {
 			$target_path    = strtolower( $target_path );
 		}
 
-		// Helper comparator for a single path.
-		$matches = function ( $path ) use ( $condition, $target_path ) {
-			switch ( $condition ) {
+		// Split the condition into its positive form plus a negation flag. The
+		// negation must be applied to the aggregated result of all path variants,
+		// never per variant -- see the loop below.
+		$is_negated     = str_starts_with( $condition, 'not_' );
+		$base_condition = $is_negated ? substr( $condition, 4 ) : $condition;
+
+		// Helper comparator for a single path, positive conditions only.
+		$matches = function ( $path ) use ( $base_condition, $target_path ) {
+			switch ( $base_condition ) {
 				case 'equals':
 					return $path === $target_path;
-				case 'not_equals':
-					return $path !== $target_path;
 				case 'starts_with':
 					return strpos( $path, $target_path ) === 0;
-				case 'not_starts_with':
-					return strpos( $path, $target_path ) !== 0;
 				case 'ends_with':
 					$target_len = strlen( $target_path );
 					return substr( $path, -$target_len ) === $target_path;
-				case 'not_ends_with':
-					$target_len = strlen( $target_path );
-					return substr( $path, -$target_len ) !== $target_path;
 				case 'contains':
 					return strpos( $path, $target_path ) !== false;
-				case 'not_contains':
-					return strpos( $path, $target_path ) === false;
 				default:
 					return false;
 			}
 		};
 
-		// If any variant matches, we consider it a match.
+		// Unknown condition: fail closed for both polarities.
+		if ( ! in_array( $base_condition, array( 'equals', 'starts_with', 'ends_with', 'contains' ), true ) ) {
+			return false;
+		}
+
+		// A variant matching is enough for the positive form. For the negated form
+		// this becomes "no variant matches" (De Morgan), so a stripped variant such
+		// as '/shop' can no longer satisfy "does not contain /en" while the visible
+		// URL is '/en/shop'.
+		$positive_match = false;
 		foreach ( $paths_to_check as $path_variant ) {
 			// Normalize variant: ensure leading slash, remove trailing slash (except root).
 			$path_variant = '/' . ltrim( $path_variant, '/' );
@@ -1092,10 +1098,11 @@ class DisplayRules {
 				$path_variant = rtrim( $path_variant, '/' );
 			}
 			if ( $matches( $path_variant ) ) {
-				return true;
+				$positive_match = true;
+				break;
 			}
 		}
 
-		return false;
+		return $is_negated ? ! $positive_match : $positive_match;
 	}
 }

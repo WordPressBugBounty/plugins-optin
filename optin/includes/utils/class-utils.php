@@ -123,6 +123,32 @@ class Utils {
 		return ceil( ( abs( $new_value - $old_value ) / abs( $old_value ) ) * 100 );
 	}
 
+	/**
+	 * Format an already-scaled percentage value for display.
+	 *
+	 * Rounds *up* at the last kept decimal, so a rate is never shown lower than
+	 * it actually is ( 1.341 => "1.35", 1.445 => "1.45" ), and always renders
+	 * the full number of decimals ( 1.5 => "1.50" ).
+	 *
+	 * The inner round() absorbs binary floating point error before the ceil():
+	 * without it 1.11 * 100 lands on 111.00000000000001 and ceils up to 1.12.
+	 *
+	 * @param int|float $value    Percentage value, already scaled to 0-100.
+	 * @param int       $decimals Decimal places to keep.
+	 * @return string
+	 */
+	public static function format_percentage( $value, $decimals = 2 ) {
+
+		if ( ! is_numeric( $value ) ) {
+			return number_format( 0, $decimals, '.', '' );
+		}
+
+		$factor  = pow( 10, $decimals );
+		$rounded = ceil( round( floatval( $value ) * $factor, 6 ) ) / $factor;
+
+		return number_format( $rounded, $decimals, '.', '' );
+	}
+
 	public static function format_number( $num ) {
 
 		if ( ! is_numeric( $num ) ) {

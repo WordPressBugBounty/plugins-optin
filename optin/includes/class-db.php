@@ -1444,7 +1444,7 @@ class Db {
 		$res = array();
 
 		foreach ( $raw_data as $c ) {
-			$cr            = isset( $conv[ $c->id ] ) ? round( ( $conv[ $c->id ] / $c->views ) * 100, 2 ) : 0;
+			$cr            = isset( $conv[ $c->id ] ) ? Utils::format_percentage( ( $conv[ $c->id ] / $c->views ) * 100 ) : '0.00';
 			$res['data'][] = array(
 				'title' => $c->title,
 				'views' => $c->views,
@@ -1561,8 +1561,7 @@ class Db {
 			"SELECT 
 				i.conv_id AS `id`,
 				COUNT(*) AS `views`,
-				SUM((i.click = TRUE) + (i.order_id IS NOT NULL)) AS `conversions`,
-				IFNULL(SUM((i.click = TRUE) + (i.order_id IS NOT NULL)) / NULLIF(COUNT(*), 0), 0) AS `cr`
+				SUM((i.click = TRUE) + (i.order_id IS NOT NULL)) AS `conversions`
 			FROM {$this->interactions_table} i
 			WHERE i.conv_id IN ( {$ids_str} )
 			GROUP BY i.conv_id";
@@ -1605,9 +1604,18 @@ class Db {
 				$revenue = isset( $sales[ $id ] ) ? $sales[ $id ] : 0;
 				$leads   = isset( $leads_data[ $id ] ) ? intval( $leads_data[ $id ]->leads ) : 0;
 
-				$o_data['views']       = Utils::format_number( intval( $od['views'] ) );
-				$o_data['conversions'] = Utils::format_number( intval( $od['conversions'] ) );
-				$o_data['cr']          = ( round( floatval( $od['cr'] ), 2 ) * 100 ) . '%';
+				$views       = intval( $od['views'] );
+				$conversions = intval( $od['conversions'] );
+
+				$o_data['views']       = Utils::format_number( $views );
+				$o_data['conversions'] = Utils::format_number( $conversions );
+				// The rate is derived here rather than in SQL: MySQL's division caps at
+				// `div_precision_increment` (4) decimals, so a 0-1 ratio reaches PHP
+				// already quantised to 1/10000 and 1.1142% could only ever render as
+				// 1.11%. Scaling to a percentage before formatting also matters — the
+				// old code rounded the ratio to 2 decimals first, which collapsed every
+				// rate below 1.5% onto a whole number ( 0.0111 => 0.01 => "1%" ).
+				$o_data['cr']          = $views > 0 ? Utils::format_percentage( $conversions / $views * 100 ) . '%' : '0.00%';
 				$o_data['leads']       = Utils::format_number( $leads );
 				$o_data['revenue']     = Utils::get_currency_symbol() . Utils::format_number( $revenue );
 				// $o_data['optin_type']  = $this->get_decoded_conv_type2( $od['type'] );
@@ -1621,7 +1629,7 @@ class Db {
 			$optin_stats[] = $o_data;
 		}
 
-		$total['cr']          = $total['views'] > 0 ? round( $total['conversions'] / $total['views'] * 100, 2 ) . '%' : '0.00%';
+		$total['cr']          = $total['views'] > 0 ? Utils::format_percentage( $total['conversions'] / $total['views'] * 100 ) . '%' : '0.00%';
 		$total['views']       = Utils::format_number( $total['views'] );
 		$total['conversions'] = Utils::format_number( $total['conversions'] );
 		$total['leads']       = Utils::format_number( $total['leads'] );
@@ -1995,7 +2003,7 @@ class Db {
 			$old_rate = ( ( intval( $click->old ) + intval( $sales->old ) ) / intval( $views->old ) ) * 100;
 		}
 
-		$res['rate']['total'] = strval( round( $curr_rate, 2 ) ) . '%';
+		$res['rate']['total'] = Utils::format_percentage( $curr_rate ) . '%';
 		$res['rate']['diff']  = Utils::get_diff_pct( $old_rate, $curr_rate );
 
 		// Sales.
