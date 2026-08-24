@@ -24,209 +24,248 @@
 
 use OPTN\Includes\Xpo;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 return array(
 
-	// -- split-countdown --------------------------------------------------
-	array(
-		'type'               => 'split-countdown',
-		'key'                => $prefix . '_countdown_banner_flash_sale_2026_1',
-		'start'              => '2026-05-13 00:00 Asia/Dhaka',
-		'end'                => '2026-05-17 23:59 Asia/Dhaka',
-		'brand_color'        => $brand_color,
-		'left_image'         => $asset_url . 'banners/flash-sale/left.png',
-		'right_image'        => $asset_url . 'banners/flash-sale/right.png',
-		'bg_image'           => $asset_url . 'banners/flash-sale/bg.png',
-		'text'               => __( 'Deal ending soon', 'optin' ),
-		'countdown_duration' => 259200, // Duration in seconds.
-		'countdown_color'    => '#3CF357',
-		'url'                => Xpo::generate_utm_link(
-			array(
-				'config' => array(
-					'source'   => $config['utm_source'],
-					'medium'   => 'flash-sale',
-					'campaign' => $config['utm_campaign'],
-				),
-			)
-		),
-		'visibility'         => ! Xpo::is_lc_active(),
-	),
-	array(
-		'type'               => 'split-countdown',
-		'key'                => $prefix . '_countdown_banner_surprise_sale_2026_1',
-		'start'              => '2026-05-26 00:00 Asia/Dhaka',
-		'end'                => '2026-05-28 23:59 Asia/Dhaka',
-		'brand_color'        => $brand_color,
-		'left_image'         => $asset_url . 'banners/surprise-sale/left.png',
-		'right_image'        => $asset_url . 'banners/surprise-sale/right.png',
-		'bg_image'           => $asset_url . 'banners/surprise-sale/bg.png',
-		'text'               => __( 'Deal ending soon', 'optin' ),
-		'countdown_duration' => 259200, // Duration in seconds.
-		'countdown_color'    => '#3CF357',
-		'url'                => Xpo::generate_utm_link(
-			array(
-				'config' => array(
-					'source'   => $config['utm_source'],
-					'medium'   => 'surprise-sale',
-					'campaign' => $config['utm_campaign'],
-				),
-			)
-		),
-		'visibility'         => ! Xpo::is_lc_active(),
-	),
-	array(
-		'type'               => 'split-countdown',
-		'key'                => $prefix . '_countdown_banner_massive_sale_2026_1',
-		'start'              => '2026-06-11 00:00 Asia/Dhaka',
-		'end'                => '2026-06-16 23:59 Asia/Dhaka',
-		'brand_color'        => $brand_color,
-		'left_image'         => $asset_url . 'banners/massive-sale/left.png',
-		'right_image'        => $asset_url . 'banners/massive-sale/right.png',
-		'bg_image'           => $asset_url . 'banners/massive-sale/bg.png',
-		'text'               => __( 'Deal ending soon', 'optin' ),
-		'countdown_duration' => 259200, // Duration in seconds.
-		'countdown_color'    => '#3CF357',
-		'url'                => Xpo::generate_utm_link(
-			array(
-				'config' => array(
-					'source'   => $config['utm_source'],
-					'medium'   => 'massive-sale',
-					'campaign' => $config['utm_campaign'],
-				),
-			)
-		),
-		'visibility'         => ! Xpo::is_lc_active(),
-	),
-	array(
-		'type'               => 'split-countdown',
-		'key'                => $prefix . '_countdown_banner_final_hour_sale_2026_1',
-		'start'              => '2026-06-25 00:00 Asia/Dhaka',
-		'end'                => '2026-06-27 23:59 Asia/Dhaka',
-		'brand_color'        => $brand_color,
-		'left_image'         => $asset_url . 'banners/final-hour-sale/left.png',
-		'right_image'        => $asset_url . 'banners/final-hour-sale/right.png',
-		'bg_image'           => $asset_url . 'banners/final-hour-sale/bg.png',
-		'text'               => __( 'Deal ending soon', 'optin' ),
-		'countdown_duration' => 259200, // Duration in seconds.
-		'countdown_color'    => '#3CF357',
-		'url'                => Xpo::generate_utm_link(
-			array(
-				'config' => array(
-					'source'   => $config['utm_source'],
-					'medium'   => 'final-hour-sale',
-					'campaign' => $config['utm_campaign'],
-				),
-			)
-		),
-		'visibility'         => ! Xpo::is_lc_active(),
-	),
+    // -- split-countdown --------------------------------------------------
+    array(
+        'type'               => 'split-countdown',
+        'key'                => $prefix . '_countdown_banner_flash_sale_2026_1',
+        'start'              => '2026-05-13 00:00 Asia/Dhaka',
+        'end'                => '2026-05-17 23:59 Asia/Dhaka',
+        'brand_color'        => $brand_color,
+        'left_image'         => $asset_url . 'banners/flash-sale/left.png',
+        'right_image'        => $asset_url . 'banners/flash-sale/right.png',
+        'bg_image'           => $asset_url . 'banners/flash-sale/bg.png',
+        'text'               => __('Deal ending soon', 'optin'),
+        'countdown_duration' => 259200, // Duration in seconds.
+        'countdown_color'    => '#3CF357',
+        'url'                => Xpo::generate_utm_link(
+            array(
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'flash-sale',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'visibility'         => ! Xpo::is_lc_active(),
+    ),
+    array(
+        'type'               => 'split-countdown',
+        'key'                => $prefix . '_countdown_banner_surprise_sale_2026_1',
+        'start'              => '2026-05-26 00:00 Asia/Dhaka',
+        'end'                => '2026-05-28 23:59 Asia/Dhaka',
+        'brand_color'        => $brand_color,
+        'left_image'         => $asset_url . 'banners/surprise-sale/left.png',
+        'right_image'        => $asset_url . 'banners/surprise-sale/right.png',
+        'bg_image'           => $asset_url . 'banners/surprise-sale/bg.png',
+        'text'               => __('Deal ending soon', 'optin'),
+        'countdown_duration' => 259200, // Duration in seconds.
+        'countdown_color'    => '#3CF357',
+        'url'                => Xpo::generate_utm_link(
+            array(
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'surprise-sale',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'visibility'         => ! Xpo::is_lc_active(),
+    ),
+    array(
+        'type'               => 'split-countdown',
+        'key'                => $prefix . '_countdown_banner_massive_sale_2026_1',
+        'start'              => '2026-06-11 00:00 Asia/Dhaka',
+        'end'                => '2026-06-16 23:59 Asia/Dhaka',
+        'brand_color'        => $brand_color,
+        'left_image'         => $asset_url . 'banners/massive-sale/left.png',
+        'right_image'        => $asset_url . 'banners/massive-sale/right.png',
+        'bg_image'           => $asset_url . 'banners/massive-sale/bg.png',
+        'text'               => __('Deal ending soon', 'optin'),
+        'countdown_duration' => 259200, // Duration in seconds.
+        'countdown_color'    => '#3CF357',
+        'url'                => Xpo::generate_utm_link(
+            array(
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'massive-sale',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'visibility'         => ! Xpo::is_lc_active(),
+    ),
+    array(
+        'type'               => 'split-countdown',
+        'key'                => $prefix . '_countdown_banner_final_hour_sale_2026_1',
+        'start'              => '2026-06-25 00:00 Asia/Dhaka',
+        'end'                => '2026-06-27 23:59 Asia/Dhaka',
+        'brand_color'        => $brand_color,
+        'left_image'         => $asset_url . 'banners/final-hour-sale/left.png',
+        'right_image'        => $asset_url . 'banners/final-hour-sale/right.png',
+        'bg_image'           => $asset_url . 'banners/final-hour-sale/bg.png',
+        'text'               => __('Deal ending soon', 'optin'),
+        'countdown_duration' => 259200, // Duration in seconds.
+        'countdown_color'    => '#3CF357',
+        'url'                => Xpo::generate_utm_link(
+            array(
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'final-hour-sale',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'visibility'         => ! Xpo::is_lc_active(),
+    ),
 
-	// -- icon-message -----------------------------------------------------
-	array(
-		'type'               => 'icon-message',
-		'key'                => $prefix . '_dashboard_content_notice_summer_sale_vv1',
-		'start'              => '2026-07-06 00:00 Asia/Dhaka',
-		'end'                => '2026-07-12 23:59 Asia/Dhaka',
-		'url'                => Xpo::generate_utm_link(
-			array(
-				'config' => array(
-					'source'   => $config['utm_source'],
-					'medium'   => 'summer-sale',
-					'campaign' => $config['utm_campaign'],
-				),
-			)
-		),
-		'visibility'         => ! Xpo::is_lc_active(),
-		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy Up to %s Now', 'optin' ),
-		'discount_content'   => '60% OFF',
-		'border_color'       => $brand_color,
-		'icon'               => $asset_url . 'banners/discount_60.svg',
-		'button_text'        => __( 'Claim Your Discount!', 'optin' ),
-		'is_discount_logo'   => true,
-	),
-	array(
-		'type'               => 'icon-message',
-		'key'                => $prefix . '_dashboard_content_notice_summer_sale_vv2',
-		'start'              => '2026-07-20 00:00 Asia/Dhaka',
-		'end'                => '2026-08-01 23:59 Asia/Dhaka',
-		'url'                => Xpo::generate_utm_link(
-			array(
-				'config' => array(
-					'source'   => $config['utm_source'],
-					'medium'   => 'summer-sale',
-					'campaign' => $config['utm_campaign'],
-				),
-			)
-		),
-		'visibility'         => ! Xpo::is_lc_active(),
-		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy Up to %s Now', 'optin' ),
-		'discount_content'   => '60% OFF',
-		'border_color'       => $brand_color,
-		'icon'               => $asset_url . 'logo.svg',
-		'button_text'        => __( 'Claim Your Discount!', 'optin' ),
-		'is_discount_logo'   => true,
-	),
-	array(
-		'type'               => 'icon-message',
-		'key'                => $prefix . '_dashboard_content_notice_summer_sale_vv3',
-		'start'              => '2026-08-09 00:00 Asia/Dhaka',
-		'end'                => '2026-08-16 23:59 Asia/Dhaka',
-		'url'                => Xpo::generate_utm_link(
-			array(
-				'config' => array(
-					'source'   => $config['utm_source'],
-					'medium'   => 'summer-sale',
-					'campaign' => $config['utm_campaign'],
-				),
-			)
-		),
-		'visibility'         => ! Xpo::is_lc_active(),
-		'content_subheading' => $brand_name . __( ' Summer Sale Offer is Live - Enjoy Up to %s Now', 'optin' ),
-		'discount_content'   => '60% OFF',
-		'border_color'       => $brand_color,
-		'icon'               => $asset_url . 'logo.svg',
-		'button_text'        => __( 'Claim Your Discount!', 'optin' ),
-		'is_discount_logo'   => true,
-	),
+    // -- icon-message -----------------------------------------------------
+    array(
+        'type'               => 'icon-message',
+        'key'                => $prefix . '_dashboard_content_notice_summer_sale_vv1',
+        'start'              => '2026-07-06 00:00 Asia/Dhaka',
+        'end'                => '2026-07-12 23:59 Asia/Dhaka',
+        'url'                => Xpo::generate_utm_link(
+            array(
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'summer-sale',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'visibility'         => ! Xpo::is_lc_active(),
+        'content_subheading' => $brand_name . __(' Summer Sale Offer is Live - Enjoy Up to %s Now', 'optin'),
+        'discount_content'   => '60% OFF',
+        'border_color'       => $brand_color,
+        'icon'               => $asset_url . 'banners/discount_60.svg',
+        'button_text'        => __('Claim Your Discount!', 'optin'),
+        'is_discount_logo'   => true,
+    ),
+    array(
+        'type'               => 'icon-message',
+        'key'                => $prefix . '_dashboard_content_notice_summer_sale_vv2',
+        'start'              => '2026-07-20 00:00 Asia/Dhaka',
+        'end'                => '2026-08-01 23:59 Asia/Dhaka',
+        'url'                => Xpo::generate_utm_link(
+            array(
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'summer-sale',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'visibility'         => ! Xpo::is_lc_active(),
+        'content_subheading' => $brand_name . __(' Summer Sale Offer is Live - Enjoy Up to %s Now', 'optin'),
+        'discount_content'   => '60% OFF',
+        'border_color'       => $brand_color,
+        'icon'               => $asset_url . 'logo.svg',
+        'button_text'        => __('Claim Your Discount!', 'optin'),
+        'is_discount_logo'   => true,
+    ),
+    array(
+        'type'               => 'icon-message',
+        'key'                => $prefix . '_dashboard_content_notice_summer_sale_vv3',
+        'start'              => '2026-08-09 00:00 Asia/Dhaka',
+        'end'                => '2026-08-16 23:59 Asia/Dhaka',
+        'url'                => Xpo::generate_utm_link(
+            array(
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'summer-sale',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'visibility'         => ! Xpo::is_lc_active(),
+        'content_subheading' => $brand_name . __(' Summer Sale Offer is Live - Enjoy Up to %s Now', 'optin'),
+        'discount_content'   => '60% OFF',
+        'border_color'       => $brand_color,
+        'icon'               => $asset_url . 'logo.svg',
+        'button_text'        => __('Claim Your Discount!', 'optin'),
+        'is_discount_logo'   => true,
+    ),
 
-	// -- image-only ------------------------------------------------------
-	array(
-		'type'        => 'image-only',
-		'key'         => $prefix . '_summer_sale_2026_v1',
-		'start'       => '2026-07-13 00:00 Asia/Dhaka',
-		'end'         => '2026-07-19 23:59 Asia/Dhaka',
-		'banner_src'  => $asset_url . 'banners/summer.png',
-		'url'         => Xpo::generate_utm_link(
-			array(
-				'config' => array(
-					'source'   => $config['utm_source'],
-					'medium'   => 'summer-sale',
-					'campaign' => $config['utm_campaign'],
-				),
-			)
-		),
-		'close_color' => '#000000',
-		'visibility'  => ! Xpo::is_lc_active(),
-	),
-	array(
-		'type'        => 'image-only',
-		'key'         => $prefix . '_summer_sale_2026_v2',
-		'start'       => '2026-08-02 00:00 Asia/Dhaka',
-		'end'         => '2026-08-08 23:59 Asia/Dhaka',
-		'banner_src'  => $asset_url . 'banners/summer.png',
-		'url'         => Xpo::generate_utm_link(
-			array(
-				'config' => array(
-					'source'   => $config['utm_source'],
-					'medium'   => 'summer-sale',
-					'campaign' => $config['utm_campaign'],
-				),
-			)
-		),
-		'close_color' => '#000000',
-		'visibility'  => ! Xpo::is_lc_active(),
-	),
+    // -- image-only ------------------------------------------------------
+    array(
+        'type'        => 'image-only',
+        'key'         => $prefix . '_summer_sale_2026_v1',
+        'start'       => '2026-07-13 00:00 Asia/Dhaka',
+        'end'         => '2026-07-19 23:59 Asia/Dhaka',
+        'banner_src'  => $asset_url . 'banners/summer.png',
+        'url'         => Xpo::generate_utm_link(
+            array(
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'summer-sale',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'close_color' => '#000000',
+        'visibility'  => ! Xpo::is_lc_active(),
+    ),
+    array(
+        'type'        => 'image-only',
+        'key'         => $prefix . '_summer_sale_2026_v2',
+        'start'       => '2026-08-02 00:00 Asia/Dhaka',
+        'end'         => '2026-08-08 23:59 Asia/Dhaka',
+        'banner_src'  => $asset_url . 'banners/summer.png',
+        'url'         => Xpo::generate_utm_link(
+            array(
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'summer-sale',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'close_color' => '#000000',
+        'visibility'  => ! Xpo::is_lc_active(),
+    ),
+
+    array(
+        'type'        => 'image-only',
+        'key'         => $prefix . '_preco_sale_campaign_262_1',
+        'start'       => '2026-08-23 00:00 Asia/Dhaka',
+        'end'         => '2026-08-29 23:59 Asia/Dhaka',
+        'banner_src'  => $asset_url . 'dashboard_banner/wowrecommend_banner/preco_banner_insider_deal.png',
+        'url'         => Xpo::generate_utm_link(
+            array(
+                'url'    => 'https://www.wpxpo.com/product/wowrecommend/',
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'insider-deal',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'close_color' => '#ffffff',
+        'visibility'  => true,
+    ),
+    array(
+        'type'        => 'image-only',
+        'key'         => $prefix . '_preco_sale_campaign_262_2',
+        'start'       => '2026-08-30 00:00 Asia/Dhaka',
+        'end'         => '2026-09-19 23:59 Asia/Dhaka',
+        'banner_src'  => $asset_url . 'dashboard_banner/wowrecommend_banner/preco_banner_early_bird.png',
+        'url'         => Xpo::generate_utm_link(
+            array(
+                'url'    => 'https://www.wpxpo.com/product/wowrecommend/',
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'early-bird',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'close_color' => '#ffffff',
+        'visibility'  => true,
+    ),
 );
 
 /*
