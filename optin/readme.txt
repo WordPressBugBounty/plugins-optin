@@ -2,9 +2,9 @@
 Contributors: wpxpo, anik4e, jakirhasan
 Tags: popup, optin, lead generation, email newsletter, pop-ups
 Requires at least: 6.4
-Tested up to: 7.0.2
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.4.46
+Stable tag: 1.4.47
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -214,6 +214,9 @@ Yes, WowOptin has exit intent popups. Not only that, but you can also trigger po
 9. Dashboard
 
 == Changelog ==
+
+= 1.4.47 - 30 Aug 2026 =
+* Fix: Tested for wordpress 7.1
 
 = 1.4.46 - 24 Aug 2026 =
 * Fix: Performance improvement.
