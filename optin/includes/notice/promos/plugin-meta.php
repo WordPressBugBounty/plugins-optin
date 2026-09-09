@@ -37,6 +37,31 @@ return array(
 		'visibility' => ! Xpo::is_lc_active(),
 	),
 
+	/*
+	 * Pro price push 2026 — no discount, the offer is the standing Pro price,
+	 * so `text` quotes config.php's `pro_price`. Mirrors the hello bar window.
+	 */
+	array(
+		'key'        => $prefix . '_plugin_meta_pro_price_push_2026',
+		'start'      => '2026-09-09 00:00 Asia/Dhaka',
+		'end'        => '2026-10-10 23:59 Asia/Dhaka',
+		'text'       => sprintf(
+			/* translators: %s: pro price, e.g. $41. */
+			__( 'Get Pro - %s', 'optin' ),
+			$config['pro_price']
+		),
+		'url'        => Xpo::generate_utm_link(
+			array(
+				'config' => array(
+					'source'   => $config['utm_source_plugin_meta'],
+					'medium'   => 'base-price',
+					'campaign' => $config['utm_campaign'],
+				),
+			)
+		),
+		'visibility' => ! Xpo::is_lc_active(),
+	),
+
 );
 
 /*

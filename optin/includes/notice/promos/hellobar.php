@@ -62,6 +62,35 @@ return array(
 		'visibility'         => ! Xpo::is_lc_active(),
 	),
 
+	/*
+	 * Pro price push 2026 — one flat window, no campaign artwork: the offer is
+	 * the standing Pro price, so `text` quotes config.php's `pro_price`.
+	 * `{{…}}` renders bold; the bar's own "Upgrade Now" is the CTA.
+	 */
+	array(
+		'key'                => $prefix . '_helloBar_pro_price_push_2026_1',
+		'start'              => '2026-09-09 00:00 Asia/Dhaka',
+		'end'                => '2026-10-10 23:59 Asia/Dhaka',
+		'text'               => sprintf(
+			/* translators: 1: plugin brand name, 2: pro price, e.g. $41. {{…}} renders bold. */
+			__( '{{%1$s Pro:}} Unlock All Premium Features for {{Only %2$s!}}', 'optin' ),
+			$brand_name,
+			$config['pro_price']
+		),
+		'highlight'          => '', // Emphasis is inline via {{…}}.
+		'countdown_duration' => 0, // Seconds; 0 hides the countdown.
+		'url'                => Xpo::generate_utm_link(
+			array(
+				'config' => array(
+					'source'   => $config['utm_source_hellobar'],
+					'medium'   => 'base-price',
+					'campaign' => $config['utm_campaign'],
+				),
+			)
+		),
+		'visibility'         => ! Xpo::is_lc_active(),
+	),
+
 );
 
 /*
