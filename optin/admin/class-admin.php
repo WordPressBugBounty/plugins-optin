@@ -248,13 +248,13 @@ class Admin {
 		$pro_link      = '';
 		$pro_link_text = '';
 
-		if ( ! Xpo::is_lc_active() ) {
+		// Expired check goes first: is_lc_active() is also false for expired licenses.
+		if ( Xpo::is_lc_expired() ) {
+			$pro_link      = Xpo::get_renew_link();
+			$pro_link_text = __( 'Renew License', 'optin' );
+		} elseif ( ! Xpo::is_lc_active() ) {
 			$pro_link      = 'https://www.wowoptin.com/#pricing';
 			$pro_link_text = __( 'Upgrade to Pro', 'optin' );
-		} elseif ( Xpo::is_lc_expired() ) {
-			$license_key   = Utils::get_license_key() ?? '';
-			$pro_link      = 'https://account.wpxpo.com/checkout/?edd_license_key=' . $license_key;
-			$pro_link_text = __( 'Renew License', 'optin' );
 		}
 
 		if ( ! empty( $pro_link ) ) {
