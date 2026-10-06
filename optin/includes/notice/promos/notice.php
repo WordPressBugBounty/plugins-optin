@@ -190,6 +190,29 @@ return array(
         'is_discount_logo'   => true,
     ),
 
+    array(
+        'type'               => 'icon-message',
+        'key'                => $prefix . '_dashboard_content_notice_flash_sale_2026_1',
+        'start'              => '2026-10-06 00:00 Asia/Dhaka',
+        'end'                => '2026-10-16 23:59 Asia/Dhaka',
+        'url'                => Xpo::generate_utm_link(
+            array(
+                'config' => array(
+                    'source'   => $config['utm_source'],
+                    'medium'   => 'flash-sale',
+                    'campaign' => $config['utm_campaign'],
+                ),
+            )
+        ),
+        'visibility'         => ! Xpo::is_lc_active(),
+        'content_subheading' => __('Flash Sale: Enjoy Up to %s on', 'optin') . ' ' . $brand_name . ' ' . __('Pro.', 'optin'),
+        'discount_content'   => '60% OFF',
+        'border_color'       => $brand_color,
+        'icon'               => $asset_url . 'banners/discount_60.png',
+        'button_text'        => __('Claim Your Discount!', 'optin'),
+        'is_discount_logo'   => true,
+    ),
+
     // -- image-only ------------------------------------------------------
     array(
         'type'        => 'image-only',

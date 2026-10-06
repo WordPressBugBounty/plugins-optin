@@ -75,8 +75,12 @@ $close_icon_class    = $prefix . '-content-notice-close-icon';
 	}
 
 	.<?php echo esc_html( $discount_icon_class ); ?> img {
-		height: 70px;
-		width: 70px;
+		display: block;
+		width: auto;
+		height: auto;
+		max-width: 130px;
+		max-height: 70px;
+		object-fit: contain;
 	}
 
 	.<?php echo esc_html( $content_wrap_class ); ?> {

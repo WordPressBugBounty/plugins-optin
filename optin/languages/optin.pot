@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: WowOptin 1.4.49\n"
+"Project-Id-Version: WowOptin 1.4.50\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/optin\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-24T05:49:08+00:00\n"
+"POT-Creation-Date: 2026-10-06T10:52:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: optin\n"
@@ -86,6 +86,7 @@ msgstr ""
 
 #: admin/class-admin.php:218
 #: build/admin/index.js:1
+#: build/admin/index.js:1088
 msgid "A/B Testing"
 msgstr ""
 
@@ -129,27 +130,37 @@ msgstr ""
 
 #: admin/class-admin.php:242
 #: build/admin/index.js:1088
-msgid "WowOptin Builder"
+msgid "WowOptin Pro Features"
 msgstr ""
 
 #: admin/class-admin.php:243
+#: build/admin/index.js:1
+msgid "Pro Features"
+msgstr ""
+
+#: admin/class-admin.php:247
+#: build/admin/index.js:1088
+msgid "WowOptin Builder"
+msgstr ""
+
+#: admin/class-admin.php:248
 msgid "Builder"
 msgstr ""
 
-#: admin/class-admin.php:254
+#: admin/class-admin.php:259
 #: includes/utils/class-plugin-actions.php:42
 #: build/admin/index.js:1
 #: build/admin/index.js:1082
 msgid "Renew License"
 msgstr ""
 
-#: admin/class-admin.php:257
+#: admin/class-admin.php:262
 #: includes/utils/class-plugin-actions.php:46
 #: build/admin/index.js:1
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: admin/class-admin.php:273
+#: admin/class-admin.php:278
 msgid "WowOptin Pro"
 msgstr ""
 
@@ -346,20 +357,25 @@ msgstr ""
 msgid "Accept & Close"
 msgstr ""
 
-#: includes/notice/promos/hellobar.php:32
-#: includes/notice/promos/hellobar.php:50
-msgid "Summer Sale: Enjoy Up to 60% Off on"
+#: includes/notice/promos/hellobar.php:28
+msgid "Flash Sale: Enjoy Up to 60% Off on"
 msgstr ""
 
-#: includes/notice/promos/hellobar.php:33
-#: includes/notice/promos/hellobar.php:51
+#: includes/notice/promos/hellobar.php:29
+#: includes/notice/promos/hellobar.php:53
+#: includes/notice/promos/hellobar.php:71
 #: build/admin/index.js:1
 #: build/admin/index.js:1088
 msgid "Pro"
 msgstr ""
 
+#: includes/notice/promos/hellobar.php:52
+#: includes/notice/promos/hellobar.php:70
+msgid "Summer Sale: Enjoy Up to 60% Off on"
+msgstr ""
+
 #. translators: 1: plugin brand name, 2: pro price, e.g. $41. {{…}} renders bold.
-#: includes/notice/promos/hellobar.php:76
+#: includes/notice/promos/hellobar.php:96
 msgid "{{%1$s Pro:}} Unlock All Premium Features for {{Only %2$s!}}"
 msgstr ""
 
@@ -379,15 +395,28 @@ msgstr ""
 #: includes/notice/promos/notice.php:145
 #: includes/notice/promos/notice.php:167
 #: includes/notice/promos/notice.php:189
+#: includes/notice/promos/notice.php:212
 msgid "Claim Your Discount!"
 msgstr ""
 
+#: includes/notice/promos/notice.php:208
+msgid "Flash Sale: Enjoy Up to %s on"
+msgstr ""
+
+#: includes/notice/promos/notice.php:208
+msgid "Pro."
+msgstr ""
+
 #: includes/notice/promos/plugin-meta.php:27
+msgid "Up to 60% Off"
+msgstr ""
+
+#: includes/notice/promos/plugin-meta.php:45
 msgid "Summer Sale - Up to 60% OFF"
 msgstr ""
 
 #. translators: %s: pro price, e.g. $41.
-#: includes/notice/promos/plugin-meta.php:50
+#: includes/notice/promos/plugin-meta.php:68
 msgid "Get Pro - %s"
 msgstr ""
 
@@ -542,11 +571,13 @@ msgstr ""
 
 #: includes/utils/class-display-rules.php:632
 #: includes/utils/class-display-rules.php:694
+#: build/admin/index.js:1088
 msgid "Cart Page"
 msgstr ""
 
 #: includes/utils/class-display-rules.php:639
 #: includes/utils/class-display-rules.php:701
+#: build/admin/index.js:1088
 msgid "Thank You Page"
 msgstr ""
 
@@ -832,26 +863,31 @@ msgstr ""
 
 #: build/admin/index.js:1
 #: build/admin/index.js:227
+#: build/admin/index.js:1088
 msgid "After Scrolling to X"
 msgstr ""
 
 #: build/admin/index.js:1
 #: build/admin/index.js:227
+#: build/admin/index.js:1088
 msgid "Inactivity Mode"
 msgstr ""
 
 #: build/admin/index.js:1
 #: build/admin/index.js:227
+#: build/admin/index.js:1088
 msgid "Exit Intent"
 msgstr ""
 
 #: build/admin/index.js:1
 #: build/admin/index.js:227
+#: build/admin/index.js:1088
 msgid "On Click"
 msgstr ""
 
 #: build/admin/index.js:1
 #: build/admin/index.js:227
+#: build/admin/index.js:1088
 msgid "On Hover"
 msgstr ""
 
@@ -2453,6 +2489,7 @@ msgid "Submitted"
 msgstr ""
 
 #: build/admin/index.js:227
+#: build/admin/index.js:1088
 msgid "Text Presets"
 msgstr ""
 
@@ -4834,6 +4871,318 @@ msgid "Delete Test"
 msgstr ""
 
 #: build/admin/index.js:1088
+msgid "Create More Effective Opt-In Campaigns"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "538+ Pro Templates"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Choose from professionally designed templates to create engaging popups, opt-in forms, and campaigns without starting from scratch."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Test different versions of your campaigns to see which messages, designs, or offers perform better and improve conversions."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Speed up campaign creation with ready-made text presets for common opt-in messages."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Specific Location Targeting"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Show your campaigns to visitors based on their location and create more relevant experiences for different audiences."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Specific Channel Targeting"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Reach visitors based on how they found your website, including Organic, Paid Search, Direct, and Custom URL traffic."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Target Your Easy Digital Downloads Customers"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Product Pages"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Create product-specific campaigns to promote relevant offers, capture leads, or guide visitors toward a purchase."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Product Pages by Category"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Reach visitors browsing products in a specific category with campaigns tailored to their interests."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Product Pages by Tag"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Target products with specific tags to deliver more relevant messages based on the type or characteristics of the product."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "When Products Are in Cart"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Use the products in a customer’s cart to present relevant offers, complementary products, or purchase incentives."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Specific Cart Amount"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Target shoppers based on their cart value to encourage larger purchases or promote offers tied to specific spending levels."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Engage customers while they review their cart with relevant offers, messages, or incentives before checkout."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Continue the customer journey after purchase with follow-up offers, promotions, or opportunities to build a lasting connection."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Control When and How Often Campaigns Appear"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Recurring Days"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Schedule your campaigns to appear on specific days, making it easy to run time-sensitive promotions, weekly offers, or recurring campaigns."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "View Limit"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Control how often a campaign is shown to each visitor to avoid overexposure and keep your opt-in experience engaging."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Connect WowOptin with Your Favorite Tools"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "15+ Email Marketing Integrations"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Connect WowOptin with HubSpot, Omnisend, FluentCRM, MailPoet, and more to automatically send, nurture, and manage leads."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Analytics Integration"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Connect Google Analytics to gain deeper insights into your opt-in campaign performance."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "AI Integrations"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Use ChatGPT, Gemini, and Grok to generate, rewrite, and refine campaign content."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Reach Visitors at the Right Moment"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Show targeted offers when visitors reach a specific point on the page after engaging with your content."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Reconnect with visitors who stop interacting with your site and give them a reason to continue browsing or take action."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Make one final conversion opportunity before visitors leave with a timely offer, message, or opt-in."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Launch a campaign when visitors interact with a specific button, link, image, or other element."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Engage visitors when they hover over a selected element and present a relevant message or offer at the moment of interest."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Target Your WooCommerce Customers"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Show category-specific campaigns on relevant product pages to promote offers, collect leads, or highlight related products."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Reach visitors viewing products with specific tags and tailor your campaigns to match their interests."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Target shoppers based on what they’ve added to their cart, making it easier to promote complementary products or special offers."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "When Number of Products Are in Cart"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Encourage customers to add more items or complete their purchase when their cart reaches a specific product count."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Create campaigns around cart value to encourage customers to spend more, unlock offers, or reach a spending threshold."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Keep customers engaged after purchase with follow-up offers, exclusive promotions, or opportunities to stay connected."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Create Popups Faster with 538+ Pro Templates"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Choose from hundreds of professionally designed templates and launch high-converting campaigns without starting from scratch."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Exit-Intent Popups"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Campaign-Focused Banners"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Slide-In Opt-Ins"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Floating Bars"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Multi-Step Forms"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Capture Visitors with Exit-Intent Popups"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Engage visitors when they’re about to leave your website and give them one more reason to subscribe, explore an offer, or complete their purchase."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Target WooCommerce Shoppers"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Show targeted opt-ins based on products, categories, cart activity, and purchase behavior to deliver relevant offers."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Target Visitors by Traffic Source & Location"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Reach visitors based on where they come from and their location, so you can show relevant campaigns."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Connect with Leading Email Marketing Tools"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Connect WowOptin with your favorite email marketing platforms to automatically send and manage leads captured through your opt-in campaigns."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Will upgrading to Pro affect my existing campaigns?"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "No. Upgrading to Pro won’t require you to start over with your existing campaigns."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Can I use WowOptin Pro with WooCommerce?"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Yes. WowOptin Pro works with WooCommerce and can be used with your existing store."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Is WowOptin Pro suitable for beginners?"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Yes. WowOptin is designed to make campaign creation straightforward, even if you’re new to opt-in marketing."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Can I use WowOptin Pro for a business website?"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Yes. WowOptin Pro can be used for business websites, online stores, blogs, and other WordPress websites where you want to engage visitors."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "5 Star Reviews"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Loved by WordPress Users"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "14-Day Money-Back Guarantee"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Try WowOptin Pro with confidence."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Premium Support"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Get help from experts when you need it."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Get WowOptin Pro"
+msgstr ""
+
+#: build/admin/index.js:1088
 msgid "Generate & automate professional PDF documents like invoices, packing slips, picklists and shipping labels for WooCommerce effortlessly"
 msgstr ""
 
@@ -5167,6 +5516,70 @@ msgstr ""
 
 #: build/admin/index.js:1088
 msgid "Plugin Details"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Turn More Visitors Into Leads & Customers"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Create high-converting popups, banners, and opt-in forms with pro templates, advanced targeting, smart triggers, and powerful integrations."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Upgrade WowOptin Pro"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Everything You Need to Create Better Popups & Opt-Ins"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Take your campaigns beyond basic popups with more templates, targeting options, triggers, rules, and scheduling controls."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Switch to the Pro version <em>and unlock</em> limitless possibilities."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "A Closer Look at WowOptin Pro"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Explore a few of the powerful ways WowOptin Pro can help you capture more leads and turn more visitors into customers."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Loved by Marketers and Store Owners"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "See why so many users love creating engaging campaigns with WowOptin."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "5 out of 5 stars"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Still Have Questions? Find answers to common questions to help you make your final decision with confidence."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Make Every Visitor Count"
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "Reach more people with relevant campaigns, capture more leads, and create more opportunities to grow your sales with WowOptin Pro."
+msgstr ""
+
+#: build/admin/index.js:1088
+msgid "14-Day Money-Back Guarantee • Cancel Anytime"
 msgstr ""
 
 #: build/admin/index.js:1088

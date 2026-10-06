@@ -239,6 +239,11 @@ class Admin {
 				'slug'  => 'wowoptin-wpxpo-plugins',
 			),
 			array(
+				'title' => __( 'WowOptin Pro Features', 'optin' ),
+				'menu'  => __( 'Pro Features', 'optin' ),
+				'slug'  => 'wowoptin-pro-features',
+			),
+			array(
 				'title' => __( 'WowOptin Builder', 'optin' ),
 				'menu'  => __( 'Builder', 'optin' ),
 				'slug'  => 'wowoptin-builder', // DO NOT CHANGE.
@@ -330,7 +335,8 @@ class Admin {
 
 		$inline_css = '
 			#toplevel_page_wowoptin li:has(a[href="admin.php?page=wowoptin-builder"]), 
-			#toplevel_page_wowoptin li:has(a[href="admin.php?page=wowoptin-wpxpo-plugins"]) {
+			#toplevel_page_wowoptin li:has(a[href="admin.php?page=wowoptin-wpxpo-plugins"]),
+			#toplevel_page_wowoptin li:has(a[href="admin.php?page=wowoptin-pro-features"]) {
 				display:none;
 			} 
 			#toplevel_page_wowoptin .wp-menu-image img {

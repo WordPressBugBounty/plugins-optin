@@ -19,6 +19,24 @@ defined( 'ABSPATH' ) || exit;
 
 return array(
 
+	// Flash Sale 2026. Listed first: the first live entry wins over the price push.
+	array(
+		'key'        => $prefix . '_plugin_meta_flash_sale_2026',
+		'start'      => '2026-10-06 00:00 Asia/Dhaka',
+		'end'        => '2026-10-16 23:59 Asia/Dhaka',
+		'text'       => __( 'Up to 60% Off', 'optin' ),
+		'url'        => Xpo::generate_utm_link(
+			array(
+				'config' => array(
+					'source'   => $config['utm_source_plugin_meta'],
+					'medium'   => 'flash-sale',
+					'campaign' => $config['utm_campaign'],
+				),
+			)
+		),
+		'visibility' => ! Xpo::is_lc_active(),
+	),
+
 	// Summer Sale 2026 — one flat window for the whole campaign.
 	array(
 		'key'        => $prefix . '_plugin_meta_summer_sale_2026',

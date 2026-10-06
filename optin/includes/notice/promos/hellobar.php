@@ -20,6 +20,26 @@ defined( 'ABSPATH' ) || exit;
 
 return array(
 
+	// Flash Sale 2026. Listed first: the first live entry wins over the price push.
+	array(
+		'key'                => $prefix . '_helloBar_flash_sale_2026_1',
+		'start'              => '2026-10-06 00:00 Asia/Dhaka',
+		'end'                => '2026-10-16 23:59 Asia/Dhaka',
+		'text'               => __( 'Flash Sale: Enjoy Up to 60% Off on', 'optin' ),
+		'highlight'          => $brand_name . ' ' . __( 'Pro', 'optin' ),
+		'countdown_duration' => 0, // Seconds; 0 hides the countdown.
+		'url'                => Xpo::generate_utm_link(
+			array(
+				'config' => array(
+					'source'   => $config['utm_source_hellobar'],
+					'medium'   => 'flash-sale',
+					'campaign' => $config['utm_campaign'],
+				),
+			)
+		),
+		'visibility'         => ! Xpo::is_lc_active(),
+	),
+
 	/*
 	 * Summer Sale 2026. One window — `key` is carried over verbatim from the
 	 * pre-refactor hello bar, so anyone who already dismissed it stays

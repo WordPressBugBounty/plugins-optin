@@ -258,7 +258,7 @@ class Frontend {
 			'ipTracking' => Settings::get_settings( 'global_ip_tracking' ) ? 'true' : 'false',
 		);
 
-		echo '<script>var optn = ' . wp_json_encode( $localize_data ) . ';</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '<script data-nowprocket data-no-minify="1">var optn = ' . wp_json_encode( $localize_data ) . ';</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -320,7 +320,7 @@ class Frontend {
 		// Replacement for script localization (global `optn`).
 		$this->print_manual_localize_var();
 
-		echo "<script defer id=\"optn-fe-index\">\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo "<script data-nowprocket data-no-minify=\"1\" id=\"optn-fe-index\">\n"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $script; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo "\n</script>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
@@ -379,7 +379,7 @@ class Frontend {
 		ob_start();
 		echo '<!-- OPTIN JS START -->';
 		?>
-			<script>
+			<script data-nowprocket data-no-minify="1">
 				window._optn = {
 					attrs: <?php echo wp_json_encode( apply_filters( 'optn_block_attrs', array() ) ); ?>,
 					data: <?php echo wp_json_encode( apply_filters( 'optn_data', array() ) ); ?><?php echo $use_alternate_render_strategy ? '' : ','; ?>
