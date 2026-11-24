@@ -10,7 +10,10 @@ use OPTN\Includes\Utils\Utils;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Mailchimp Integration class.
+ * Adds validated form subscribers to a saved Mailchimp audience.
+ *
+ * Uses the shared integration lifecycle to load account credentials and field mappings,
+ * then communicates with the Mailchimp Marketing API for the configured audience.
  *
  * @link https://mailchimp.com/developer/marketing/docs/fundamentals/
  */
@@ -65,16 +68,18 @@ class Mailchimp extends BaseMailIntegration {
 		$body_template = array(
 			'email_address' => $email,
 			'status'        => ! empty( $data['doubleOpt'] ) ? 'pending' : 'subscribed',
-			'ip_opt'        => Utils::get_user_ip(),
 		);
+
+		if ( $ip = Utils::get_user_ip() ) {
+			$body_template['ip_opt'] = $ip; }
 
 		if ( ! empty( $data['fields'] ) ) {
 			$body_template['merge_fields'] = $data['fields'];
 		}
 
-		$data['fields']['email'] = $email;
+			$data['fields']['email'] = $email;
 
-		$success = false;
+			$success = false;
 
 		foreach ( $data['list'] as $list_id ) {
 			$body = $body_template;
@@ -106,7 +111,7 @@ class Mailchimp extends BaseMailIntegration {
 			$this->add_lead( $data );
 		}
 
-		return $success;
+			return $success;
 	}
 
 
@@ -118,8 +123,9 @@ class Mailchimp extends BaseMailIntegration {
 	 */
 	public function add_lead( $data ) {
 
-		$fields       = Utils::sanitize_json_array( $data['fields'] );
-		$fields['ip'] = Utils::get_user_ip();
+		$fields = Utils::sanitize_json_array( $data['fields'] );
+		if ( $ip = Utils::get_user_ip() ) {
+			$fields['ip'] = Utils::get_user_ip(); }
 
 		$leads_data = array(
 			'email'       => sanitize_email( $fields['email'] ),

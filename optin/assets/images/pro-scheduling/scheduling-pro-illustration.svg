@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 118 114" width="118" height="114" fill="none" role="img">
+
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFF1E7"/>
+      <stop offset="1" stop-color="#FFE5D4"/>
+    </linearGradient>
+    <linearGradient id="badgeGradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FF802E"/><stop offset="1" stop-color="#FF5809"/></linearGradient>
+  </defs>
+  <rect x="3" y="18" width="92" height="91" rx="23" fill="url(#tile)"/>
+  <g transform="translate(15 20) scale(1.10)">
+
+  <path d="M13 19h36a6 6 0 0 1 6 6v30a6 6 0 0 1-6 6H13a6 6 0 0 1-6-6V25a6 6 0 0 1 6-6Z" fill="#FFF8F4" stroke="#FF6416" stroke-width="4"/>
+  <path d="M7 27v-2a6 6 0 0 1 6-6h36a6 6 0 0 1 6 6v9H7Z" fill="#FF6416"/>
+  <path d="M20 14v10M43 14v10" stroke="#FF6416" stroke-width="5.2" stroke-linecap="round"/>
+  <circle cx="53" cy="54.5" r="17" fill="#FFF8F4" stroke="#FF6416" stroke-width="4"/>
+  <path d="M53 44.5v10l6.6 5" stroke="#FF6416" stroke-width="4.1" stroke-linecap="round" stroke-linejoin="round"/>
+
+  </g>
+  <circle cx="93" cy="20" r="19.5" fill="url(#badgeGradient)" stroke="white" stroke-width="3"/>
+  <g transform="translate(81.5 7.9) scale(.96)" color="white">
+
+  <path d="M3.3 8.35 8.35 12.4 12 5.2 15.65 12.4 20.7 8.35 18.95 17.15H5.05Z" fill="currentColor"/>
+  <path d="M5.35 19.35H18.65" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="3.35" cy="7.95" r="1.55" fill="currentColor"/>
+  <circle cx="12" cy="4.7" r="1.55" fill="currentColor"/>
+  <circle cx="20.65" cy="7.95" r="1.55" fill="currentColor"/>
+
+  </g>
+
+</svg>

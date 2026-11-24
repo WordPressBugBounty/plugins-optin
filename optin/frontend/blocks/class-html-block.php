@@ -4,6 +4,7 @@ namespace OPTN\Frontend\Blocks;
 
 use OPTN\Includes\Abstracts\BaseBlock;
 use OPTN\Includes\Utils\BlockUtils;
+use OPTN\Includes\Utils\Sanitizer;
 
 /**
 	HTML Block
@@ -29,7 +30,7 @@ class HtmlBlock extends BaseBlock {
 
 		$html  = '<div ' . BlockUtils::build_html_attrs( $this->get_common_html_attr_array() ) . '>';
 		$html .= '<div class="optn-block-html-content">';
-		$html .= $attr->html;
+		$html .= Sanitizer::sanitize( $attr->html );
 		$html .= '</div>';
 		$html .= '</div>';
 

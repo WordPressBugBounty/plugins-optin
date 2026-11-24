@@ -2,13 +2,15 @@
 
 namespace OPTN\Includes\Utils;
 
-use OPTN\Includes\Notice\Notice;
 use OPTN\Includes\Xpo;
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Plugin Actions
+ * Adds plugin-specific links to its row on the WordPress Plugins screen.
+ *
+ * Registers callbacks for the action-link and metadata-link filters so administrators
+ * can reach the plugin settings and related product information from the plugin list.
  */
 class PluginActions {
 
@@ -27,41 +29,9 @@ class PluginActions {
 	 * @return array Modified plugin action links.
 	 */
 	public function plugin_action_links_callback( $links ) {
-
-		$setting_link                 = array();
-		$setting_link['optn_options'] = '<a href="' . esc_url( admin_url( 'admin.php?page=wowoptin-optins' ) ) . '">' . esc_html__( 'Optins', 'optin' ) . '</a>';
-
-		$upgrade_link = array();
-
-		// Free user or expired license user.
-		if ( ! defined( 'OPTN_PRO_VERSION' ) || Xpo::is_lc_expired() ) {
-
-			$license_key = Utils::get_license_key() ?? '';
-
-			if ( Xpo::is_lc_expired() ) {
-				$text = esc_html__( 'Renew License', 'optin' );
-				$url  = Xpo::get_renew_link();
-			} else {
-
-				$text = esc_html__( 'Upgrade to Pro', 'optin' );
-				$url  = Xpo::generate_utm_link();
-
-				// A live promo overrides the evergreen link. The promo data
-				// lives in includes/notice/promos/plugin-meta.php; with nothing
-				// live we keep the "Upgrade to Pro" link built above.
-				$promo = Notice::get_active_promo( 'plugin-meta' );
-				if ( $promo ) {
-					$text = $promo['text'];
-					$url  = $promo['url'];
-				}
-			}
-
-			$link_color = Notice::config()['brand_color'];
-
-			$upgrade_link['optn_pro'] = '<a style="color: ' . esc_attr( $link_color ) . '; font-weight: bold;" target="_blank" href="' . esc_url( $url ) . '">' . esc_html( $text ) . '</a>';
-		}
-
-		return array_merge( $setting_link, $links, $upgrade_link );
+		$links['optn_options'] = '<a href="' . esc_url( admin_url( 'admin.php?page=wowoptin-optins' ) ) . '">' . esc_html__( 'Optins', 'optin' ) . '</a>';
+		$links['optn_pro']     = '<a target="_blank" href="https://www.wowoptin.com/#pricing">' . esc_html__( 'Upgrade to Pro', 'optin' ) . '</a>';
+		return apply_filters( 'optn_plugin_action_links', $links );
 	}
 
 	/**

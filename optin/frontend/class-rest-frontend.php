@@ -1,4 +1,9 @@
-<?php // phcps:ignore
+<?php
+/**
+ * Registers and handles REST endpoints used by public opt-in forms.
+ *
+ * @package Optin
+ */
 
 namespace OPTN\Frontend;
 
@@ -10,7 +15,10 @@ use WP_REST_Request;
 use WP_REST_Response;
 
 /**
- * Rest APIs for Public
+ * Exposes public REST endpoints used to submit opt-in forms and track events.
+ *
+ * Validates visitor requests against saved campaign and form configuration before
+ * storing leads, recording interactions, or dispatching integration submissions.
  */
 class RestFrontend {
 
@@ -53,36 +61,26 @@ class RestFrontend {
 	 * @return array|null
 	 */
 	public function handle_integration_action( WP_REST_Request $req ) {
-		$data = isset( $req['data'] ) && is_array( $req['data'] ) ? $req['data'] : null;
 
-		if ( empty( $data ) ) {
-			return rest_ensure_response( new WP_Error( 400, 'Missing data' ) );
+		$submission = \OPTN\Includes\Utils\FormSubmission::resolve( $req );
+		if ( is_wp_error( $submission ) ) {
+			return $submission;
 		}
-
-		$res = true;
-
-		foreach ( $data as $d ) {
-			$id   = isset( $d['id'] ) ? intval( $d['id'] ) : null;
-			$type = isset( $d['integration'] ) ? sanitize_key( $d['integration'] ) : null;
-
-			if ( empty( $data ) || empty( $type ) ) {
-				return rest_ensure_response( new WP_Error( 400, 'Missing data' ) );
+		// Resolve every adapter before any outbound request or lead event.
+		$adapters = array();
+		foreach ( $submission['destinations'] as $data ) {
+			$adapter = IntegrationFactory::get_integration_class( $data['integration'], $data['id'] );
+			if ( ! $adapter ) {
+				return new WP_Error( 'optn_submission_integration', 'Integration unavailable', array( 'status' => 400 ) );
 			}
-
-			if ( 'bg' === $type ) {
-				do_action( 'optn_lead_added', $d );
-			} else {
-				$class = IntegrationFactory::get_integration_class( $type, $id );
-
-				if ( is_null( $class ) ) {
-					return rest_ensure_response( new WP_Error( 400, 'Invalid integration type' ) );
-				}
-
-				$res = $class->add_subscriber( $d );
-
+			$adapters[] = array( $adapter, $data );
+		}
+		foreach ( $adapters as $entry ) {
+			if ( ! $entry[0]->add_subscriber( $entry[1] ) ) {
+				return new WP_Error( 'optn_submission_upstream', 'Integration request failed', array( 'status' => 502 ) );
 			}
 		}
-
-		return rest_ensure_response( new WP_REST_Response( array(), $res ? 200 : 500 ) );
+		do_action( 'optn_lead_added', $submission['background'] );
+		return new WP_REST_Response( array( 'success' => true ), 200 );
 	}
 }

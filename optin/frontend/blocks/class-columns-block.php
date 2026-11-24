@@ -26,22 +26,7 @@ class ColumnsBlock extends BaseBlock {
 	 * @return string
 	 */
 	protected function v1() {
-		$client_id    = $this->data->clientId; // phpcs:ignore
-		$bg        = $this->post_data->design->bg;
-
-		if ( isset( $post_data->design->customCss ) ) {
-			$custom_css = $post_data->design->customCss; // phpcs:ignore
-			add_filter(
-				'optn_css',
-				function ( $css ) use ( $custom_css, $client_id ) {
-					if ( strpos( $custom_css, '{{optn}}' ) !== false ) {
-						$css .= str_replace( '{{optn}}', '.optn-' . $client_id, $custom_css );
-					}
-
-					return $css;
-				}
-			);
-		}
+		$bg = $this->post_data->design->bg;
 
 		$html  = '<div ' . BlockUtils::build_html_attrs( $this->get_common_html_attr_array() ) . '>';
 		$html .= "<div class='optn-block-columns-content'>";

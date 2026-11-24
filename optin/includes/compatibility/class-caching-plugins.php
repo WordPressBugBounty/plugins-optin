@@ -5,7 +5,10 @@ namespace OPTN\Includes\Compatibility;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class CachingPlugins
+ * Registers cache-plugin hooks that preserve or clear opt-in frontend assets correctly.
+ *
+ * Integrates with supported caching plugins to keep the required frontend scripts in
+ * execution order and to purge cached content after plugin-owned updates.
  */
 class CachingPlugins {
 
@@ -32,7 +35,7 @@ class CachingPlugins {
 
 				// Litespeed.
 				// ISSUE:OPT-106 Disabling for now.
-				// do_action( 'litespeed_purge_all' );
+				// Keep the LiteSpeed purge callback disabled until its compatibility behavior is confirmed.
 
 				// WP Rocket.
 				if ( function_exists( 'rocket_clean_domain' ) ) {
@@ -99,6 +102,8 @@ class CachingPlugins {
 	 */
 	public static function exclude_inline_css( $excluded ) {
 		$excluded[] = 'id="optin-block-styles"';
+		$excluded[] = 'id="optin-generated-css-inline-css"';
+		$excluded[] = 'id="optin-pro-generated-css-inline-css"';
 		return $excluded;
 	}
 }

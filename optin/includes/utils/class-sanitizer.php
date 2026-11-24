@@ -217,7 +217,6 @@ class Sanitizer {
 				self::$common_attributes,
 				array(
 					'src'               => true,
-					'srcdoc'            => true,
 					'name'              => true,
 					'width'             => true,
 					'height'            => true,
@@ -355,8 +354,6 @@ class Sanitizer {
 			),
 			'title'          => array(),
 			'desc'           => array(),
-			'script'         => array(),
-			'style'          => array(),
 		);
 	}
 
@@ -398,23 +395,27 @@ class Sanitizer {
 	 */
 	public static function sanitize( $content ) {
 
+		// Stylesheets are not supported in user markup; retain safe inline style attributes below.
+		$content = preg_replace( '#<style\b[^>]*>.*?(?:</style\s*>|$)#is', '', $content );
 		add_filter( 'optn_is_sanitizing_content', '__return_true' );
-
-		$sanitized_content = wp_kses( $content, self::get_allowed_html(), self::$allowed_protocols );
-
-		add_filter( 'optn_is_sanitizing_content', '__return_false' );
-
-		return $sanitized_content;
+		try {
+			return wp_kses( $content, self::get_allowed_html(), self::$allowed_protocols );
+		} finally {
+			remove_filter( 'optn_is_sanitizing_content', '__return_true' );
+		}
 	}
 
-		/**
-		 * Sanitizes and echos html content
-		 *
-		 * @param string $content html content.
-		 * @return void
-		 */
+	/**
+	 * Print HTML through the plugin's wp_kses allowlist at the output boundary.
+	 *
+	 * sanitize() strips stylesheet elements and applies the allowed HTML and URL
+	 * protocols immediately before output, preserving supported rich text and SVG.
+	 *
+	 * @param string $content HTML content.
+	 * @return void
+	 */
 	public static function e_sanitize( $content ) {
-		echo self::sanitize( $content ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo self::sanitize( $content ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- sanitize() applies wp_kses immediately before output.
 	}
 
 	/**

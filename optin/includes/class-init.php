@@ -1,4 +1,9 @@
-<?php // phcps:ignore
+<?php
+/**
+ * Coordinates the plugin's activation-independent setup and service registration.
+ *
+ * @package Optin
+ */
 
 namespace OPTN\Includes;
 
@@ -68,10 +73,6 @@ class Init {
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 
-		new WowShippingPromotion();
-		new WowAddonsPromotion();
-		new WowRevenuePromotion();
-
 		Db::get_instance()->maybe_install();
 	}
 
@@ -88,7 +89,7 @@ class Init {
 
 		$plugin_i18n = new I18n();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		$this->loader->add_action( 'init', $plugin_i18n, 'load_plugin_textdomain' );
 	}
 
 	/**
@@ -141,7 +142,7 @@ class Init {
 		// $this->loader->add_action( 'wp_kses_allowed_html', $plugin_public, 'add_to_tags_allowlist', 10, 2 );
 		$this->loader->add_action( 'wp', $plugin_public, 'generate_optins' );
 		$this->loader->add_action( 'wp_head', $plugin_public, 'preconnect_google_fonts', 0, 0 );
-		$this->loader->add_action( 'wp_footer', $plugin_public, 'add_content', 999, 0 );
+		$this->loader->add_action( 'wp_footer', $plugin_public, 'add_content', 15, 0 );
 
 		// Sales tracking.
 		$this->loader->add_action( 'edd_complete_purchase', $plugin_public, 'edd_purchase_tracking' );

@@ -3,7 +3,10 @@
 namespace OPTN\Includes\Dto;
 
 /**
- * Option DTO
+ * Carries either a successful option result or an error through shared services.
+ *
+ * Consumers inspect `data` for the returned value and `error` when the operation
+ * could not complete, allowing callers to pass both outcomes through one result object.
  */
 class Option {
 	/**

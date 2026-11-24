@@ -7,7 +7,10 @@ use OPTN\Includes\Db;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Helper class for exporting.
+ * Prepares captured lead records for download from the administration interface.
+ *
+ * Loads stored lead values, shapes them into export rows, and returns the data consumed
+ * by the REST endpoint that initiates a lead export.
  */
 class ExportHelper {
 

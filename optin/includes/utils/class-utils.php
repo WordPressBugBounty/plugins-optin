@@ -1,4 +1,9 @@
-<?php // phpcs:ignore
+<?php
+/**
+ * Provides shared formatting, validation, visitor, and request helpers.
+ *
+ * @package Optin
+ */
 
 namespace OPTN\Includes\Utils;
 
@@ -6,7 +11,9 @@ use OPTN\Includes\Dto\Option;
 use WP_Error;
 
 	/**
-	 * Utils class for public
+	 * Shared helpers used by plugin settings, rendering, analytics, and integration code.
+	 * Methods in this class normalize values and expose WordPress or commerce data
+	 * through small reusable operations.
 	 *
 	 * @since      1.0.1
 	 *
@@ -24,7 +31,7 @@ class Utils {
 	/**
 	 * Logs via Query Monitor
 	 *
-	 * @param mixed $output Output to log.
+	 * @param mixed $output Any diagnostic value Query Monitor can display.
 	 * @return void
 	 */
 	public static function log( $output ) {
@@ -49,7 +56,7 @@ class Utils {
 	/**
 	 * Logs via debug.log
 	 *
-	 * @param mixed $output Output to log.
+	 * @param mixed $output Any diagnostic value to serialize to the local debug log.
 	 * @return void
 	 */
 	public static function log_to_file( $output ) {
@@ -66,7 +73,7 @@ class Utils {
 	/**
 	 * Logs via debug.log
 	 *
-	 * @param mixed $output Output to log.
+	 * @param mixed $output Any error context value to prefix and write to the local debug log.
 	 * @return void
 	 */
 	public static function log_error( $output ) {
@@ -98,7 +105,7 @@ class Utils {
 	/**
 	 * Converts a binary array to decimal. Array's last element will be LSB
 	 *
-	 * @param array Binary array
+	 * @param array<int, bool|int> $arr Binary values ordered with the least significant bit last.
 	 * @return int
 	 */
 	public static function bin_array_to_dec( $arr ) {
@@ -149,6 +156,14 @@ class Utils {
 		return number_format( $rounded, $decimals, '.', '' );
 	}
 
+	/**
+	 * Abbreviates numeric values with thousand, million, billion, or trillion units.
+	 * Non-numeric input passes through unchanged; numeric values are rounded to one
+	 * decimal place before the matching unit suffix is appended.
+	 *
+	 * @param int|float|string $num Numeric value to abbreviate.
+	 * @return int|float|string Abbreviated value, or the original non-numeric input.
+	 */
 	public static function format_number( $num ) {
 
 		if ( ! is_numeric( $num ) ) {
@@ -162,6 +177,15 @@ class Utils {
 		return round( $num, 1 ) . $units[ $i ];
 	}
 
+	/**
+	 * Reads the order subtotal from WooCommerce or Easy Digital Downloads.
+	 * Order type 0 uses WooCommerce; type 1 uses an EDD payment. Unsupported types,
+	 * missing commerce APIs, and missing orders produce a zero subtotal.
+	 *
+	 * @param int $order_type Commerce source identifier: 0 for WooCommerce or 1 for EDD.
+	 * @param int $order_id   Order or payment identifier to retrieve.
+	 * @return int|float Order subtotal, or zero when no supported order is available.
+	 */
 	public static function get_revenue( $order_type, $order_id ) {
 
 		if ( $order_type == 0 ) {
@@ -184,6 +208,13 @@ class Utils {
 		return 0;
 	}
 
+	/**
+	 * Builds date strings for today and the requested number of preceding days.
+	 * The current date is the first item and every value uses the Y-m-d format.
+	 *
+	 * @param int $days Number of dates to return, including today.
+	 * @return array<int, string> Calendar dates in newest-to-oldest order.
+	 */
 	public static function get_past_dates( $days = 7 ) {
 		$dates = array();
 		$today = new \DateTime();
@@ -197,84 +228,31 @@ class Utils {
 		return $dates;
 	}
 
+	/**
+	 * Checks whether a string can be decoded as valid JSON.
+	 *
+	 * @param string $string JSON text to validate.
+	 * @return bool Whether JSON decoding completed without an error.
+	 */
 	public static function is_valid_json( $string ) {
 		json_decode( $string );
 		return json_last_error() === JSON_ERROR_NONE;
 	}
 
-	public static function get_license_info() {
-		$lic_data = get_option( 'edd_optin_license_data', array() );
 
-		$expiration = '';
-		$type       = '';
 
-		if ( isset( $lic_data['expires'] ) ) {
-			$raw_expiration = $lic_data['expires'];
 
-			if ( strtotime( $raw_expiration ) ) {
-				$expiration = date( 'F j, Y, g:i A', strtotime( $raw_expiration ) ); // phpcs:ignore
-			} else {
-				$expiration = ucfirst( $raw_expiration );
-			}
-		}
 
-		if ( isset( $lic_data['license_limit'] ) ) {
-			$raw_limit = intval( $lic_data['license_limit'] );
 
-			if ( 0 === $raw_limit ) {
-				$type = 'Unlimited';
-			} else {
-				$type = $raw_limit . ' Site(s)';
-			}
-		}
 
-		$data = array(
-			'is_active'  => defined( 'OPTN_PRO_VERSION' ) && isset( $lic_data['license'] ) && 'valid' === $lic_data['license'],
-			'expiration' => $expiration,
-			'type'       => $type,
-		);
-
-		return $data;
-	}
-
-	public static function get_license_key() {
-		if ( ! defined( 'OPTN_PRO_VERSION' ) ) {
-			return null;
-		}
-
-		return get_option( 'edd_optin_license_key', null );
-	}
 
 	/**
-	 * Check if Pro user
+	 * Collects term IDs from every taxonomy attached to a post.
+	 * Returns an empty array when the ID has no post type or assigned terms.
 	 *
-	 * @return boolean
+	 * @param int $id Post ID whose taxonomy terms should be collected.
+	 * @return array<int, int> Term IDs assigned to the post.
 	 */
-	public static function is_pro() {
-		if ( ! defined( 'OPTN_PRO_VERSION' ) ) {
-			return false;
-		}
-		$lic_data = get_option( 'edd_optin_license_data', array() );
-
-		return isset( $lic_data['license'] ) && 'valid' === $lic_data['license'];
-	}
-
-	public static function get_sanitized_query_parameters() {
-		if ( isset( $_GET ) && is_array( $_GET ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
-			$ret = array();
-
-			foreach ( $_GET as $key => $value ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				$ret[ $key ] = $value;
-			}
-
-			return $ret;
-		}
-
-		return array();
-	}
-
-
 	public static function get_terms_by_id( $id ) {
 		$terms = array();
 		$pt    = get_post_type( $id );
@@ -295,6 +273,12 @@ class Utils {
 	}
 
 
+	/**
+	 * Returns the visitor's login state and new-or-returning classification.
+	 * The second value is determined by the visitor cookie helper.
+	 *
+	 * @return array<int, string> Logged-in state followed by visitor history state.
+	 */
 	public static function get_visitor_types() {
 		$roles   = array();
 		$roles[] = is_user_logged_in() ? 'logged_in' : 'logged_out';
@@ -302,6 +286,12 @@ class Utils {
 		return $roles;
 	}
 
+	/**
+	 * Classifies a visitor from the plugin's one-year tracking cookie.
+	 * A missing cookie marks the visitor as new and sets the cookie for later visits.
+	 *
+	 * @return string Either 'new' or 'returning'.
+	 */
 	private static function detect_new_or_returning_visitor() {
 		$cookie_name    = 'optn_visitor_type';
 		$is_new_visitor = false;
@@ -314,6 +304,15 @@ class Utils {
 		return $is_new_visitor ? 'new' : 'returning';
 	}
 
+	/**
+	 * Compares two scalar values with an equality, greater-than, or less-than rule.
+	 * Unsupported condition names do not match.
+	 *
+	 * @param int|float|string $curr_value Current value being evaluated.
+	 * @param int|float|string $rule_value Value supplied by the display rule.
+	 * @param string           $cond       Comparison operator: eq, gt, or lt.
+	 * @return bool Whether the selected comparison passes.
+	 */
 	public static function check_math( $curr_value, $rule_value, $cond ) {
 		switch ( $cond ) {
 			case 'eq':
@@ -327,8 +326,19 @@ class Utils {
 		}
 	}
 
+	/**
+	 * Evaluates any, all, not-any, and not-all conditions for scalar or list values.
+	 * Special rule values beginning with 'all' use collection counts instead of
+	 * intersecting the configured values; other lists are normalized first.
+	 *
+	 * @param array|string|int|float|bool|null $curr_values Current scalar or list of visitor values.
+	 * @param array|string                     $rule_values Configured rule values, including special 'all' markers.
+	 * @param string                           $cond        Membership condition to evaluate.
+	 * @param int                              $all_count   Required count used by special 'all' rules.
+	 * @return bool Whether the current values satisfy the condition.
+	 */
 	public static function check_values( $curr_values, $rule_values, $cond, $all_count = 0 ) {
-		if ( isset( $rule_values[0] ) && str_starts_with( $rule_values[0], 'all' ) ) {
+		if ( isset( $rule_values[0] ) && 0 === strpos( $rule_values[0], 'all' ) ) {
 
 			if ( is_array( $curr_values ) ) {
 				switch ( $cond ) {
@@ -385,6 +395,14 @@ class Utils {
 		return false;
 	}
 
+	/**
+	 * Normalizes list values before display-rule comparisons.
+	 * Array entries lose any provider suffix after '###' and become strings;
+	 * non-string scalar values are cast to strings.
+	 *
+	 * @param array|string|int|float|bool|null $values Array or scalar values to normalize.
+	 * @return array|string|null Normalized values, or null for an unchanged string scalar.
+	 */
 	public static function clean_values( $values ) {
 		if ( is_array( $values ) ) {
 			return array_map(
@@ -403,6 +421,14 @@ class Utils {
 		}
 	}
 
+	/**
+	 * Removes a leading prefix from a string when it is present.
+	 * The input is updated by reference only on a match.
+	 *
+	 * @param string $string String to inspect and possibly modify.
+	 * @param string $prefix Prefix that must appear at the start of the string.
+	 * @return bool Whether the prefix was found and removed.
+	 */
 	public static function maybe_remove_prefix( &$string, $prefix ) {
 		if ( strpos( $string, $prefix ) === 0 ) {
 			$string = substr( $string, strlen( $prefix ) );
@@ -412,126 +438,129 @@ class Utils {
 	}
 
 	/**
-	 * Validates user parameters against a string of key-value pairs
+	 * Returns the trackable public IP and a matching cached country code.
+	 * Tracking settings control whether IP data is read; a country is accepted only
+	 * from the visitor cookie when its IP matches and the code has two uppercase letters.
 	 *
-	 * @param string $values     Query string format of key-value pairs to validate
-	 * @param array  $params     Current params from $_GET
-	 * @return bool             Returns true if all parameters match, false otherwise
+	 * @return array{ip: string|null, country: string|null} Visitor IP and cached country.
 	 */
-	public static function validate_query_params( string $values, array $params ): bool {
-		if ( empty( $values ) || ! is_string( $values ) ) {
-			return false;
-		}
-
-		$param_pairs = explode( '&', $values );
-
-		foreach ( $param_pairs as $pair ) {
-			$parts = explode( '=', $pair );
-
-			// Skip invalid pairs
-			if ( count( $parts ) !== 2 || empty( $parts[0] ) || empty( $parts[1] ) ) {
-				return false;
-			}
-
-			[$key, $value] = $parts;
-
-			// Check if parameter exists and matches
-			if ( ! isset( $params[ $key ] ) || $params[ $key ] !== $value ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
 	public static function get_user_info() {
-
-		$user_info = array(
-			'ip'      => null,
-			'country' => null,
+		if ( ! \OPTN\Includes\Settings::is_ip_tracking_enabled() ) {
+			return array(
+				'ip'      => null,
+				'country' => null,
+			);
+		}
+		$ip      = self::get_ip_from_request();
+		$country = null;
+		$info    = isset( $_COOKIE['optn_user_info'] ) && is_string( $_COOKIE['optn_user_info'] ) ? json_decode( sanitize_text_field( wp_unslash( $_COOKIE['optn_user_info'] ) ) ) : null;
+		if ( $ip && is_object( $info ) && ( $info->ip ?? null ) === $ip && is_string( $info->country ?? null ) && preg_match( '/^[A-Z]{2}$/D', $info->country ) ) {
+			$country = $info->country;
+		}
+		return array(
+			'ip'      => $ip,
+			'country' => $country,
 		);
-
-		if ( isset( $_COOKIE['optn_user_info'] ) ) {
-			$info                 = json_decode( stripslashes( $_COOKIE['optn_user_info'] ) ); // phpcs:ignore
-			$user_info['ip']      = isset( $info->ip ) ? sanitize_text_field( $info->ip ) : null;
-			$user_info['country'] = isset( $info->country ) ? sanitize_text_field( $info->country ) : null;
-		} else {
-			$user_info['ip'] = self::get_ip_from_request();
-		}
-
-		return $user_info;
 	}
 
+	/**
+	 * Reads REMOTE_ADDR and rejects private, reserved, or invalid IP addresses.
+	 *
+	 * @return string|null Public client IP address, or null when it is not trackable.
+	 */
 	public static function get_ip_from_request() {
-		foreach ( array( 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ) as $key ) {
-			if ( array_key_exists( $key, $_SERVER ) === true ) {
-				foreach ( array_map( 'trim', explode( ',', $_SERVER[ $key ] ) ) as $ip ) { // phpcs:ignore
-					if ( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false ) {
-						return $ip;
-					}
-				}
-			}
-		}
-
-		return null;
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) && is_string( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		return filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) ? $ip : null;
 	}
 
+	/**
+	 * Gets the public IP value returned by the tracking-aware visitor lookup.
+	 *
+	 * @return string|null Trackable visitor IP address, or null when unavailable.
+	 */
 	public static function get_user_ip() {
 		$info = self::get_user_info();
 		return $info['ip'];
 	}
 
+	/**
+	 * Converts a saved embed position into its WordPress hook and placement metadata.
+	 * Only built-in positions can resolve to HTML hooks. Unsupported and legacy
+	 * custom settings keep a null hook.
+	 *
+	 * @param mixed $opt Saved embed position.
+	 * @return array{hook: string|null, pos: string|null, single?: bool, type?: string} Hook, placement, context, and callback kind.
+	 */
 	public static function get_embed_hook_and_pos( $opt ) {
-		$res = array( 'pos' => null );
-
-		if ( self::maybe_remove_prefix( $opt, 'before_' ) ) {
-			$res['pos'] = 'before';
-		} elseif ( self::maybe_remove_prefix( $opt, 'after_' ) ) {
-			$res['pos'] = 'after';
-		} elseif ( self::maybe_remove_prefix( $opt, 'custom###' ) ) {
-
-			if ( self::maybe_remove_prefix( $opt, 'before###' ) ) {
-				$res['pos']  = 'before';
-				$res['hook'] = $opt;
-			} elseif ( self::maybe_remove_prefix( $opt, 'after###' ) ) {
-				$res['pos']  = 'after';
-				$res['hook'] = $opt;
-			}
-
-			return $res;
+		$invalid = array( 'hook' => null, 'pos' => null );
+		if ( ! is_string( $opt ) ) {
+			return $invalid;
 		}
 
-		switch ( $opt ) {
-			case 'body':
-				$res['hook']   = 'wp_body_open';
-				$res['single'] = false;
-				break;
-			case 'title':
-				$res['hook']   = 'the_title';
-				$res['single'] = true;
-				break;
-			case 'content':
-				$res['hook']   = 'the_content';
-				$res['single'] = true;
-				break;
-			case 'comment_form':
-				if ( 'before' === $res['pos'] ) {
-					$res['hook']   = 'comment_form_before';
-					$res['single'] = true;
-				} elseif ( 'after' === $res['pos'] ) {
-					$res['hook']   = 'comment_form_after';
-					$res['single'] = true;
-				}
-				break;
-			case 'footer':
-				$res['hook']   = 'the_footer';
-				$res['single'] = false;
-				break;
-			default:
-				$res['hook'] = null;
-		}
+		$positions = array(
+			'before_body'         => array(
+				'hook'   => 'wp_body_open',
+				'pos'    => 'before',
+				'single' => false,
+				'type'   => 'action',
+			),
+			'after_body'          => array(
+				'hook'   => 'wp_footer',
+				'pos'    => 'after',
+				'single' => false,
+				'type'   => 'action',
+			),
+			'before_title'        => array(
+				'hook'   => 'the_title',
+				'pos'    => 'before',
+				'single' => true,
+				'type'   => 'filter',
+			),
+			'after_title'         => array(
+				'hook'   => 'the_title',
+				'pos'    => 'after',
+				'single' => true,
+				'type'   => 'filter',
+			),
+			'before_content'      => array(
+				'hook'   => 'the_content',
+				'pos'    => 'before',
+				'single' => true,
+				'type'   => 'filter',
+			),
+			'after_content'       => array(
+				'hook'   => 'the_content',
+				'pos'    => 'after',
+				'single' => true,
+				'type'   => 'filter',
+			),
+			'before_comment_form' => array(
+				'hook'   => 'comment_form_before',
+				'pos'    => 'before',
+				'single' => true,
+				'type'   => 'action',
+			),
+			'after_comment_form'  => array(
+				'hook'   => 'comment_form_after',
+				'pos'    => 'after',
+				'single' => true,
+				'type'   => 'action',
+			),
+			'before_footer'       => array(
+				'hook'   => 'wp_footer',
+				'pos'    => 'before',
+				'single' => false,
+				'type'   => 'action',
+			),
+			'after_footer'        => array(
+				'hook'   => 'wp_footer',
+				'pos'    => 'after',
+				'single' => false,
+				'type'   => 'action',
+			),
+		);
 
-		return $res;
+		return $positions[ $opt ] ?? $invalid;
 	}
 
 	/**
@@ -578,7 +607,7 @@ class Utils {
 				$sanitized = array();
 				foreach ( $value as $k => $v ) {
 					// Sanitize array keys.
-					// $k = sanitize_key( $k );
+					// Keep key sanitization disabled until the saved schema defines the allowed key format.
 
 					$result = $sanitize_value( $v, $k );
 					if ( is_wp_error( $result ) ) {
@@ -711,29 +740,18 @@ class Utils {
 	}
 
 	/**
-	 * Get template preview id
-	 *
-	 * @return int|null
-	 */
-	public static function get_template_preview_id() {
-		if ( isset( $_GET['optn_template_preview'] ) && current_user_can( OPTN_MIN_CAPABILITY ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-			return intval( $_GET['optn_template_preview'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		}
-
-		return null;
-	}
-
-	/**
 	 * Is preview mode
 	 *
 	 * @return bool
 	 */
 	public static function is_preview_mode() {
-		return (
-			isset( $_POST['et_fb_preview'] ) || // phpcs:ignore
-			isset( $_GET['optn_template_preview'] ) ||
-			isset( $_GET['optn_preview'] ) ) &&
-			current_user_can( OPTN_MIN_CAPABILITY ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		return apply_filters(
+			'optn_is_preview_mode',
+			(
+			isset( $_POST['et_fb_preview'] ) || // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Read-only builder preview flag; capability checked below.
+			isset( $_GET['optn_preview'] ) ) && // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preview flag; capability checked below.
+			current_user_can( OPTN_MIN_CAPABILITY )
+		);
 	}
 
 	/**
@@ -757,14 +775,8 @@ class Utils {
 		return $res;
 	}
 
-	/**
-	 * Is license page visible
-	 *
-	 * @return boolean
-	 */
-	public static function is_show_license_page() {
-		return defined( 'OPTN_PRO_VERSION' );
-	}
+
+
 
 	/**
 	 * Get currency symbol.

@@ -3,7 +3,6 @@
 namespace OPTN\Admin\Rest;
 
 use OPTN\Includes\Db;
-use OPTN\Includes\Dto\ModelInput;
 use OPTN\Includes\Integrations\Base\IntegrationFactory;
 use OPTN\Includes\Settings;
 use WP_Error;
@@ -14,7 +13,10 @@ use WP_REST_Response;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Rest for handling integrations
+ * Registers authenticated REST operations for saved email and webhook integrations.
+ *
+ * Validates account and destination settings, then delegates provider-specific checks
+ * and persistence to the integration registry and database service.
  */
 class RestIntegration {
 
@@ -53,123 +55,11 @@ class RestIntegration {
 
 		register_rest_route(
 			'optn/v1',
-			'/integration/info',
-			array(
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'handle_get_integration_info' ),
-				'permission_callback' => array( $this, 'permission_callback' ),
-				'args'                => array(
-					'type'        => array(
-						'description'       => esc_html__( 'Type of the integration', 'optin' ),
-						'required'          => true,
-						'type'              => 'string',
-						'validate_callback' => function ( $value ) {
-							return is_string( $value );
-						},
-						'sanitize_callback' => function ( $value ) {
-							return sanitize_key( $value );
-						},
-					),
-					'integration' => array(
-						'description'       => esc_html__( 'Integration Slug', 'optin' ),
-						'required'          => true,
-						'type'              => 'string',
-						'validate_callback' => function ( $value ) {
-							return is_string( $value );
-						},
-						'sanitize_callback' => function ( $value ) {
-							return sanitize_key( $value );
-						},
-					),
-					'query'       => array(
-						'description'       => esc_html__( 'Query', 'optin' ),
-						'required'          => true,
-						'type'              => 'string',
-						'validate_callback' => function ( $value ) {
-							return is_string( $value );
-						},
-						'sanitize_callback' => function ( $value ) {
-							return sanitize_key( $value );
-						},
-					),
-				),
-			)
-		);
-
-		register_rest_route(
-			'optn/v1',
 			'/integration',
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'handle_create_integration' ),
-				'permission_callback' => array( $this, 'permission_callback' ),
-			)
-		);
-
-		register_rest_route(
-			'optn/v1',
-			'/integration/ai/prompt',
-			array(
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'handle_ai_integration_prompt' ),
-				'permission_callback' => array( $this, 'permission_callback' ),
-				'args'                => array(
-					'id'          => array(
-						'description'       => esc_html__( 'ID of the integration', 'optin' ),
-						'required'          => true,
-						'type'              => 'integer',
-						'validate_callback' => function ( $value ) {
-							return is_numeric( $value );
-						},
-						'sanitize_callback' => function ( $value ) {
-							return intval( $value );
-						},
-					),
-					'type'        => array(
-						'description'       => esc_html__( 'Type of the integration', 'optin' ),
-						'required'          => true,
-						'type'              => 'string',
-						'validate_callback' => function ( $value ) {
-							return is_string( $value );
-						},
-						'sanitize_callback' => function ( $value ) {
-							return sanitize_key( $value );
-						},
-					),
-					'user_prompt' => array(
-						'description'       => esc_html__( 'User prompt', 'optin' ),
-						'required'          => true,
-						'type'              => 'string',
-						'validate_callback' => function ( $value ) {
-							return is_string( $value );
-						},
-						'sanitize_callback' => function ( $value ) {
-							return sanitize_text_field( $value );
-						},
-					),
-					'instruction' => array(
-						'description'       => esc_html__( 'Instruction', 'optin' ),
-						'required'          => false,
-						'type'              => 'string',
-						'validate_callback' => function ( $value ) {
-							return is_string( $value );
-						},
-						'sanitize_callback' => function ( $value ) {
-							return sanitize_text_field( $value );
-						},
-					),
-					'task'        => array(
-						'description'       => esc_html__( 'Task Type', 'optin' ),
-						'required'          => false,
-						'type'              => 'string',
-						'validate_callback' => function ( $value ) {
-							return is_string( $value );
-						},
-						'sanitize_callback' => function ( $value ) {
-							return sanitize_key( $value );
-						},
-					),
-				),
+				'permission_callback' => array( $this, 'management_permission_callback' ),
 			)
 		);
 
@@ -179,7 +69,7 @@ class RestIntegration {
 			array(
 				'methods'             => 'DELETE',
 				'callback'            => array( $this, 'handle_delete_integration' ),
-				'permission_callback' => array( $this, 'permission_callback' ),
+				'permission_callback' => array( $this, 'management_permission_callback' ),
 			)
 		);
 
@@ -205,6 +95,17 @@ class RestIntegration {
 		$type = isset( $req['type'] ) ? sanitize_key( $req['type'] ) : null;
 
 		$third_party = $this->db->get_integration( $id, true, $type );
+		if ( $id ) {
+			$third_party = IntegrationFactory::get_provider( $third_party['type'] ?? '' ) ? $third_party : array();
+		} else {
+			$third_party = array_values(
+				array_filter(
+					$third_party,
+					function ( $account ) {
+							return (bool) IntegrationFactory::get_provider( $account['type'] ?? '' );
+					}
+				)
+			); }
 
 		$res = array(
 			'third_party' => $third_party,
@@ -215,77 +116,33 @@ class RestIntegration {
 	}
 
 	/**
-	 * Gets integration info
-	 *
-	 * @param WP_REST_Request $req rest object.
-	 * @return WP_REST_Response
-	 */
-	public function handle_get_integration_info( WP_REST_Request $req ) {
-		$res = IntegrationFactory::get_integration_info(
-			$req['type'],
-			$req['integration'],
-			$req['query']
-		);
-		return rest_ensure_response(
-			array(
-				'success' => ! empty( $res ),
-				'data'    => $res,
-			)
-		);
-	}
-
-
-	/**
 	 * Creates an integration
 	 *
 	 * @param WP_REST_Request $req rest object.
 	 * @return array|null
 	 */
 	public function handle_create_integration( WP_REST_Request $req ) {
-		$is_wp_plugin        = isset( $req['wp_plugin'] ) ? boolval( $req['wp_plugin'] ) : false;
-		$is_analytics_plugin = isset( $req['analytics_plugin'] ) ? boolval( $req['analytics_plugin'] ) : false;
-		$title               = isset( $req['title'] ) ? sanitize_text_field( $req['title'] ) : null;
-		$type                = isset( $req['type'] ) ? sanitize_text_field( $req['type'] ) : null;
-		$data                = isset( $req['data'] ) && is_array( $req['data'] ) ? $req['data'] : null;
-		$id                  = isset( $req['id'] ) ? intval( $req['id'] ) : null;
-		$int_type            = isset( $req['intType'] ) ? sanitize_key( $req['intType'] ) : null;
-
-		$res = true;
-
-		if ( $is_wp_plugin ) {
-			if ( empty( $type ) || empty( $data ) || ! isset( $data['enable'] ) ) {
-				return rest_ensure_response( new WP_Error( 400, 'Missing data' ) );
-			}
-
-			$key = 'int_enable_' . sanitize_key( $type );
-
-			Settings::set_settings( $key, boolval( $data['enable'] ) );
-		} elseif ( $is_analytics_plugin ) {
-			if ( empty( $type ) || empty( $data ) ) {
-				return rest_ensure_response( new WP_Error( 400, 'Missing data' ) );
-			}
-
-			$skip_db = isset( $req['skip_db'] ) ? boolval( $req['skip_db'] ) : false;
-
-			$enable = isset( $data['enable'] ) ? boolval( $data['enable'] ) : true;
-
-			if ( ! $skip_db ) {
-				$res = $this->db->add_integration( $title, $type, $data, $id );
-			}
-
-			if ( $res ) {
-				$key = 'int_bg_enable_' . sanitize_key( $type );
-				Settings::set_settings( $key, $enable );
-			}
-		} else {
-			if ( empty( $title ) || empty( $data ) || empty( $type ) ) {
-				return rest_ensure_response( new WP_Error( 400, 'Missing data' ) );
-			}
-
-			$res = $this->db->add_integration( $title, $type, $data, $id, $int_type );
+		$type = sanitize_key( $req['type'] ?? '' );
+		/** Extensions may handle their own account types; null keeps common behavior. */
+		$handled = apply_filters( 'optn_integration_create_response', null, $req, $this->db );
+		if ( null !== $handled ) {
+			return $handled; }
+		$provider = IntegrationFactory::get_provider( $type );
+		if ( ! $provider ) {
+			return new WP_Error( 'optn_integration_unsupported', 'Integration unavailable', array( 'status' => 400 ) );
 		}
-
-		return rest_ensure_response( new WP_REST_Response( array(), $res ? 201 : 500 ) );
+		if ( ! $provider['account'] ) {
+			Settings::set_settings( 'int_enable_' . $type, ! empty( $req['data']['enable'] ) );
+			return new WP_REST_Response( array(), 201 );
+		}
+		if ( ! is_array( $req['data'] ?? null ) || empty( $req['data']['apiKey'] ) ) {
+			return new WP_Error( 'optn_integration_config', 'API key required', array( 'status' => 400 ) );
+		}
+		$validation = IntegrationFactory::validate_account( $type, $req['data'] );
+		if ( is_wp_error( $validation ) ) {
+			return $validation; }
+		$result = $this->db->add_integration( sanitize_text_field( $req['title'] ?? '' ), $type, $req['data'], absint( $req['id'] ?? 0 ), $provider['category'] );
+		return new WP_REST_Response( array(), $result ? 201 : 500 );
 	}
 
 	/**
@@ -304,12 +161,9 @@ class RestIntegration {
 
 		$res = $this->db->delete_integration( $id );
 
-		// Turn off GA if there is no account connected.
-		if ( $res && 'ga' === $type ) {
-			$ints = $this->db->get_integrations_by_type( $type );
-			if ( count( $ints ) < 1 ) {
-				Settings::set_settings( 'int_bg_enable_ga', false );
-			}
+		if ( $res ) {
+			/** Notify extensions only after a successful account deletion. */
+			do_action( 'optn_integration_deleted', $id, $type, $this->db );
 		}
 
 		return rest_ensure_response( new WP_HTTP_Response( array(), $res ? 204 : 500 ) );
@@ -323,7 +177,7 @@ class RestIntegration {
 	 * @return array|null
 	 */
 	public function handle_get_integration_data( WP_REST_Request $req ) {
-		$args              = ! empty( $req['args'] ) ? $req['args'] : array(); // will be validated later.
+		$args              = is_array( $req['args'] ?? null ) ? $req['args'] : array(); // will be validated later.
 		$id                = isset( $req['id'] ) ? intval( $req['id'] ) : null;
 		$type              = isset( $req['type'] ) ? sanitize_key( $req['type'] ) : null;
 		$args['use_cache'] = isset( $req['use_cache'] ) ? boolval( $req['use_cache'] ) : true;
@@ -346,47 +200,20 @@ class RestIntegration {
 	}
 
 	/**
-	 * Ai prompt
-	 *
-	 * @param WP_REST_Request $req rest object.
-	 * @return array|null
-	 */
-	public function handle_ai_integration_prompt( WP_REST_Request $req ) {
-		$params = $req->get_params();
-
-		$class = IntegrationFactory::get_ai_integration_class( $params['type'], $params['id'] );
-
-		if ( is_null( $class ) ) {
-			return rest_ensure_response( new WP_HTTP_Response( array(), 400 ) );
-		}
-
-		$input = new ModelInput(
-			$params['user_prompt'],
-			array(
-				'instruction' => $params['instruction'],
-				'task'        => $params['task'],
-			)
-		);
-
-		$res = $class->generate_text( $input );
-
-		$success = is_wp_error( $res ) ? false : true;
-
-		return rest_ensure_response(
-			array(
-				'success' => $success,
-				'data'    => $res,
-			)
-		);
-	}
-
-
-	/**
 	 * Permission callback
 	 *
 	 * @return bool
 	 */
 	public function permission_callback() {
 		return current_user_can( OPTN_MIN_CAPABILITY );
+	}
+
+	/**
+	 * Restrict shared account and provider changes to site administrators.
+	 *
+	 * @return bool Whether the current user may manage integration accounts.
+	 */
+	public function management_permission_callback() {
+		return current_user_can( 'manage_options' );
 	}
 }

@@ -36,7 +36,10 @@ class ImageBlock extends BaseBlock {
 			$html .= "<div {$common_attrs} >";
 		}
 
-		$html .= '<img src="' . esc_url( $attr->src->url ) . '" alt="' . esc_attr( $attr->alt ) . '" />'; // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
+		$src = esc_url( $attr->src->url ?? '' );
+		if ( '' !== $src ) {
+			$html .= '<img src="' . $src . '" alt="' . esc_attr( $attr->alt ) . '" />'; // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
+		}
 
 		$html .= ! empty( $attr->link->url ) ? '</a>' : '</div>';
 
@@ -60,7 +63,10 @@ class ImageBlock extends BaseBlock {
 			$html .= '<div class="optn-block-image-content" >';
 		}
 
-		$html .= '<img src="' . esc_url( $attr->src->url ) . '" alt="' . esc_attr( $attr->alt ) . '" />'; // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
+		$src = esc_url( $attr->src->url ?? '' );
+		if ( '' !== $src ) {
+			$html .= '<img src="' . $src . '" alt="' . esc_attr( $attr->alt ) . '" />'; // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage
+		}
 
 		$html .= ! empty( $attr->link->url ) ? '</a>' : '</div>';
 		$html .= '</div>';

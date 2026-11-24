@@ -1,11 +1,26 @@
 <?php
+/**
+ * Detects a visitor's operating-system family from the request user agent.
+ *
+ * @package Optin
+ */
 
 namespace OPTN\Includes\Utils;
 
 use OPTN\Includes\Utils\Device;
 
+/**
+ * Classifies the visitor's operating system from its user agent.
+ * Desktop and mobile devices use separate pattern lists; Device supplies the
+ * device category that selects which list is checked.
+ */
 class Os {
 
+	/**
+	 * User-agent patterns that identify desktop operating-system families.
+	 *
+	 * @var array<string, string>
+	 */
 	private static $desktop_oses =
 		array(
 			'/windows nt 10/i'      => 'Windows',
@@ -27,6 +42,11 @@ class Os {
 			'/ubuntu/i'             => 'Linux',
 		);
 
+	/**
+	 * User-agent patterns that identify mobile operating-system families.
+	 *
+	 * @var array<string, string>
+	 */
 	private static $mobile_oses =
 		array(
 			'/android/i'    => 'Android',
@@ -37,6 +57,13 @@ class Os {
 			'/ipad/i'       => 'iOS',
 		);
 
+	/**
+	 * Detects a desktop or mobile operating system from HTTP_USER_AGENT.
+	 * Missing or unrecognized desktop agents default to Windows, while unrecognized
+	 * mobile agents default to Android.
+	 *
+	 * @return string Detected platform family: Windows, Mac, Linux, Android, or iOS.
+	 */
 	public static function getOS() {
 
 		if ( ! isset( $_SERVER['HTTP_USER_AGENT'] ) ) {

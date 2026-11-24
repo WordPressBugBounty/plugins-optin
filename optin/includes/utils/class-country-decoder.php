@@ -3,7 +3,10 @@
 namespace OPTN\Includes\Utils;
 
 /**
- * Country decoder class
+ * Loads and exposes country metadata used by visitor analytics.
+ *
+ * Reads the bundled country map once and reuses the decoded records for subsequent
+ * country-code lookups during the same request.
  */
 class CountryDecoder {
 

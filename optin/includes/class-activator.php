@@ -15,9 +15,10 @@ use OPTN\Includes\Db;
  */
 
 /**
- * Fired during plugin activation.
+ * Creates or upgrades the plugin's database tables and activation-time settings.
  *
- * This class defines all code necessary to run during the plugin's activation.
+ * Activation is delegated to the database and migration services so the plugin can
+ * prepare its storage before admin and frontend components begin using it.
  *
  * @since      1.0.0
  * @package    optin

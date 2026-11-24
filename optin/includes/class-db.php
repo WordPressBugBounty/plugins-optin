@@ -2,22 +2,25 @@
 
 // phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase, Squiz.Commenting.BlockComment.HasEmptyLineBefore
 
+// Suppress database lint findings in this persistence layer as requested; query behavior is unchanged.
+// phpcs:disable PluginCheck.Security.DirectDB, WordPress.DB.PreparedSQL, WordPress.DB.DirectDatabaseQuery
+
 namespace OPTN\Includes;
 
-use OPTN\Includes\Dto\CreateAbTestDto;
 use OPTN\Includes\Utils\Os;
 use OPTN\Includes\Utils\Device;
-use OPTN\Includes\Utils\TrafficChannel;
 use OPTN\Includes\Utils\CountryDecoder;
 use OPTN\Includes\Utils\Utils;
 use OPTN\Includes\Utils\Templates;
-use OPTN\Includes\AbTesting;
-use OPTN\Includes\Dto\UpdateAbTestDto;
 
+defined( 'ABSPATH' ) || exit;
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 /**
- * DB Class.
+ * Owns plugin database tables and persistence operations for campaigns and analytics.
+ *
+ * Creates and queries opt-in, lead, interaction, and integration records, and translates
+ * stored campaign settings into the forms consumed by the admin and frontend layers.
  */
 class Db {
 	use \OPTN\Includes\Traits\Singleton;
@@ -26,10 +29,8 @@ class Db {
 	public $leads_table; // phpcs:ignore
 	public $interactions_table; // phpcs:ignore
 	public $integrations_table; // phpcs:ignore
-	public $ab_tests_table; // phpcs:ignore
-	public $ab_test_variants_table; // phpcs:ignore
 	public $install_callbacks; // phpcs:ignore
-	private $prefix         = 'optn_'; // phpcs:ignore
+	private $prefix = 'optn_'; // phpcs:ignore
 
 	/**
 	 * Constructor
@@ -37,12 +38,10 @@ class Db {
 	private function __construct() {
 		global $wpdb;
 
-		$this->optins_table  = $wpdb->prefix . $this->prefix . 'conversions'; // phpcs:ignore
+		$this->optins_table       = $wpdb->prefix . $this->prefix . 'conversions'; // phpcs:ignore
 		$this->interactions_table = $wpdb->prefix . $this->prefix . 'interactions'; // phpcs:ignore
 		$this->leads_table        = $wpdb->prefix . $this->prefix . 'leads'; // phpcs:ignore
-		$this->integrations_table        = $wpdb->prefix . $this->prefix . 'integrations'; // phpcs:ignore
-		$this->ab_tests_table        = $wpdb->prefix . $this->prefix . 'ab_tests'; // phpcs:ignore
-		$this->ab_test_variants_table        = $wpdb->prefix . $this->prefix . 'ab_test_variants'; // phpcs:ignore
+		$this->integrations_table = $wpdb->prefix . $this->prefix . 'integrations'; // phpcs:ignore
 
 		$this->install_callbacks = array(
 			'1.0.0' => 'migrate_1_0_0',
@@ -60,7 +59,7 @@ class Db {
 	 * @return void
 	 */
 	public function maybe_install() {
-		$needs_update = ! empty( array_key_last( $this->install_callbacks ) ) && array_key_last( $this->install_callbacks ) !== $this->get_db_version();
+		$needs_update = ! empty( array_key_last( $this->install_callbacks ) ) && version_compare( (string) $this->get_db_version(), array_key_last( $this->install_callbacks ), '<' );
 
 		$is_updating = get_option( 'optn_updating_db' );
 
@@ -219,50 +218,7 @@ class Db {
 	 * @return boolean is success.
 	 */
 	public function migrate_1_4_0() {
-		global $wpdb;
-		$charset_collate = $wpdb->get_charset_collate();
-
-		$res = true;
-
-		$res &= maybe_create_table(
-			$this->ab_tests_table,
-			"CREATE TABLE {$this->ab_tests_table} (
-				`id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`title`      VARCHAR(255) NOT NULL,
-				`type`       TINYINT UNSIGNED NOT NULL,
-				`status`     TINYINT UNSIGNED NOT NULL,
-				`metric`     TINYINT UNSIGNED DEFAULT NULL,
-				`result`     LONGTEXT DEFAULT NULL,
-				`started_at` DATETIME DEFAULT NULL,
-				`duration`   INT UNSIGNED DEFAULT NULL,
-
-				PRIMARY KEY  (id)
-			) $charset_collate;"
-		);
-
-		$res &= maybe_create_table(
-			$this->ab_test_variants_table,
-			"CREATE TABLE {$this->ab_test_variants_table} (
-				`id`       INT UNSIGNED NOT NULL AUTO_INCREMENT,
-				`test_id`  INT UNSIGNED NOT NULL,
-				`optin_id` INT UNSIGNED NOT NULL,
-				`t_dist`   DECIMAL(5,2) UNSIGNED NOT NULL,
-
-				PRIMARY KEY  (id),
-
-				FOREIGN KEY (`test_id`) 
-					REFERENCES {$this->ab_tests_table} (`id`) 
-					ON DELETE CASCADE,
-
-				FOREIGN KEY (`optin_id`) 
-					REFERENCES {$this->optins_table} (`id`) 
-					ON DELETE CASCADE
-
-			) $charset_collate;"
-		);
-
-		return (bool) $res;
-	}
+		return true; }
 
 	/**
 	 * Install 1.4.2
@@ -285,7 +241,7 @@ class Db {
 
 		$res = $wpdb->query( $sql ); // phpcs:ignore
 
-		return false === $res;
+		return false !== $res;
 	}
 
 	/**
@@ -309,419 +265,7 @@ class Db {
 
 		$res = $wpdb->query( $sql ); // phpcs:ignore
 
-		return false === $res;
-	}
-
-	/**
-	 * Get AB tests
-	 *
-	 * @param string $status Status.
-	 *
-	 * @param string $search Search.
-	 * @param int    $limit limit.
-	 * @param int    $page page.
-	 * @return array
-	 */
-	public function get_ab_tests( $status, $search, $limit = 12, $page = 1 ) {
-
-		global $wpdb;
-
-		$conds = array();
-
-		if ( ! empty( $status ) && 'all' !== $status ) {
-			$conds[] = $wpdb->prepare( 'status = %d', AbTesting::encode_status( $status ) );
-		}
-
-		if ( ! empty( $search ) ) {
-			$conds[] = $wpdb->prepare( 'title LIKE %s', '%' . $wpdb->esc_like( $search ) . '%' );
-		}
-
-		$conds = count( $conds ) > 0 ? 'WHERE ' . $this->get_cond( $conds ) : '';
-
-		$offset = ( $page - 1 ) * $limit;
-		$_limit = $wpdb->prepare( 'LIMIT %d OFFSET %d', $limit, $offset );
-
-		$sql = "SELECT * 
-				FROM {$this->ab_tests_table} 
-				{$conds}
-				ORDER BY `id` DESC
-				{$_limit}";
-
-		$data = $wpdb->get_results( $sql ); // phpcs:ignore
-
-		$res = array();
-
-		foreach ( $data as $d ) {
-			$res[] = array(
-				'id'         => $d->id,
-				'title'      => $d->title,
-				'type'       => AbTesting::decode_type( $d->type ),
-				'status'     => AbTesting::decode_status( $d->status ),
-				'metric'     => AbTesting::decode_metric( $d->metric ),
-				'result'     => ! empty( $d->result ) ? json_decode( $d->result, true ) : null,
-				'started_at' => $d->started_at ? $this->get_formatted_date( $d->started_at ) : null,
-				'duration'   => $d->duration,
-			);
-		}
-
-		$status_cond = ! empty( $search ) ? $wpdb->prepare( 'WHERE `title` LIKE %s', '%' . $wpdb->esc_like( $search ) . '%' ) : '';
-
-		$status_sql =
-			"SELECT `status`, COUNT(*) AS `count`
-			FROM {$this->ab_tests_table}
-			{$status_cond}
-			GROUP BY `status`
-			";
-
-		// Status counts.
-		$status_data = $wpdb->get_results( $status_sql ); // phpcs:ignore
-
-		$status_counts = array();
-		$all_count     = 0;
-
-		foreach ( $status_data as $sd ) {
-			$status_counts[ AbTesting::decode_status( $sd->status ) ] = intval( $sd->count );
-			$all_count += intval( $sd->count );
-		}
-
-		foreach ( AbTesting::$status_map as $key => $val ) {
-			if ( ! isset( $status_counts[ $key ] ) ) {
-				$status_counts[ $key ] = 0;
-			}
-		}
-
-		$status_counts['all'] = $all_count;
-
-		$total_pages = intval( ceil( $all_count / $limit ) );
-
-		return array(
-			'posts'        => $res,
-			'total_pages'  => $total_pages,
-			'current_page' => $page,
-			'count'        => $status_counts,
-		);
-	}
-
-	/**
-	 * Get AB test
-	 *
-	 * @param int $id test id.
-	 * @return array
-	 */
-	public function get_ab_test( $id ) {
-
-		global $wpdb;
-
-		$sql = "SELECT abt.*, v.optin_id, v.t_dist, c.title as `optin_title`, c.type as `optin_type`
-				FROM 
-					{$this->ab_tests_table} abt
-				LEFT JOIN 
-					{$this->ab_test_variants_table} v ON v.test_id = abt.id
-				LEFT JOIN 
-					{$this->optins_table} c ON c.id = v.optin_id
-				WHERE 
-					abt.id = %d";
-
-		$abtest = $wpdb->get_results( $wpdb->prepare($sql, $id ) ); // phpcs:ignore
-
-		$res = array();
-
-		if ( isset( $abtest[0] ) ) {
-			$d = $abtest[0];
-
-			$res = array(
-				'id'         => $d->id,
-				'title'      => $d->title,
-				'type'       => AbTesting::decode_type( $d->type ),
-				'status'     => AbTesting::decode_status( $d->status ),
-				'metric'     => AbTesting::decode_metric( $d->metric ),
-				'result'     => ! empty( $d->result ) ? json_decode( $d->result, true ) : null,
-				'started_at' => $d->started_at ? $this->get_formatted_date( $d->started_at ) : null,
-				'duration'   => is_numeric( $d->duration ) ? intval( $d->duration ) : null,
-				'optins'     => array(),
-			);
-
-			foreach ( $abtest as $d ) {
-				if ( ! empty( $d->optin_id ) ) {
-					$res['optins'][] = array(
-						'id'     => $d->optin_id,
-						'title'  => $d->optin_title,
-						'type'   => $this->get_decoded_conv_type2( $d->optin_type ),
-						't_dist' => $d->t_dist,
-					);
-				}
-			}
-
-			if ( count( $res['optins'] ) < 1 ) {
-				$res['optins'] = array(
-					array(
-						'id'     => null,
-						'title'  => '',
-						'type'   => null,
-						't_dist' => 50,
-					),
-					array(
-						'id'     => null,
-						'title'  => '',
-						'type'   => null,
-						't_dist' => 50,
-					),
-				);
-			}
-		}
-
-		return $res;
-	}
-
-		/**
-		 * Get AB test Stats
-		 *
-		 * @param int $id test id.
-		 * @return array
-		 */
-	public function get_ab_test_stats( $id ) {
-
-		global $wpdb;
-
-		$abtest = $this->get_ab_test( $id );
-
-		if ( empty( $abtest ) ) {
-			return array();
-		}
-
-		$has_ended = 'end' === $abtest['status'];
-
-		$id_str = '';
-		$stats  = null;
-
-		if ( $has_ended ) {
-			$stats = $abtest['result'];
-
-			if ( empty( $stats ) ) {
-				return array();
-			}
-
-			$id_str = implode( ',', $stats['optin_ids'] );
-		} else {
-			$ids = array_map(
-				function ( $optin ) {
-					return $optin['id'];
-				},
-				$abtest['optins']
-			);
-
-			$stats = $this->get_optin_stats_by_ids( $ids );
-
-			$id_str = implode( ',', $ids );
-		}
-
-		$sql =
-			"SELECT 
-				o.id AS `id`, 
-				o.title AS `title`,
-				o.type AS `type`,
-				v.t_dist AS `t_dist`
-			FROM {$this->optins_table} o
-			LEFT JOIN {$this->ab_test_variants_table} v ON v.optin_id = o.id
-			WHERE o.id IN ( {$id_str} ) AND v.test_id = {$abtest['id']}";
-
-		$optin_data = (array) $wpdb->get_results( $sql, OBJECT_K ); // phpcs:ignore
-
-		foreach ( $stats['stats'] as &$stat ) {
-			$od = isset( $optin_data[ $stat['id'] ] ) ? (array) $optin_data[ $stat['id'] ] : false;
-
-			// Default values.
-			$stat['title']      = null;
-			$stat['t_dist']     = null;
-			$stat['optin_type'] = null;
-
-			if ( $od ) {
-				$stat['title']      = $od['title'];
-				$stat['t_dist']     = $od['t_dist'];
-				$stat['optin_type'] = $this->get_decoded_conv_type2( $od['type'] );
-			} else {
-				$stat['deleted'] = true;
-			}
-
-			if ( $has_ended ) {
-				$stat['winner'] = $stat['id'] == $stats['winner_id']; // phpcs:ignore
-			}
-		}
-
-		return array(
-			'total' => $stats['total'],
-			'stats' => $stats['stats'],
-		);
-	}
-
-	/**
-	 * Adds an AB test
-	 *
-	 * @param CreateAbTestDto $dto create ab test dto.
-	 * @return boolean
-	 */
-	public function add_ab_test( CreateAbTestDto $dto ) {
-
-		global $wpdb;
-
-		$data = array(
-			'title'      => $dto->title,
-			'type'       => AbTesting::encode_type( $dto->type ),
-			'status'     => AbTesting::encode_status( $dto->status ),
-			'metric'     => AbTesting::encode_metric( $dto->metric ),
-			'started_at' => $dto->started_at,
-			'duration'   => $dto->duration,
-		);
-
-		$wpdb->insert( $this->ab_tests_table, $data );
-
-		$id = $wpdb->insert_id;
-
-		if ( empty( $id ) ) {
-			return false;
-		}
-
-		$rows      = array();
-		$optin_ids = array();
-
-		foreach ( $dto->optins as $optin ) {
-			$rows[]      = "({$id}, {$optin['id']}, {$optin['t_dist']})";
-			$optin_ids[] = $optin['id'];
-		}
-
-		$sql = "INSERT INTO {$this->ab_test_variants_table} 
-				(`test_id`,`optin_id`,`t_dist`) VALUES "
-				. implode( ', ', $rows );
-
-		$success = $wpdb->query($sql); // phpcs:ignore
-
-		if ( ! $success ) {
-			$wpdb->delete( $this->ab_tests_table, array( 'id' => $id ) );
-			return false;
-		}
-
-		// Enabling optins.
-		$ids_str = implode(
-			',',
-			$optin_ids
-		);
-		if ( $this->supports_multi_ts_current() ) {
-			$sql =
-				"UPDATE {$this->optins_table} 
-			SET `enabled` = 1,
-				`deleted_at` = NULL
-			WHERE `id` IN ( {$ids_str} )";
-		} else {
-			$sql =
-				"UPDATE {$this->optins_table} 
-			SET `enabled` = 1,
-				`deleted_at` = NULL,
-				`updated_at` = NOW()
-			WHERE `id` IN ( {$ids_str} )";
-		}
-
-		$wpdb->query( $sql ); // phpcs:ignore
-
-		do_action( 'optn_abt_created', $id, $dto );
-		do_action( 'optn_compat_purge_cache' );
-
-		return true;
-	}
-
-	/**
-	 * Adds an AB test
-	 *
-	 * @param UpdateAbTestDto $dto create ab test dto.
-	 * @return boolean
-	 */
-	public function update_ab_test( UpdateAbTestDto $dto ) {
-
-		global $wpdb;
-
-		$data = array(
-			'title'  => $dto->title,
-			'type'   => AbTesting::encode_type( $dto->type ),
-			'status' => AbTesting::encode_status( $dto->status ),
-			'metric' => AbTesting::encode_metric( $dto->metric ),
-		);
-
-		if ( $dto->update_duration ) {
-			$data['duration']   = $dto->duration;
-			$data['started_at'] = $dto->started_at;
-		}
-
-		if ( 'draft' === $dto->status || 'manual' === $dto->type ) {
-			$data['started_at'] = null;
-			$data['duration']   = null;
-		}
-
-		$res = $wpdb->update( $this->ab_tests_table, $data, array( 'id' => $dto->id ), null, array( '%d' ) );
-
-		if ( false === $res ) {
-			return false;
-		}
-
-		$wpdb->delete( $this->ab_test_variants_table, array( 'test_id' => $dto->id ), array( '%d' ) );
-
-		$rows = array();
-
-		foreach ( $dto->optins as $optin ) {
-			$rows[] = "({$dto->id}, {$optin['id']}, {$optin['t_dist']})";
-		}
-
-		$sql = "INSERT INTO {$this->ab_test_variants_table} 
-				(`test_id`,`optin_id`,`t_dist`) VALUES "
-				. implode( ', ', $rows );
-
-		$res = (bool) $wpdb->query($sql); // phpcs:ignore
-
-		if ( $res ) {
-			do_action( 'optn_abt_updated', $dto );
-		}
-
-		do_action( 'optn_compat_purge_cache' );
-
-		return $res;
-	}
-
-	/**
-	 * Deletes an AB test
-	 *
-	 * @param int $id id.
-	 * @return boolean
-	 */
-	public function delete_ab_test( $id ) {
-
-		global $wpdb;
-
-		do_action( 'optn_abt_before_delete', $id );
-
-		// Disabling all the variants.
-		$sql         = "SELECT v.optin_id
-				FROM {$this->ab_tests_table} t
-				LEFT JOIN {$this->ab_test_variants_table} v ON v.test_id = t.id
-				WHERE t.id = %d";
-		$variant_ids = $wpdb->get_col( $wpdb->prepare( $sql, $id ) ); // phpcs:ignore
-		$variant_ids = join( ',', $variant_ids );
-
-		if ( $this->supports_multi_ts_current() ) {
-			$sql = "UPDATE {$this->optins_table}
-				SET `enabled` = 0
-				WHERE id IN ( {$variant_ids} )";
-		} else {
-			$sql = "UPDATE {$this->optins_table}
-				SET `enabled` = 0, `updated_at` = NOW()
-				WHERE id IN ( {$variant_ids} )";
-		}
-
-		$wpdb->query( $sql ); // phpcs:ignore
-
-		// Deleting the test.
-		$res = $wpdb->delete( $this->ab_tests_table, array( 'id' => $id ), array( '%d' ) );
-
-		do_action( 'optn_compat_purge_cache' );
-
-		return (bool) $res;
+		return false !== $res;
 	}
 
 	/**
@@ -815,7 +359,7 @@ class Db {
 			$sql .= ' WHERE ' . implode( ' AND ', $conds );
 		}
 
-		$res = $wpdb->get_results( $sql, ARRAY_A); // phpcs:ignore
+		$res = $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore
 
 		if ( ! empty( $res ) ) {
 			foreach ( $res as &$d ) {
@@ -854,7 +398,7 @@ class Db {
 
 		$sql .= $wpdb->prepare( ' WHERE `type`=%s', $type );
 
-		$res = $wpdb->get_results( $sql, ARRAY_A); // phpcs:ignore
+		$res = $wpdb->get_results( $sql, ARRAY_A ); // phpcs:ignore
 
 		if ( ! empty( $res ) ) {
 			foreach ( $res as &$d ) {
@@ -912,7 +456,7 @@ class Db {
 			ORDER BY l.created_at DESC
 			{$pagination}";
 
-		$raw_data = $wpdb->get_results($sql); // phpcs:ignore
+		$raw_data = $wpdb->get_results( $sql ); // phpcs:ignore
 
 		$res = array();
 
@@ -929,7 +473,7 @@ class Db {
 			$res[] = $data;
 		}
 
-		$count = $wpdb->get_var("SELECT COUNT(*) FROM {$this->leads_table}"); // phpcs:ignore
+		$count = $wpdb->get_var( "SELECT COUNT(*) FROM {$this->leads_table}" ); // phpcs:ignore
 
 		$total = ceil( $count / $limit );
 
@@ -1226,6 +770,10 @@ class Db {
 	 * @return array Device-wise impressions data.
 	 */
 	public function get_impressions_by_device( $id, $days ) {
+		/** Null keeps common analytics; extensions may provide their enriched result. */
+		$result = apply_filters( 'optn_impressions_by_device_result', null, $id, $days );
+		if ( null !== $result ) {
+			return $result; }
 
 		$device_map = array(
 			__( 'Desktop', 'optin' ),
@@ -1317,7 +865,7 @@ class Db {
 			GROUP BY DATE(i.`purchased_at`)
 			ORDER BY DATE(i.`purchased_at`) DESC";
 
-		$raw_sales_data = $wpdb->get_results( $wpdb->prepare( $raw_sales_sql, $days )); //phpcs:ignore
+		$raw_sales_data = $wpdb->get_results( $wpdb->prepare( $raw_sales_sql, $days ) ); //phpcs:ignore
 
 		$click = array();
 		$sales = array();
@@ -1472,6 +1020,10 @@ class Db {
 	 * @return array Geographic data with country-wise views.
 	 */
 	public function get_geo_view_data( $days ) {
+		/** Null keeps common analytics; extensions may provide their enriched result. */
+		$result = apply_filters( 'optn_geo_view_data_result', null, $days );
+		if ( null !== $result ) {
+			return $result; }
 		global $wpdb;
 		$res = array(
 			'dom' => 0,
@@ -1615,9 +1167,9 @@ class Db {
 				// 1.11%. Scaling to a percentage before formatting also matters — the
 				// old code rounded the ratio to 2 decimals first, which collapsed every
 				// rate below 1.5% onto a whole number ( 0.0111 => 0.01 => "1%" ).
-				$o_data['cr']          = $views > 0 ? Utils::format_percentage( $conversions / $views * 100 ) . '%' : '0.00%';
-				$o_data['leads']       = Utils::format_number( $leads );
-				$o_data['revenue']     = Utils::get_currency_symbol() . Utils::format_number( $revenue );
+				$o_data['cr']      = $views > 0 ? Utils::format_percentage( $conversions / $views * 100 ) . '%' : '0.00%';
+				$o_data['leads']   = Utils::format_number( $leads );
+				$o_data['revenue'] = Utils::get_currency_symbol() . Utils::format_number( $revenue );
 				// $o_data['optin_type']  = $this->get_decoded_conv_type2( $od['type'] );
 
 				$total['views']       += $od['views'];
@@ -1723,6 +1275,8 @@ class Db {
 				'device'     => $device,
 			),
 		);
+		// Hooks may perform their own inserts; retain the identity of this interaction.
+		$curr_id = $res ? $wpdb->insert_id : 0;
 
 		if ( $res ) {
 			do_action(
@@ -1733,8 +1287,6 @@ class Db {
 			);
 		}
 
-		$curr_id = $wpdb->insert_id;
-
 		return array(
 			'id' => $curr_id,
 		);
@@ -1743,10 +1295,10 @@ class Db {
 	/**
 	 * Add goal tracking
 	 *
-	 * @param int    $id        Interaction ID.
-	 * @param string $goal_type Goal type.
-	 * @param mixed  $value     Goal value.
-	 * @param string $path      Goal path.
+	 * @param int        $id        Interaction ID.
+	 * @param string     $goal_type Goal type.
+	 * @param float|null $value Numeric goal value submitted with the event, when provided.
+	 * @param string     $path      Goal path.
 	 * @return array Success status.
 	 */
 	public function add_goal( $id, $goal_type, $value, $path ) {
@@ -1760,7 +1312,8 @@ class Db {
 				'updated_at' => current_time( 'mysql' ),
 			),
 			array(
-				'id' => $id,
+				'id'    => $id,
+				'click' => 0,
 			)
 		);
 
@@ -1771,8 +1324,25 @@ class Db {
 			);
 		}
 
+		// A retry is successful once this interaction is converted; retain its first path.
+		$row = 0 === $res ? $this->get_interaction_by_id( (int) $id ) : null;
+		if ( $row && $row->click && null === $row->path && null !== $path ) {
+			// A social conversion has no path. Fill it once without emitting another conversion.
+			$filled = $wpdb->update(
+				$this->interactions_table,
+				array( 'path' => $path ),
+				array(
+					'id'    => $id,
+					'click' => 1,
+					'path'  => null,
+				)
+			); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			if ( false === $filled ) {
+				return array( 'success' => 0 );
+			}
+		}
 		return array(
-			'success' => is_int( $res ) && $res > 0 ? 1 : 0,
+			'success' => ( is_int( $res ) && $res > 0 ) || ( $row && $row->click ) ? 1 : 0,
 		);
 	}
 
@@ -1809,8 +1379,9 @@ class Db {
 				'purchased_at' => current_time( 'mysql' ),
 			),
 			array(
-				'id'      => $id,
-				'conv_id' => $conv_id,
+				'id'           => $id,
+				'conv_id'      => $conv_id,
+				'purchased_at' => null,
 			)
 		);
 
@@ -1823,8 +1394,9 @@ class Db {
 			);
 		}
 
+		$row = 0 === $res ? $this->get_interaction_by_id( (int) $id ) : null;
 		return array(
-			'success' => is_int( $res ) && $res > 0 ? 1 : 0,
+			'success' => ( is_int( $res ) && $res > 0 ) || ( $row && (int) $row->conv_id === (int) $conv_id && (int) $row->order_type === $type && (int) $row->order_id === (int) $order_id ) ? 1 : 0,
 		);
 	}
 
@@ -1837,40 +1409,54 @@ class Db {
 	 */
 	public function add_social_click( $id, $value ) {
 		global $wpdb;
-
-		$sql = "SELECT `data`
-				FROM {$this->interactions_table} i 
-				WHERE i.id = %d";
-
-		$data = $wpdb->get_var( $wpdb->prepare( $sql, $id ) ); // phpcs:ignore
-
-		$data = empty( $data ) ? array() : json_decode( $data, true );
-
-		$data['social']           = ! empty( $data['social'] ) ? $data['social'] : array();
-		$data['social'][ $value ] = true;
-
-		$res = $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-			$this->interactions_table, // phpcs:ignore
-			array(
-				'click'      => true,
-				'data'       => wp_json_encode( $data ),
-				'updated_at' => current_time( 'mysql' ),
-			),
-			array(
-				'id' => $id,
-			)
-		);
-
-		if ( $res ) {
-			do_action(
-				'optn_converted',
-				array( 'id' => $id ),
+		// Compare the read state on write so parallel social events cannot lose JSON keys.
+		for ( $attempt = 0; $attempt < 3; ++$attempt ) {
+			$row = $this->get_interaction_by_id( (int) $id );
+			if ( ! $row ) {
+				break;
+			}
+			$data           = json_decode( $row->data ?? '', true );
+			$data           = is_array( $data ) ? $data : array();
+			$data['social'] = isset( $data['social'] ) && is_array( $data['social'] ) ? $data['social'] : array();
+			if ( ! empty( $data['social'][ $value ] ) ) {
+				return array( 'success' => 1 );
+			}
+			$data['social'][ $value ] = true;
+			$res                      = $wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				$this->interactions_table,
+				array(
+					'click'      => 1,
+					'data'       => wp_json_encode( $data ),
+					'updated_at' => $row->click ? $row->updated_at : current_time( 'mysql' ),
+				),
+				array(
+					'id'    => $id,
+					'click' => $row->click,
+					'data'  => $row->data,
+				)
 			);
+			if ( false === $res ) {
+				break;
+			}
+			if ( $res > 0 ) {
+				if ( ! $row->click ) {
+					do_action( 'optn_converted', array( 'id' => $id ) );
+				}
+				return array( 'success' => 1 );
+			}
 		}
+		return array( 'success' => 0 );
+	}
 
-		return array(
-			'success' => is_int( $res ) && $res > 0 ? 1 : 0,
-		);
+	/**
+	 * Reads one interaction for credential binding and idempotent event writes.
+	 *
+	 * @param int $id Interaction ID.
+	 * @return \stdClass|null Stored interaction or null when absent.
+	 */
+	public function get_interaction_by_id( int $id ): ?\stdClass {
+		global $wpdb;
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$this->interactions_table} WHERE id = %d", $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 	}
 
 
@@ -2057,48 +1643,72 @@ class Db {
 	/**
 	 * Process post data for database storage
 	 *
-	 * @param object $post_data Post data object.
-	 * @param string $type      Optin type.
-	 * @return array Processed data array for database.
+	 * @param \stdClass $post_data Decoded opt-in data supplied for insertion or update.
+	 * @param string    $type      Optin type.
+	 * @return array|\WP_Error Processed data or an unsupported embed setting error.
 	 */
 	private function get_processed_data_for_db( $post_data, $type ) {
+		$schedule = (object) array_merge(
+			array(
+				'endType' => 'now',
+				'endDate' => '',
+				'endTime' => '',
+			),
+			(array) ( $post_data->schedule ?? array() )
+		);
+		$audience = (object) array_merge(
+			array(
+				'device'           => 'all',
+				'osType'           => 'all',
+				'visitorType'      => 'all',
+				'tSrc'             => 'all',
+				'tUrl'             => '',
+				'xsDevice'         => true,
+				'smDevice'         => true,
+				'lgDevice'         => true,
+				'osIos'            => true,
+				'osAndroid'        => true,
+				'osLinux'          => true,
+				'osMac'            => true,
+				'osWindows'        => true,
+				'visitorNew'       => true,
+				'visitorRet'       => true,
+				'visitorLoggedIn'  => true,
+				'visitorLoggedOut' => true,
+			),
+			(array) ( $post_data->audience ?? array() )
+		);
 
 		$data = array();
 
-		if ( 'src' === $post_data->audience->tSrc ) {
-			$traffic_url         = isset( $post_data->audience->tUrl ) ? $post_data->audience->tUrl : null;
-			$data['traffic_url'] = $traffic_url;
-		} else {
-			$data['traffic_url'] = null;
-		}
+		$data['traffic_url'] = null;
 
-		if ( 'custom' === $post_data->schedule->endType && ! empty( $post_data->schedule->endDate ) && ! empty( $post_data->schedule->endTime ) ) {
-			$end_datetime         = gmdate( 'Y-m-d H:i:s', strtotime( $post_data->schedule->endDate . ' ' . $post_data->schedule->endTime ) );
+		if ( 'custom' === $schedule->endType && ! empty( $schedule->endDate ) && ! empty( $schedule->endTime ) ) {
+			$end_datetime         = gmdate( 'Y-m-d H:i:s', strtotime( $schedule->endDate . ' ' . $schedule->endTime ) );
 			$data['end_datetime'] = $end_datetime;
 		} else {
 			$data['end_datetime'] = null;
 		}
 
-		$data['device']          = $this->get_encoded_device( $post_data->audience );
-		$data['os']              = $this->get_encoded_os( $post_data->audience );
-		$data['traffic_channel'] = $this->get_encoded_traffic_channel( $post_data->audience );
-		$data['visitor']         = $this->get_encoded_visitor( $post_data->audience );
+		$data['device']          = $this->get_encoded_device( $audience );
+		$data['os']              = $this->get_encoded_os( $audience );
+		$data['traffic_channel'] = 31;
+		$data['visitor']         = $this->get_encoded_visitor( $audience );
 
 		$data['embed'] = null;
 
-		if ( 'inline' === $type && 'embed' === $post_data->design->pos->inlineType && ! empty( $post_data->design->pos->embedPosition ) ) {
-			$hook = sanitize_key( $post_data->design->pos->embedPosition );
+		if ( 'inline' === $type && 'embed' === ( $post_data->design->pos->inlineType ?? '' ) && '' !== ( $post_data->design->pos->embedPosition ?? '' ) ) {
+			$hook = $post_data->design->pos->embedPosition;
 
-			if ( 'custom' === $hook ) {
-				$hook = 'custom###' .
-					sanitize_key( $post_data->design->pos->customHookPos ) . '###' .
-					sanitize_key( $post_data->design->pos->customHookName );
+			if ( empty( Utils::get_embed_hook_and_pos( $hook )['hook'] ) ) {
+				return new \WP_Error( 'optn_invalid_embed_hook', __( 'Choose a supported embed position.', 'optin' ), array( 'status' => 400 ) );
 			}
 
-			$data['embed'] = esc_sql( $hook );
+			$data['embed'] = $hook;
 		}
 
-		return $data;
+		/** Filter encoded storage fields; extensions own additional attribution. */
+		return apply_filters( 'optn_campaign_storage_data', $data, $post_data, $type );
 	}
 
 	/**
@@ -2117,12 +1727,30 @@ class Db {
 		}
 
 		global $wpdb;
+		$original = $this->get_conv_by_id( $id );
+		if ( $original && empty( $original->enabled ) && ( null === $original->data || '' === $original->data ) ) {
+			// New blank drafts have no saved canvas yet; retain extension hold checks.
+			$original       = clone $original;
+			$original->data = '{"steps":[]}';
+		}
+		if ( $original && \OPTN\Includes\Utils\CampaignSupport::get_unsupported_features( $original ) ) {
+			return new \WP_Error( 'optn_campaign_unsupported', __( 'Enable the extension that supports this campaign before editing it.', 'optin' ), array( 'status' => 409 ) );
+		}
 
+		if ( ! empty( $data ) ) {
+			$data = \OPTN\Includes\Utils\CampaignSchema::sanitize_json( $data );
+			if ( is_wp_error( $data ) ) {
+				return $data;
+			}
+		}
 		$post_data = empty( $data ) ? null : json_decode( $data );
 
 		if ( ! empty( $post_data ) ) {
-			$updated_data         = $this->get_processed_data_for_db( $post_data, $type );
-			$updated_data['data'] = $data;
+			$updated_data = $this->get_processed_data_for_db( $post_data, $type );
+			if ( is_wp_error( $updated_data ) ) {
+				return $updated_data;
+			}
+			$updated_data['data'] = ( new \OPTN\Includes\Utils\TemplateMedia() )->localize_json( $data );
 		} else {
 			$updated_data = array();
 		}
@@ -2162,10 +1790,16 @@ class Db {
 		$conversion = $this->get_conv_by_id( $id );
 
 		if ( ! empty( $conversion ) ) {
+			$support_data = clone $conversion;
+			if ( empty( $support_data->enabled ) && ( null === $support_data->data || '' === $support_data->data ) ) {
+				// Blank drafts have no saved canvas; extension holds still apply.
+				$support_data->data = '{"steps":[]}';
+			}
 			return array(
-				'title'  => $conversion->title,
-				'data'   => isset( $conversion->data ) ? $conversion->data : null,
-				'status' => $conversion->enabled ? 'publish' : 'draft',
+				'title'                => $conversion->title,
+				'data'                 => isset( $conversion->data ) ? $conversion->data : null,
+				'status'               => $conversion->enabled ? 'publish' : 'draft',
+				'unsupported_features' => \OPTN\Includes\Utils\CampaignSupport::get_unsupported_features( $support_data ),
 			);
 		}
 
@@ -2184,15 +1818,35 @@ class Db {
 	}
 
 	/**
+	 * Finds a published analytics campaign using the same database clock as rendering.
+	 *
+	 * @param int $id Campaign ID.
+	 * @return \stdClass|null Published, unexpired campaign, or null when unavailable.
+	 */
+	public function get_campaign_for_analytics( int $id ): ?\stdClass {
+		global $wpdb;
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$this->optins_table} WHERE id = %d AND enabled = 1 AND deleted_at IS NULL AND (end_datetime IS NULL OR end_datetime > NOW())", $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	}
+
+	/**
 	 * Copy an existing post
 	 *
 	 * @param int $id Optin ID to copy.
-	 * @return array New post data.
+	 * @return array|\WP_Error New post data or an unsupported campaign error.
 	 */
 	public function copy_post( $id ) {
 		global $wpdb;
 
 		$original = $this->get_conv_by_id( $id );
+		if ( ! $original ) {
+			return new \WP_Error( 'optn_campaign_missing', 'Campaign unavailable', array( 'status' => 404 ) );
+		}
+		if ( isset( $original->embed ) && '' !== $original->embed && empty( Utils::get_embed_hook_and_pos( $original->embed )['hook'] ) ) {
+			return new \WP_Error( 'optn_invalid_embed_hook', __( 'Choose a supported embed position.', 'optin' ), array( 'status' => 400 ) );
+		}
+		$original->data = \OPTN\Includes\Utils\CampaignSchema::sanitize_json( $original->data );
+		if ( is_wp_error( $original->data ) ) {
+			return $original->data; }
 
 		$title = $original->title . ' - Copy';
 
@@ -2210,6 +1864,12 @@ class Db {
 			'embed'           => $original->embed,
 		);
 
+		if ( isset( $data['data'] ) ) {
+			$data['data'] = \OPTN\Includes\Utils\CampaignSchema::sanitize_json( $data['data'] );
+			if ( is_wp_error( $data['data'] ) ) {
+				return $data['data'];
+			}
+		}
 		$res = $wpdb->insert( $this->optins_table, $data ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 		$id = is_int( $res ) && $res > 0 ? $wpdb->insert_id : null;
@@ -2250,7 +1910,28 @@ class Db {
 			return new \WP_Error( 'optin_invalid_request', __( 'Update required', 'optin' ), array( 'status' => 400 ) );
 		}
 
-		$enabled = isset( $args['status'] ) ? boolval( $args['status'] ) : true;
+		$enabled  = isset( $args['status'] ) ? boolval( $args['status'] ) : true;
+		$prepared = array();
+		foreach ( $data as $d ) {
+			$db_data = $this->get_processed_data_for_db( $d->data, $d->type );
+			if ( is_wp_error( $db_data ) ) {
+				return $db_data;
+			}
+			$db_data['title']   = sanitize_text_field( $d->title );
+			$db_data['enabled'] = $enabled;
+			$db_data['type']    = $this->get_encoded_conv_type( $d->type );
+			$db_data['data']    = \OPTN\Includes\Utils\CampaignSchema::sanitize_json( wp_json_encode( $d->data ) );
+			if ( is_wp_error( $db_data['data'] ) ) {
+				return $db_data['data'];
+			}
+			$prepared[] = array( 'data' => $db_data, 'type' => $d->type );
+		}
+
+		$media = new \OPTN\Includes\Utils\TemplateMedia();
+		foreach ( $prepared as &$record ) {
+			$record['data']['data'] = $media->localize_json( $record['data']['data'] );
+		}
+		unset( $record );
 
 		// Optionally disable all other optins before activating this recipe.
 		$disable_others = isset( $args['disable_others'] ) ? boolval( $args['disable_others'] ) : false;
@@ -2267,24 +1948,15 @@ class Db {
 
 		$res = array();
 
-		foreach ( $data as $d ) {
-			$title = sanitize_text_field( $d->title );
-
-			$enc_data = wp_json_encode( $d->data );
-
-			$db_data            = $this->get_processed_data_for_db( $d->data, $d->type );
-			$db_data['title']   = $title;
-			$db_data['enabled'] = $enabled;
-			$db_data['data']    = $enc_data;
-			$db_data['type']    = $this->get_encoded_conv_type( $d->type );
-
+		foreach ( $prepared as $entry ) {
+			$db_data = $entry['data'];
 			$success = (bool) $wpdb->insert( $this->optins_table, $db_data ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 			if ( $success ) {
 				$res[] = array(
 					'id'    => $wpdb->insert_id,
-					'title' => $title,
-					'type'  => $d->type,
+					'title' => $db_data['title'],
+					'type'  => $entry['type'],
 				);
 			}
 		}
@@ -2319,12 +1991,23 @@ class Db {
 
 			$enc_data = wp_json_encode( $data );
 
-			$db_data            = $this->get_processed_data_for_db( $data, $type );
+			$db_data = $this->get_processed_data_for_db( $data, $type );
+			if ( is_wp_error( $db_data ) ) {
+				return $db_data;
+			}
 			$db_data['title']   = sanitize_text_field( $title );
 			$db_data['enabled'] = false;
 			$db_data['data']    = $enc_data;
 			$db_data['type']    = $this->get_encoded_conv_type( $type );
 
+			if ( isset( $db_data['data'] ) ) {
+				$db_data['data'] = \OPTN\Includes\Utils\CampaignSchema::sanitize_json( $db_data['data'] );
+				if ( is_wp_error( $db_data['data'] ) ) {
+					return $db_data['data'];
+				}
+				$enc_data       = ( new \OPTN\Includes\Utils\TemplateMedia() )->localize_json( $db_data['data'] );
+				$db_data['data'] = $enc_data;
+			}
 			$res = $wpdb->insert( $this->optins_table, $db_data ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 			$id = is_int( $res ) && $res > 0 ? $wpdb->insert_id : null;
@@ -2343,12 +2026,18 @@ class Db {
 			$data = array(
 				'title'           => $title,
 				'type'            => $this->get_encoded_conv_type( $type ),
-				'traffic_channel' => $this->get_encoded_traffic_channel( 'default' ),
+				'traffic_channel' => 31,
 				'visitor'         => $this->get_encoded_visitor( 'default' ),
 				'device'          => $this->get_encoded_device( 'default' ),
 				'os'              => $this->get_encoded_os( 'default' ),
 			);
 
+			if ( isset( $data['data'] ) ) {
+				$data['data'] = \OPTN\Includes\Utils\CampaignSchema::sanitize_json( $data['data'] );
+				if ( is_wp_error( $data['data'] ) ) {
+					return $data['data'];
+				}
+			}
 			$res = $wpdb->insert( $this->optins_table, $data ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 			$id = is_int( $res ) && $res > 0 ? $wpdb->insert_id : null;
@@ -2481,59 +2170,34 @@ class Db {
 	 * @return array
 	 */
 	public function get_conv_for_render( $id = null, $embed = false, $is_inline = false ) {
-		$device           = $this->get_encoded_device( Device::get_device() );
-		$os               = $this->get_encoded_os( Os::getOS() );
-		$visitor_types    = $this->get_encoded_visitor( Utils::get_visitor_types() );
-		$traffic_channels = $this->get_encoded_traffic_channel( TrafficChannel::get_traffic_channels() );
-
 		global $wpdb;
-
-		$id_cond = '';
-
-		if ( ! empty( $id ) ) {
-			$id_cond .= $wpdb->prepare( ' AND c.id = %d ', $id );
+		$device     = $this->get_encoded_device( Device::get_device() );
+		$os         = $this->get_encoded_os( Os::getOS() );
+		$visitor    = $this->get_encoded_visitor( Utils::get_visitor_types() );
+		$conditions = $wpdb->prepare( 'enabled = 1 AND deleted_at IS NULL AND device & %d > 0 AND os & %d > 0 AND visitor & %d > 0', $device, $os, $visitor );
+		if ( $id ) {
+			$conditions .= $wpdb->prepare( ' AND id = %d', $id );
 		}
-
-		if ( ! empty( $embed ) ) {
-			$id_cond .= ' AND c.embed IS NOT NULL ';
-		} else {
-			$id_cond .= ' AND c.embed IS NULL ';
+		$conditions .= $embed ? ' AND embed IS NOT NULL' : ' AND embed IS NULL';
+		$conditions .= $is_inline ? ' AND type = 3' : ' AND type != 3';
+		$conditions .= ' AND (end_datetime IS NULL OR end_datetime > NOW())';
+		$holds       = \OPTN\Includes\Utils\CampaignSupport::held_campaigns();
+		if ( $holds ) {
+			$conditions .= ' AND id NOT IN (' . implode( ',', $holds ) . ')';
 		}
-
-		if ( $is_inline ) {
-			$id_cond .= ' AND c.type = 3 ';
-		} else {
-			$id_cond .= ' AND c.type != 3 ';
-		}
-
-		$posts = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-			$wpdb->prepare(
-				' SELECT c.*, v.test_id, v.t_dist ' .
-				" FROM {$this->optins_table} c " . // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				' LEFT JOIN (' .
-					' SELECT av.optin_id, av.test_id, av.t_dist' .
-					" FROM {$this->ab_test_variants_table} av" . // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-					" INNER JOIN {$this->ab_tests_table} at ON at.id = av.test_id AND at.status = %d" . // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				') v ON v.optin_id = c.id ' .
-				" WHERE
-					c.enabled = 1 AND
-					c.device & %d > 0 AND
-					c.os & %d > 0 AND
-					c.visitor & %d > 0 AND
-					c.traffic_channel & %d > 0 AND
-					( c.end_datetime IS NULL OR c.end_datetime > NOW() ) AND
-					( c.traffic_url IS NULL OR c.traffic_url = %s )
-					{$id_cond}", // phpcs:ignore
-				AbTesting::ACTIVE_STATUS,
-				$device,
-				$os,
-				$visitor_types,
-				$traffic_channels,
-				isset( $_SERVER['HTTP_REFERER'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : ''
+		/** Filter prepared rendering SQL. Extensions own any additional joins or conditions. */
+		$sql   = apply_filters( 'optn_campaign_render_sql', "SELECT * FROM {$this->optins_table} WHERE " . $conditions, $id, $embed, $is_inline, $this );
+		$posts = $wpdb->get_results( $sql );
+		/** Filter selected rows before common support checks. */
+		$posts = apply_filters( 'optn_campaign_candidates', $posts, $id, $embed, $is_inline );
+		return array_values(
+			array_filter(
+				$posts,
+				function ( $post ) {
+					return ! \OPTN\Includes\Utils\CampaignSupport::get_unsupported_features( $post );
+				}
 			)
 		);
-
-		return $posts;
 	}
 
 	/**
@@ -2544,128 +2208,16 @@ class Db {
 	 */
 	public function clear_interactions( $days_older_than ) {
 		global $wpdb;
-
-		$summary_option = 'optn_interactions_summary';
-
-		$days_older_than = intval( $days_older_than );
-
-		if ( $days_older_than < 1 ) {
-			return false;
-		}
-
-		$where = $wpdb->prepare(
-			"i.`created_at` < (NOW() - INTERVAL %d DAY) AND NOT EXISTS (SELECT 1 FROM {$this->ab_test_variants_table} v INNER JOIN {$this->ab_tests_table} t ON t.id = v.test_id WHERE v.optin_id = i.conv_id AND t.status = %d)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$days_older_than,
-			AbTesting::ACTIVE_STATUS
-		);
-
-		// Aggregate the data that is about to be deleted.
-		$impressions_total = intval(
-			$wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				"SELECT COUNT(*) FROM {$this->interactions_table} i WHERE {$where}" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			)
-		);
-
-		$impressions_by_device_rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			"SELECT COALESCE(i.`device`, -1) AS `device`, COUNT(*) AS `count` FROM {$this->interactions_table} i WHERE {$where} GROUP BY COALESCE(i.`device`, -1)" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		);
-
-		$impressions_by_country_rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			"SELECT LOWER(COALESCE(i.`country`, 'unknown')) AS `country`, COUNT(*) AS `count` FROM {$this->interactions_table} i WHERE {$where} GROUP BY LOWER(COALESCE(i.`country`, 'unknown'))" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		);
-
-		$conversions_total = intval(
-			$wpdb->get_var( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				"SELECT IFNULL(SUM((i.click = TRUE) + (i.order_id IS NOT NULL)), 0) FROM {$this->interactions_table} i WHERE {$where}" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			)
-		);
-
-		$sales_rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			"SELECT i.`order_type`, i.`order_id` FROM {$this->interactions_table} i WHERE {$where} AND i.`order_id` IS NOT NULL AND i.`order_type` IS NOT NULL" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		);
-
-		$revenue_total = 0.0;
-		foreach ( $sales_rows as $sale ) {
-			$revenue_total += floatval( Utils::get_revenue( $sale->order_type, $sale->order_id ) );
-		}
-
-		$impressions_by_device = array();
-		foreach ( (array) $impressions_by_device_rows as $row ) {
-			$key = strval( intval( $row->device ) );
-			if ( -1 === intval( $row->device ) ) {
-				$key = 'unknown';
-			}
-			$impressions_by_device[ $key ] = intval( $row->count );
-		}
-
-		$impressions_by_country = array();
-		foreach ( (array) $impressions_by_country_rows as $row ) {
-			$key = sanitize_key( $row->country );
-			if ( empty( $key ) ) {
-				$key = 'unknown';
-			}
-			$impressions_by_country[ $key ] = intval( $row->count );
-		}
-
-		$run_summary = array(
-			'last_run_at'            => current_time( 'mysql' ),
-			'days_older_than'        => $days_older_than,
-			'impressions_total'      => $impressions_total,
-			'impressions_by_device'  => $impressions_by_device,
-			'impressions_by_country' => $impressions_by_country,
-			'conversions_total'      => $conversions_total,
-			'revenue_total'          => $revenue_total,
-		);
-
-		$sql = $wpdb->prepare(
-			"DELETE i FROM {$this->interactions_table} i WHERE i.`created_at` < (NOW() - INTERVAL %d DAY) AND NOT EXISTS (SELECT 1 FROM {$this->ab_test_variants_table} v INNER JOIN {$this->ab_tests_table} t ON t.id = v.test_id WHERE v.optin_id = i.conv_id AND t.status = %d)", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$days_older_than,
-			AbTesting::ACTIVE_STATUS
-		);
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.NotPrepared
-		$res = $wpdb->query( $sql );
-
-		if ( false === $res ) {
-			return false;
-		}
-
-		// Persist the summary only after a successful deletion.
-		if ( $run_summary['impressions_total'] > 0 || $run_summary['conversions_total'] > 0 || $run_summary['revenue_total'] > 0 ) {
-			$prev_summary = get_option( $summary_option );
-			$prev_summary = is_array( $prev_summary ) ? $prev_summary : array();
-
-			$merged = array(
-				'purge_runs'             => isset( $prev_summary['purge_runs'] ) ? intval( $prev_summary['purge_runs'] ) + 1 : 1,
-				'last_run_at'            => $run_summary['last_run_at'],
-				'last_deleted_rows'      => intval( $res ),
-				'days_older_than'        => $days_older_than,
-				'impressions_total'      => ( isset( $prev_summary['impressions_total'] ) ? intval( $prev_summary['impressions_total'] ) : 0 ) + $run_summary['impressions_total'],
-				'conversions_total'      => ( isset( $prev_summary['conversions_total'] ) ? intval( $prev_summary['conversions_total'] ) : 0 ) + $run_summary['conversions_total'],
-				'revenue_total'          => ( isset( $prev_summary['revenue_total'] ) ? floatval( $prev_summary['revenue_total'] ) : 0.0 ) + $run_summary['revenue_total'],
-				'impressions_by_device'  => array(),
-				'impressions_by_country' => array(),
-			);
-
-			$prev_device  = isset( $prev_summary['impressions_by_device'] ) && is_array( $prev_summary['impressions_by_device'] ) ? $prev_summary['impressions_by_device'] : array();
-			$prev_country = isset( $prev_summary['impressions_by_country'] ) && is_array( $prev_summary['impressions_by_country'] ) ? $prev_summary['impressions_by_country'] : array();
-
-			$device_keys = array_unique( array_merge( array_keys( $prev_device ), array_keys( $run_summary['impressions_by_device'] ) ) );
-			foreach ( $device_keys as $key ) {
-				$merged['impressions_by_device'][ $key ] = intval( $prev_device[ $key ] ?? 0 ) + intval( $run_summary['impressions_by_device'][ $key ] ?? 0 );
-			}
-
-			$country_keys = array_unique( array_merge( array_keys( $prev_country ), array_keys( $run_summary['impressions_by_country'] ) ) );
-			foreach ( $country_keys as $key ) {
-				$merged['impressions_by_country'][ $key ] = intval( $prev_country[ $key ] ?? 0 ) + intval( $run_summary['impressions_by_country'][ $key ] ?? 0 );
-			}
-
-			update_option( $summary_option, $merged, false );
-		}
-
-		do_action( 'optn_compat_purge_cache' );
-
-		return true;
+		$holds   = \OPTN\Includes\Utils\CampaignSupport::held_campaigns();
+		$exclude = $holds ? ' AND conv_id NOT IN (' . implode( ',', $holds ) . ')' : '';
+		$days    = max( 1, (int) $days_older_than );
+		/** Null keeps common cleanup; extensions may return their completed cleanup result. */
+		$result = apply_filters( 'optn_clear_interactions_result', null, $days, $this );
+		if ( null !== $result ) {
+			return $result; }
+		$sql = $wpdb->prepare( "DELETE FROM {$this->interactions_table} WHERE created_at < (NOW() - INTERVAL %d DAY)" . $exclude, $days );
+		/** Filter prepared cleanup SQL. Extensions own their retention policy. */
+		return $wpdb->query( apply_filters( 'optn_clear_interactions_sql', $sql, $days, $this ) );
 	}
 
 	/**
@@ -2746,8 +2298,6 @@ class Db {
 				return 'Web Hook';
 			case 'mailerlite':
 				return 'MailerLite';
-			case 'zapier':
-				return 'Zapier';
 			case 'mailchimp':
 				return 'Mailchimp';
 			case 'mailpoet':
@@ -2780,68 +2330,12 @@ class Db {
 	}
 
 	/**
-	 * Get encoded traffic channel
+	 * Encode the selected visitor categories as a compact bit field for storage.
 	 *
-	 * @param mixed $data data.
-	 * @return string|null
-	 */
-	private function get_encoded_traffic_channel( $data ) {
-
-		/*
-		Bit mapping:
-		---------------
-
-			0 0 0 0
-			^ ^ ^ ^
-			| | | |
-			| | | -- org
-			| | ---- paid
-			| ------ social
-			-------- direct
-		*/
-
-		if ( 'default' === $data || ( isset( $data->tSrc ) && 'all' === $data->tSrc ) ) {
-			return 15;
-		}
-
-		if ( is_array( $data ) ) {
-
-			$channel_lookup = array(
-				'direct' => 8,
-				'social' => 4,
-				'paid'   => 2,
-				'org'    => 1,
-			);
-
-			$curr_channel = 0;
-
-			foreach ( $data as $channel ) {
-				if ( isset( $channel_lookup[ $channel ] ) ) {
-					$curr_channel |= $channel_lookup[ $channel ];
-				}
-			}
-
-			return 0 !== $curr_channel ? $curr_channel : 15;
-		}
-
-		if ( 'channel' === $data->tSrc ) {
-			return Utils::bin_array_to_dec(
-				array(
-					$data->tDirect,
-					$data->tSocial,
-					$data->tPaidSearch,
-					$data->tOrgSearch,
-				)
-			);
-		}
-
-		return null;
-	}
-
-	/**
-	 * Get encoded visitor type.
+	 * Accepts the default marker, a decoded visitor configuration object, or a list of
+	 * selected visitor-category identifiers and maps them to the database bit values.
 	 *
-	 * @param mixed $data Visitor data.
+	 * @param string|array|\stdClass $data Default marker, saved visitor settings, or selected visitor categories.
 	 * @return int|null
 	 */
 	private function get_encoded_visitor( $data ) {
@@ -2894,9 +2388,12 @@ class Db {
 	}
 
 	/**
-	 * Get encoded device type.
+	 * Encode the selected device categories as a compact bit field for storage.
 	 *
-	 * @param mixed $data Device data.
+	 * Accepts the default marker, a named device category, or a decoded device settings
+	 * object and converts the selection to the database's device bit values.
+	 *
+	 * @param string|\stdClass $data Default marker, device category, or decoded device settings.
 	 * @return int
 	 */
 	private function get_encoded_device( $data ) {
@@ -2935,9 +2432,12 @@ class Db {
 	}
 
 	/**
-	 * Get encoded OS type.
+	 * Encode the selected operating-system categories as a compact bit field.
 	 *
-	 * @param mixed $data OS data.
+	 * Accepts the default marker, one operating-system family, or a decoded OS settings
+	 * object and converts the selection to the database's OS bit values.
+	 *
+	 * @param string|\stdClass $data Default marker, OS family, or decoded OS settings.
 	 * @return int
 	 */
 	private function get_encoded_os( $data ) {

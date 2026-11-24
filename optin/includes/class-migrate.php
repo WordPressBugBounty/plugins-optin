@@ -3,7 +3,10 @@
 namespace OPTN\Includes;
 
 /**
- * DB Class.
+ * Coordinates versioned database migrations for existing plugin installations.
+ *
+ * Uses the database service to compare the stored schema version with the current
+ * plugin version and applies the required upgrade steps.
  */
 class Migrate {
 	use \OPTN\Includes\Traits\Singleton;

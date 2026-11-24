@@ -4,6 +4,7 @@ namespace OPTN\Frontend\Blocks;
 
 use OPTN\Includes\Abstracts\BaseBlock;
 use OPTN\Includes\Utils\BlockUtils;
+use OPTN\Includes\Utils\Sanitizer;
 
 /**
 	Heading Block
@@ -65,7 +66,7 @@ class HeadingBlock extends BaseBlock {
 					return '';
 			}
 		} else {
-			return $attr->text;
+			return Sanitizer::sanitize( $attr->text );
 		}
 	}
 
@@ -136,8 +137,8 @@ class HeadingBlock extends BaseBlock {
 			<div class="optn-text-shape">
 				<div class="optn-text-shape-content" style="transform: <?php echo esc_attr( $skew ); ?>;">
 					<?php
-						// Will be sanitized later.
-						echo $attr->text; // phpcs:ignore 
+						// Preserve allowed rich text at the block's output boundary.
+						Sanitizer::e_sanitize( $attr->text );
 					?>
 				</div>
 			</div>

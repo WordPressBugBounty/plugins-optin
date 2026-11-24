@@ -8,7 +8,10 @@ use OPTN\Includes\Utils\Utils;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Abstract Base Block Class
+ * Supplies shared rendering behavior for concrete frontend campaign blocks.
+ *
+ * Stores decoded block and campaign context, selects the matching block version, and
+ * provides common markup and attribute helpers to the individual block renderers.
  */
 abstract class BaseBlock implements Block {
 	/**
@@ -26,10 +29,10 @@ abstract class BaseBlock implements Block {
 	protected $post_data;
 
 	/**
-	 * Block constructor.
+	 * Store the decoded block structure and optional saved campaign context.
 	 *
-	 * @param object      $data block data.
-	 * @param object|null $post_data post data.
+	 * @param \stdClass      $data      Decoded block name, attributes, and nested block data.
+	 * @param \stdClass|null $post_data Saved campaign record that owns the block, when available.
 	 */
 	public function __construct( $data, $post_data = null ) {
 		$this->data      = $data;
@@ -115,7 +118,7 @@ abstract class BaseBlock implements Block {
 				'left'      => $this->data->attributes->left,
 				'transform' => $this->data->attributes->transform,
 			);
-			$data['data-optn-pos'] = htmlspecialchars( wp_json_encode( $pos ) );
+			$data['data-optn-pos'] = wp_json_encode( $pos );
 		}
 
 		return $data;

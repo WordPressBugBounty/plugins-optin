@@ -8,7 +8,10 @@ use OPTN\Includes\Utils\Cache;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Parent MailService class.
+ * Provides shared account access, mapping, and delivery helpers for integrations.
+ *
+ * Concrete providers use this base to load their saved account and campaign settings,
+ * normalize submitted fields, and share common persistence and request behavior.
  */
 abstract class BaseMailIntegration implements MailIntegration {
 

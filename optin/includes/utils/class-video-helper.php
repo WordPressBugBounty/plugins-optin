@@ -9,7 +9,10 @@
 namespace OPTN\Includes\Utils;
 
 /**
- * Video
+ * Builds safe preview and embed markup for supported video sources.
+ *
+ * Recognizes YouTube and Vimeo URLs, prepares provider-specific iframe markup, and
+ * wraps videos with the saved campaign's thumbnail and responsive layout settings.
  */
 class VideoHelper {
 
@@ -105,9 +108,9 @@ class VideoHelper {
 	/**
 	 * Wraps content with thumbnail
 	 *
-	 * @param string $content content.
-	 * @param object $attr attributes.
-	 * @param bool   $is_bg is background.
+	 * @param string    $content content.
+	 * @param \stdClass $attr Decoded video block attributes used to build the wrapper.
+	 * @param bool      $is_bg is background.
 	 * @return string
 	 */
 	private static function wrap( $content, $attr, $is_bg ) {
@@ -122,7 +125,7 @@ class VideoHelper {
 		} else {
 			$html = '<div class="optn-block-video-thirdparty">';
 
-            $src = isset( $attr->thumbSrc->id ) ? wp_get_attachment_image_url( $attr->thumbSrc->id, 'full' ) : $attr->thumbSrc->url; // phpcs:ignore
+			$src = isset( $attr->thumbSrc->id ) ? wp_get_attachment_image_url( $attr->thumbSrc->id, 'full' ) : $attr->thumbSrc->url; // phpcs:ignore
 
 			if ( ! empty( $src ) && ! $attr->autoplay ) {
 				ob_start();
@@ -148,9 +151,9 @@ class VideoHelper {
 	/**
 	 * Generate youtube html
 	 *
-	 * @param object $attr attributes.
-	 * @param bool   $is_bg is background.
-	 * @param array  $extra_attrs extra attributes.
+	 * @param \stdClass $attr Decoded video block attributes used to build the wrapper.
+	 * @param bool      $is_bg is background.
+	 * @param array     $extra_attrs extra attributes.
 	 * @return string
 	 */
 	private static function get_youtube_html( &$attr, $is_bg, $extra_attrs ) {
@@ -211,9 +214,9 @@ class VideoHelper {
 	/**
 	 * Generate vimeo html
 	 *
-	 * @param object $attr attributes.
-	 * @param bool   $is_bg is background.
-	 * @param array  $extra_attrs extra attributes.
+	 * @param \stdClass $attr Decoded video block attributes used to build the wrapper.
+	 * @param bool      $is_bg is background.
+	 * @param array     $extra_attrs extra attributes.
 	 * @return string
 	 */
 	private static function get_vimeo_html( &$attr, $is_bg, $extra_attrs ) {
@@ -260,9 +263,9 @@ class VideoHelper {
 	/**
 	 * Generate video html
 	 *
-	 * @param object $attr attributes.
-	 * @param bool   $is_bg is background.
-	 * @param array  $extra_attrs extra attributes.
+	 * @param \stdClass $attr Decoded video block attributes used to build the wrapper.
+	 * @param bool      $is_bg is background.
+	 * @param array     $extra_attrs extra attributes.
 	 * @return string
 	 */
 	private static function get_video_tag_html( &$attr, $is_bg, $extra_attrs ) {
@@ -284,7 +287,7 @@ class VideoHelper {
 			$tags['data-optn-autoplay'] = 'true';
 		} else {
 
-            $thumb_url = isset( $attr->thumbSrc->id ) ? wp_get_attachment_image_url( $attr->thumbSrc->id, 'full' ) : $attr->thumbSrc->url; // phpcs:ignore
+			$thumb_url = isset( $attr->thumbSrc->id ) ? wp_get_attachment_image_url( $attr->thumbSrc->id, 'full' ) : $attr->thumbSrc->url; // phpcs:ignore
 
 			if ( ! empty( $thumb_url ) ) {
 				$tags['poster'] = esc_url( $thumb_url );
@@ -317,12 +320,16 @@ class VideoHelper {
 	/**
 	 * Extract the Vimeo video ID from a URL.
 	 *
-	 * @param object $attr attributes.
-	 * @param bool   $is_bg is background.
-	 * @param array  $extra_attrs extra attributes.
+	 * @param \stdClass $attr Decoded video block attributes used to build the wrapper.
+	 * @param bool      $is_bg is background.
+	 * @param array     $extra_attrs extra attributes.
 	 * @return string
 	 */
 	public static function get_video_html( &$attr, $is_bg = false, $extra_attrs = array() ) {
+		// Legacy records and direct callers may bypass the campaign schema boundary.
+		if ( ! is_object( $attr ) || ! is_string( $attr->url ?? null ) || '' === esc_url_raw( $attr->url, array( 'http', 'https' ) ) ) {
+			return '';
+		}
 		$type = self::get_video_url_type( $attr->url );
 
 		if ( self::$youtube === $type ) {

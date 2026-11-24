@@ -1,8 +1,15 @@
-<?php // phpcs:ignore
+<?php
+/**
+ * Registers and handles administrative REST endpoints for opt-ins and their data.
+ *
+ * The handlers validate request values, delegate persistence and lookup work to the
+ * database or supporting services, and format results for the WordPress REST API.
+ *
+ * @package Optin
+ */
 
 namespace OPTN\Admin;
 
-use OPTN\Admin\Rest\RestAbTesting;
 use OPTN\Admin\Rest\RestIntegration;
 use OPTN\Includes\Analytics;
 use OPTN\Includes\Db;
@@ -16,6 +23,12 @@ use WP_HTTP_Response;
 use WP_REST_Request;
 use WP_REST_Response;
 
+/**
+ * Provides the authenticated REST API used by the opt-in administration screens.
+ *
+ * Owns endpoint registration and request handling for saved opt-ins, leads, display
+ * rules, templates, settings, products, archive terms, and rendered shortcode previews.
+ */
 class RestAdmin {
 
 	/**
@@ -26,15 +39,28 @@ class RestAdmin {
 	private $db;
 
 
+	/**
+	 * Load the database service and register this class's administration routes.
+	 *
+	 * Route registration happens when the REST admin controller is constructed, so
+	 * WordPress can dispatch matching requests to the handlers below.
+	 */
 	public function __construct() {
 		$this->db = Db::get_instance();
 		$this->register_routes();
 	}
 
+	/**
+	 * Register the authenticated REST endpoints provided by the admin controller.
+	 *
+	 * Also initializes analytics and integration routes, then binds each opt-in admin
+	 * route to its handler and shared capability check.
+	 *
+	 * @return void
+	 */
 	public function register_routes() {
 		Analytics::get_instance()->register_admin_routes();
 		new RestIntegration();
-		new RestAbTesting();
 
 		register_rest_route(
 			'optn/v1',
@@ -212,7 +238,7 @@ class RestAdmin {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'handle_get_settings' ),
-				'permission_callback' => array( $this, 'permission_callback' ),
+				'permission_callback' => array( $this, 'settings_permission_callback' ),
 			)
 		);
 
@@ -222,25 +248,7 @@ class RestAdmin {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'handle_update_settings' ),
-				'permission_callback' => array( $this, 'permission_callback' ),
-			)
-		);
-
-		register_rest_route(
-			'optn/v1',
-			'/download-assets',
-			array(
-				'methods'             => 'POST',
-				'callback'            => array( $this, 'handle_download_assets' ),
-				'permission_callback' => array( $this, 'permission_callback' ),
-				'args'                => array(
-					'image_url' => array(
-						'required'          => true,
-						'validate_callback' => function ( $param ) {
-							return filter_var( $param, FILTER_VALIDATE_URL );
-						},
-					),
-				),
+				'permission_callback' => array( $this, 'settings_permission_callback' ),
 			)
 		);
 
@@ -266,28 +274,20 @@ class RestAdmin {
 
 		register_rest_route(
 			'optn/v1',
-			'/assets/videos',
-			array(
-				'methods'             => 'GET',
-				'callback'            => array( $this, 'handle_get_video_assets' ),
-				'permission_callback' => array( $this, 'permission_callback' ),
-			)
-		);
-
-		register_rest_route(
-			'optn/v1',
 			'/export/leads',
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'handle_export_leads' ),
 				'permission_callback' => array( $this, 'permission_callback' ),
-				// 'permission_callback' => '__return_true',
 			)
 		);
 	}
 
 	/**
-	 * Export leads
+	 * Build the exported lead dataset for the current administration request.
+	 *
+	 * Delegates formatting and file-data preparation to ExportHelper, then wraps the
+	 * resulting payload in the standard REST response format.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
@@ -297,11 +297,13 @@ class RestAdmin {
 	}
 
 	/**
-	 * Get Stock Images.
+	 * Return stock image choices for a search query and requested page.
 	 *
-	 * @param WP_REST_Request $req request.
+	 * Sanitizes search and source values, applies pagination defaults, requires a
+	 * non-empty query for the stock source, and allows extensions to supply results.
 	 *
-	 * @return WP_REST_Response
+	 * @param WP_REST_Request $req Request containing optional `s`, `page`, `limit`, and `src` values.
+	 * @return WP_REST_Response Image choices or a validation response.
 	 */
 	public function handle_get_image_assets( $req ) {
 		$s     = isset( $req['s'] ) ? sanitize_text_field( $req['s'] ) : '';
@@ -313,34 +315,19 @@ class RestAdmin {
 			return rest_ensure_response( new WP_REST_Response( array(), 400 ) );
 		}
 
-		$res = Assets::get_images( $s, $page, $limit, $src );
-
-		return rest_ensure_response( $res );
-	}
-
-	/**
-	 * Get Stock Videos.
-	 *
-	 * @param WP_REST_Request $req request.
-	 *
-	 * @return WP_REST_Response
-	 */
-	public function handle_get_video_assets( $req ) {
-		$s     = isset( $req['s'] ) ? sanitize_text_field( $req['s'] ) : '';
-		$page  = isset( $req['page'] ) ? intval( $req['page'] ) : 0;
-		$limit = isset( $req['limit'] ) ? intval( $req['limit'] ) : 10;
-
-		if ( empty( $s ) ) {
-			return rest_ensure_response( new WP_REST_Response( array(), 400 ) );
+		$res = apply_filters( 'optn_image_assets', null, $s, $page, $limit, $src );
+		if ( $res === null ) {
+			$res = Assets::get_images( $s, $page, $limit );
 		}
 
-		$res = Assets::get_videos( $s, $page, $limit );
-
 		return rest_ensure_response( $res );
 	}
 
 	/**
-	 * Get settings
+	 * Return the current global plugin settings for the administration interface.
+	 *
+	 * Reads settings through the Settings service and wraps the configuration in a
+	 * WordPress HTTP response for REST serialization.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
@@ -349,9 +336,12 @@ class RestAdmin {
 	}
 
 	/**
-	 * Get settings
+	 * Validate and persist global plugin settings submitted by an administrator.
 	 *
-	 * @param WP_REST_Request $req request.
+	 * Requires an array in the `settings` request field and delegates sanitization and
+	 * persistence to the Settings service before returning a created response.
+	 *
+	 * @param WP_REST_Request $req Request containing the settings array to update.
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function handle_update_settings( WP_REST_Request $req ) {
@@ -369,88 +359,14 @@ class RestAdmin {
 	}
 
 	/**
-	 * Download assets from our hosted server
+	 * Retrieve one saved opt-in record by its database ID.
 	 *
-	 * @param WP_REST_Request $req Request object.
-	 * @return WP_REST_Response|WP_Error
+	 * Reads the optional ID from the request, asks the database service for that saved
+	 * record, and converts the result to a WordPress REST response.
+	 *
+	 * @param WP_REST_Request $req Request containing the saved opt-in `id`.
+	 * @return WP_REST_Response REST response containing the saved record or lookup result.
 	 */
-	public function handle_download_assets( WP_REST_Request $req ) {
-		$image_url = esc_url_raw( $req->get_param( 'image_url' ) );
-
-		$def_value = array(
-			'id'  => null,
-			'url' => '',
-		);
-
-		$prefixed_filename = Assets::get_image_filename( $image_url );
-
-		if ( empty( $prefixed_filename ) ) {
-			return rest_ensure_response( $def_value );
-		}
-
-		global $wpdb;
-		$query = $wpdb->prepare(
-			"SELECT ID
-			FROM {$wpdb->posts}
-			WHERE post_type = 'attachment'
-			AND post_title = %s
-			LIMIT 1",
-			sanitize_file_name( pathinfo( $prefixed_filename, PATHINFO_FILENAME ) )
-		);
-
-		$existing_attachment_id = $wpdb->get_var( $query ); // phpcs:ignore
-
-		if ( $existing_attachment_id ) {
-			$existing_image_url = wp_get_attachment_url( $existing_attachment_id );
-			return rest_ensure_response(
-				array(
-					'id'  => $existing_attachment_id,
-					'url' => $existing_image_url,
-				)
-			);
-		}
-
-		// Download and Save image.
-
-		// If image is from Unsplash, then we can't directly download it.
-		// We must use our proxy.
-		if ( str_starts_with( $image_url, 'https://api.unsplash.com/photos/' ) ) {
-			$image_url = Assets::get_image( $image_url );
-
-			// Allow downloading from localhost.
-			if ( Utils::is_debug_mode() ) {
-				add_filter( 'http_request_host_is_external', '__return_true' );
-			}
-
-			if ( empty( $image_url ) ) {
-				return rest_ensure_response( $def_value );
-			}
-		}
-
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-		require_once ABSPATH . 'wp-admin/includes/media.php';
-		require_once ABSPATH . 'wp-admin/includes/image.php';
-
-		$tmp_attachment_id = media_sideload_image( $image_url, 0, $prefixed_filename, 'id' );
-
-		if ( is_wp_error( $tmp_attachment_id ) ) {
-			return rest_ensure_response( $def_value );
-		}
-
-		$attachment_post             = get_post( $tmp_attachment_id );
-		$attachment_post->post_title = sanitize_file_name( pathinfo( $prefixed_filename, PATHINFO_FILENAME ) );
-		wp_update_post( $attachment_post );
-
-		$image_url = wp_get_attachment_url( $tmp_attachment_id );
-
-		return rest_ensure_response(
-			array(
-				'id'  => $tmp_attachment_id,
-				'url' => $image_url,
-			)
-		);
-	}
-
 	public function handle_get_post( WP_REST_Request $req ) {
 		$id = isset( $req['id'] ) ? intval( $req['id'] ) : null;
 
@@ -459,11 +375,21 @@ class RestAdmin {
 		return rest_ensure_response( $res );
 	}
 
+	/**
+	 * Create, retrieve, or update a saved opt-in based on the requested operation.
+	 *
+	 * Sanitizes scalar fields, accepts serialized data only when it is valid JSON, and
+	 * dispatches `create`, `get`, or `update` operations to the database service. Database
+	 * errors pass through; operation errors are returned as a bad-request REST response.
+	 *
+	 * @param WP_REST_Request $req Request containing the operation and opt-in fields.
+	 * @return WP_REST_Response|WP_Error REST result, or a database error.
+	 */
 	public function handle_save_post( WP_REST_Request $req ) {
 		$req_type = isset( $req['req_type'] ) ? sanitize_text_field( $req['req_type'] ) : null;
 
 		$title       = isset( $req['title'] ) ? sanitize_text_field( $req['title'] ) : null;
-		$data   = isset( $req['data'] ) && Utils::is_valid_json( $req['data'] ) ? $req['data'] : null; // phpcs:ignore
+		$data        = isset( $req['data'] ) && Utils::is_valid_json( $req['data'] ) ? $req['data'] : null; // phpcs:ignore
 		$type        = isset( $req['type'] ) ? sanitize_text_field( $req['type'] ) : null;
 		$id          = isset( $req['id'] ) ? intval( $req['id'] ) : null;
 		$template_id = isset( $req['templateId'] ) ? intval( $req['templateId'] ) : null;
@@ -478,15 +404,31 @@ class RestAdmin {
 			$res = $this->db->update_saved_post( $id, $title, $status, $data, $type );
 		}
 
+		if ( is_wp_error( $res ) ) {
+			return $res; }
+		if ( 'create' === $req_type && ! empty( $res['id'] ) ) {
+			// Imported templates and copies need the same support status as reopened optins.
+			$saved                       = $this->db->get_saved_post( $res['id'] );
+			$res['unsupported_features'] = $saved['unsupported_features'] ?? array();
+		}
 		if ( isset( $res['error'] ) ) {
 			return rest_ensure_response(
 				new WP_REST_Response( array( 'error' => $res['error'] ), 400 )
 			);
 		}
 
-		return rest_ensure_response( $res );
+			return rest_ensure_response( $res );
 	}
 
+	/**
+	 * Return display-rule choices filtered by rule type, search term, and exclusions.
+	 *
+	 * Sanitizes the type and search text, converts excluded identifiers to positive
+	 * integers, and delegates option lookup to the display-rule service.
+	 *
+	 * @param WP_REST_Request $req Request containing optional `type`, `search`, and `exclude` values.
+	 * @return WP_REST_Response REST response containing matching rule values.
+	 */
 	public function handle_get_rule_values( WP_REST_Request $req ) {
 		$type    = isset( $req['type'] ) ? sanitize_text_field( $req['type'] ) : null;
 		$search  = isset( $req['search'] ) ? sanitize_text_field( $req['search'] ) : '';
@@ -497,6 +439,15 @@ class RestAdmin {
 		return rest_ensure_response( $res );
 	}
 
+	/**
+	 * Return the available display-rule options for a requested rule type.
+	 *
+	 * Sanitizes the optional type value and asks the display-rule service to build the
+	 * corresponding option list for the administration interface.
+	 *
+	 * @param WP_REST_Request $req Request containing the optional `type` value.
+	 * @return WP_REST_Response REST response containing the rule options.
+	 */
 	public function handle_get_rule_options( WP_REST_Request $req ) {
 		$type = isset( $req['type'] ) ? sanitize_text_field( $req['type'] ) : null;
 
@@ -505,6 +456,15 @@ class RestAdmin {
 		return rest_ensure_response( $res );
 	}
 
+	/**
+	 * Return a filtered and sorted page of saved opt-ins.
+	 *
+	 * Reads status, pagination, search, filters, and sort preferences from the request,
+	 * normalizes those values, and returns the database query result as REST data.
+	 *
+	 * @param WP_REST_Request $req Request containing optional list and sorting criteria.
+	 * @return WP_REST_Response REST response containing the requested opt-in page.
+	 */
 	public function handle_get_posts( WP_REST_Request $req ) {
 		// phpcs:disable Generic.Formatting.MultipleStatementAlignment.NotSameWarning
 		$status         = isset( $req['status'] ) ? sanitize_text_field( $req['status'] ) : 'all';
@@ -525,16 +485,25 @@ class RestAdmin {
 		return rest_ensure_response( $this->db->get_posts( $status, $limit, $page, $search, $filter, $sort ) );
 	}
 
+	/**
+	 * Soft-delete or permanently delete the opt-ins identified in a request.
+	 *
+	 * Requires an array of IDs and an explicit `soft` or `hard` deletion mode, converts
+	 * IDs to positive integers, and returns a validation error or database result.
+	 *
+	 * @param WP_REST_Request $req Request containing `ids` and deletion `type`.
+	 * @return WP_REST_Response REST response containing the deletion result or validation error.
+	 */
 	public function handle_delete_post( WP_REST_Request $req ) {
 
-		// Validation/Sanitization
+		// Validate the submitted ID list before converting its entries.
 		$ids = isset( $req['ids'] ) ? $req['ids'] : null;
 		if ( ! is_array( $ids ) ) {
 			return rest_ensure_response( new WP_Error( 'optin_invalid_request', __( 'Post ID(s) is required', 'optin' ), array( 'status' => 400 ) ) );
 		}
 		$ids = array_map( 'absint', $ids );
 
-		// Validation/Sanitization
+		// Accept only the supported soft or hard deletion modes.
 		$type = isset( $req['type'] ) ? sanitize_text_field( $req['type'] ) : null;
 		if ( $type !== 'soft' && $type !== 'hard' ) {
 			return rest_ensure_response( new WP_Error( 'optin_invalid_request', __( 'Invalid Delete Type', 'optin' ), array( 'status' => 400 ) ) );
@@ -546,6 +515,15 @@ class RestAdmin {
 	}
 
 
+	/**
+	 * Restore one or more soft-deleted opt-ins.
+	 *
+	 * Requires an array of opt-in IDs, converts each ID to a positive integer, and
+	 * delegates restoration to the database service.
+	 *
+	 * @param WP_REST_Request $req Request containing the opt-in `ids` to restore.
+	 * @return WP_REST_Response REST response containing the restoration result or validation error.
+	 */
 	public function handle_restore_post( WP_REST_Request $req ) {
 		// Validation/Sanitization.
 		$ids = isset( $req['ids'] ) ? $req['ids'] : null;
@@ -561,9 +539,12 @@ class RestAdmin {
 
 
 	/**
-	 * Resets a post stats
+	 * Reset analytics statistics for one or more saved opt-ins.
 	 *
-	 * @param WP_REST_Request $req request.
+	 * Requires an array of opt-in IDs, normalizes each to a positive integer, and returns
+	 * the database reset result in a status response.
+	 *
+	 * @param WP_REST_Request $req Request containing the opt-in `ids` to reset.
 	 * @return WP_REST_Response
 	 */
 	public function handle_reset_post( WP_REST_Request $req ) {
@@ -578,6 +559,15 @@ class RestAdmin {
 		return rest_ensure_response( new WP_REST_Response( array( 'success' => $res ), 200 ) );
 	}
 
+	/**
+	 * Return a paginated list of captured leads.
+	 *
+	 * Reads the requested page size and page number, normalizes invalid page numbers to
+	 * the first page, and returns the database lead query result as REST data.
+	 *
+	 * @param WP_REST_Request $req Request containing optional `limit` and `page` values.
+	 * @return WP_REST_Response REST response containing lead records and paging data.
+	 */
 	public function handle_get_leads( WP_REST_Request $req ) {
 		// $status = isset( $req['status'] ) ? sanitize_text_field( $req['status'] ) : 'all';
 		$limit = isset( $req['limit'] ) ? intval( $req['limit'] ) : 12;
@@ -587,9 +577,18 @@ class RestAdmin {
 		return rest_ensure_response( $this->db->get_leads( $limit, $page ) );
 	}
 
+	/**
+	 * Delete captured leads selected by their database IDs.
+	 *
+	 * Validates that the request contains an ID list, normalizes each ID to a positive
+	 * integer, and returns either the database error or a success response.
+	 *
+	 * @param WP_REST_Request $req Request containing lead `ids` to delete.
+	 * @return WP_REST_Response REST response describing the deletion result.
+	 */
 	public function handle_delete_leads( WP_REST_Request $req ) {
 
-		// Validation/Sanitization
+		// Validate the submitted lead ID list before converting its entries.
 		$ids = isset( $req['ids'] ) ? $req['ids'] : null;
 		if ( ! is_array( $ids ) ) {
 			return rest_ensure_response( new WP_Error( 'optin_invalid_request', __( 'Lead ID(s) is required', 'optin' ), array( 'status' => 400 ) ) );
@@ -606,6 +605,14 @@ class RestAdmin {
 	}
 
 
+	/**
+	 * Return published product choices from WooCommerce and Easy Digital Downloads.
+	 *
+	 * Includes WooCommerce products when its product API is available, always queries
+	 * published EDD downloads, and reports whether WooCommerce was active in the result.
+	 *
+	 * @return WP_REST_Response REST response containing product choices and WooCommerce state.
+	 */
 	public function handle_get_products() {
 		$active   = false;
 		$products = array();
@@ -661,6 +668,14 @@ class RestAdmin {
 		);
 	}
 
+	/**
+	 * Return public taxonomy terms as archive-target choices for display rules.
+	 *
+	 * Iterates public post types and their taxonomies, excludes the plugin's internal
+	 * conversion-popup type, and formats each term as a labeled archive choice.
+	 *
+	 * @return WP_REST_Response REST response containing archive page choices.
+	 */
 	public function handle_get_archive_pages() {
 
 		$archive_data = array();
@@ -704,9 +719,12 @@ class RestAdmin {
 	}
 
 	/**
-	 * Duplicate post by id
+	 * Create a copy of the saved opt-in identified by the route ID.
 	 *
-	 * @param WP_REST_Request $req request object.
+	 * Rejects a missing or invalid ID, delegates copying to the database service, and
+	 * reports whether the new record was created along with the copy result.
+	 *
+	 * @param WP_REST_Request $req REST request containing the route's opt-in `id`.
 	 * @return WP_REST_Response
 	 */
 	public function handle_duplicate_optin( WP_REST_Request $req ) {
@@ -717,6 +735,9 @@ class RestAdmin {
 		}
 
 		$res = $this->db->copy_post( $id );
+		if ( is_wp_error( $res ) ) {
+			return $res;
+		}
 
 		$success = ! is_null( $res['id'] );
 
@@ -729,12 +750,21 @@ class RestAdmin {
 	}
 
 
+	/**
+	 * Return the available opt-in templates for the administration interface.
+	 *
+	 * Delegates template discovery to the template service and wraps its result as REST data.
+	 *
+	 * @return WP_REST_Response REST response containing available templates.
+	 */
 	public function handle_get_templates() {
 		return rest_ensure_response( Templates::get_templates() );
 	}
 
 	/**
-	 * Get presets
+	 * Return the available campaign presets for the administration interface.
+	 *
+	 * Delegates preset retrieval to the template service and wraps the catalog as REST data.
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -743,9 +773,12 @@ class RestAdmin {
 	}
 
 	/**
-	 * Get preset by ID
+	 * Return one preset's saved configuration by its route ID.
 	 *
-	 * @param WP_REST_Request $req request object.
+	 * Converts the ID to an integer, rejects an empty identifier, and asks the template
+	 * service to fetch the matching preset.
+	 *
+	 * @param WP_REST_Request $req REST request containing the preset `id`.
 	 * @return WP_REST_Response
 	 */
 	public function handle_get_preset( WP_REST_Request $req ) {
@@ -758,12 +791,15 @@ class RestAdmin {
 		return rest_ensure_response( Templates::fetch_single_preset( $id ) );
 	}
 
-		/**
-		 * Get preset by ID
-		 *
-		 * @param WP_REST_Request $req request object.
-		 * @return WP_REST_Response
-		 */
+	/**
+	 * Apply a recipe to an opt-in with optional status and disable-others settings.
+	 *
+	 * Reads the route ID and optional activation flags, then delegates recipe activation
+	 * and related campaign updates to the database service.
+	 *
+	 * @param WP_REST_Request $req Request containing recipe ID and optional activation flags.
+	 * @return WP_REST_Response REST response containing the activation result.
+	 */
 	public function handle_activate_recipe( WP_REST_Request $req ) {
 		$id = isset( $req['id'] ) ? intval( $req['id'] ) : null;
 
@@ -781,10 +817,13 @@ class RestAdmin {
 	}
 
 	/**
-	 * Render actual content from shortcode
+	 * Render shortcode content with page header and footer assets for a preview.
 	 *
-	 * @param WP_REST_Request $req request object.
-	 * @return array
+	 * Executes the submitted shortcode, resolves its associated page, captures head and
+	 * footer output, and returns a complete HTML document when that context exists.
+	 *
+	 * @param WP_REST_Request $req Request containing the shortcode string to render.
+	 * @return array{data: string} Rendered preview document or an empty string without page context.
 	 */
 	public function shortcode_content( WP_REST_Request $req ) {
 		$params    = $req->get_params();
@@ -811,19 +850,10 @@ class RestAdmin {
 
 			wp_reset_postdata();
 
-			$styles = '
-				<style>
-					body {
-						overflow: hidden !important;
-						background-color: transparent !important;
-					}
-				</style>
-			';
-
 			$res  = '<!DOCTYPE html><html lang="en"><head>';
 			$res .= $header;
-			$res .= $styles . '</head>';
-			$res .= '<body>' . $content . '</body>';
+			$res .= '</head>';
+			$res .= '<body style="overflow: hidden !important; background-color: transparent !important;">' . $content . '</body>';
 			$res .= '<footer>' . $footer . '</footer>';
 			$res .= '</html>';
 		}
@@ -834,10 +864,13 @@ class RestAdmin {
 	}
 
 	/**
-	 * Shortcode support for get post id or home page id
+	 * Resolve the page context associated with a shortcode for preview rendering.
 	 *
-	 * @param string $shortcode shortcode.
-	 * @return array
+	 * Extracts an explicit shortcode ID when present; otherwise determines the configured
+	 * front page or posts page and enables WPForms header asset loading when required.
+	 *
+	 * @param string $shortcode Shortcode markup whose page context should be resolved.
+	 * @return array{id: int|string|false, is_front: bool} Resolved page ID and front-page flag.
 	 */
 	public function shortcode_support( $shortcode ) {
 		$pattern  = get_shortcode_regex();
@@ -875,5 +908,14 @@ class RestAdmin {
 	 */
 	public function permission_callback() {
 		return current_user_can( OPTN_MIN_CAPABILITY );
+	}
+
+	/**
+	 * Require site administration authority for global settings.
+	 *
+	 * @return bool Whether the current user may manage site-wide settings.
+	 */
+	public function settings_permission_callback() {
+		return current_user_can( 'manage_options' );
 	}
 }

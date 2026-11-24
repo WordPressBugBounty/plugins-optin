@@ -2,21 +2,18 @@
 
 namespace OPTN\Admin;
 
-use OPTN\Includes\AbTesting;
 use OPTN\Includes\Compatibility\CachingPlugins;
 use OPTN\Includes\Db;
-use OPTN\Includes\Integrations\Other\GoogleAnalytics;
-use OPTN\Includes\Integrations\Other\Zapier;
 use OPTN\Includes\Settings;
-use OPTN\Includes\Notice\Notice;
-use OPTN\Includes\Utils\Deactive;
 use OPTN\Includes\Utils\PluginActions;
 use OPTN\Includes\Utils\Utils;
-use OPTN\Includes\WpxpoPlugins;
 use OPTN\Includes\Xpo;
 
 /**
- * The admin-specific functionality of the plugin.
+ * Registers administration hooks, screens, assets, and editor integrations.
+ *
+ * Connects WordPress admin lifecycle events to plugin settings, campaign editor assets,
+ * notices, and compatibility behavior required by the administration interface.
  *
  * @link       https://wpxpo.com
  * @since      1.0.0
@@ -67,16 +64,14 @@ class Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 		Settings::init_settings( '1.0.0' );
-		$this->init_integrations();
+
 		$this->init_custom_hooks();
-		$this->init_scheduled_tasks();
-		new AbTesting();
-		new Deactive();
-		new Notice();
-		new WpxpoPlugins();
+		// Cron schedules can load translations in other plugins.
+		add_action( 'init', array( $this, 'init_scheduled_tasks' ) );
+
 		new PluginActions();
 		CachingPlugins::init();
-		add_action( 'in_admin_header', array( $this, 'remove_all_notices' ) );
+		// Keep the custom admin notice removal hook disabled.
 	}
 
 	/**
@@ -135,35 +130,8 @@ class Admin {
 	 *
 	 * @return void
 	 */
-	public function admin_head() {
-		if ( ! $this->is_in_menu_page() ) {
-			return;
-		}
+	public function admin_head() {}
 
-		if ( defined( 'OPTN_DEV_MODE' ) && true === OPTN_DEV_MODE ) {
-			echo '<script src="https://unpkg.com/react-scan/dist/auto.global.js"></script>'; // phpcs:ignore
-
-			echo '<link href="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.5.0/spec/resources/fonts/web-fonts/embedded.min.css" rel="stylesheet" crossorigin="anonymous"><script src="https://cdn.jsdelivr.net/npm/dom-to-image-more@3.5.0/dist/dom-to-image-more.min.js"></script>'; // phpcs:ignore
-		}
-	}
-
-
-	/**
-	 * Initilizes active integrations.
-	 *
-	 * @return void
-	 */
-	private function init_integrations() {
-		$ints = Settings::get_integration_settings();
-
-		if ( isset( $ints['int_bg_enable_ga'] ) && true === $ints['int_bg_enable_ga'] ) {
-			new GoogleAnalytics();
-		}
-
-		if ( isset( $ints['int_bg_enable_zapier'] ) && true === $ints['int_bg_enable_zapier'] ) {
-			new Zapier();
-		}
-	}
 
 	/**
 	 * Register all routes for admin
@@ -229,13 +197,8 @@ class Admin {
 				'slug'  => 'wowoptin-settings',
 			),
 			array(
-				'title' => __( 'WowOptin License', 'optin' ),
-				'menu'  => __( 'License', 'optin' ),
-				'slug'  => Utils::is_show_license_page() ? 'wowoptin-license' : null,
-			),
-			array(
-				'title' => __( 'Our Products', 'optin' ),
-				'menu'  => __( 'Our Products', 'optin' ),
+				'title' => __( 'WPXPO Plugins', 'optin' ),
+				'menu'  => __( 'WPXPO Plugins', 'optin' ),
 				'slug'  => 'wowoptin-wpxpo-plugins',
 			),
 			array(
@@ -250,44 +213,14 @@ class Admin {
 			),
 		);
 
-		$pro_link      = '';
-		$pro_link_text = '';
-
-		// Expired check goes first: is_lc_active() is also false for expired licenses.
-		if ( Xpo::is_lc_expired() ) {
-			$pro_link      = Xpo::get_renew_link();
-			$pro_link_text = __( 'Renew License', 'optin' );
-		} elseif ( ! Xpo::is_lc_active() ) {
-			$pro_link      = 'https://www.wowoptin.com/#pricing';
-			$pro_link_text = __( 'Upgrade to Pro', 'optin' );
-		}
-
-		if ( ! empty( $pro_link ) ) {
-			ob_start();
-			?>
-			<a href="<?php echo esc_url( $pro_link ); ?>" target="_blank" class="optn-pro-link">
-				<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M2.86 6.553a.5.5 0 01.823-.482l3.02 2.745c.196.178.506.13.64-.098L9.64 4.779a.417.417 0 01.72 0l2.297 3.939a.417.417 0 00.64.098l3.02-2.745a.5.5 0 01.823.482l-1.99 8.63a.833.833 0 01-.813.646H5.663a.833.833 0 01-.812-.646L2.86 6.553z" stroke="currentColor" stroke-width="1.5"></path>
-				</svg>
-				<span><?php echo esc_html( $pro_link_text ); ?></span>
-			</a>
-			<?php
-			$submenu_content = ob_get_clean();
-
-			$submenus[] = array(
-				'title' => __( 'WowOptin Pro', 'optin' ),
-				'menu'  => $submenu_content,
-				'slug'  => 'wowoptin-pro',
-			);
-		}
-
+		$submenus = apply_filters( 'optn_admin_submenus', $submenus );
 		foreach ( $submenus as $i => $submenu ) {
 			if ( ! empty( $submenu['slug'] ) ) {
 				add_submenu_page(
 					'wowoptin',
 					$submenu['title'],
 					$submenu['menu'],
-					OPTN_MIN_CAPABILITY,
+					in_array( $submenu['slug'], array( 'wowoptin-settings', 'wowoptin-integrations' ), true ) ? 'manage_options' : OPTN_MIN_CAPABILITY,
 					$submenu['slug'],
 					function () {},
 					$i
@@ -335,7 +268,6 @@ class Admin {
 
 		$inline_css = '
 			#toplevel_page_wowoptin li:has(a[href="admin.php?page=wowoptin-builder"]), 
-			#toplevel_page_wowoptin li:has(a[href="admin.php?page=wowoptin-wpxpo-plugins"]),
 			#toplevel_page_wowoptin li:has(a[href="admin.php?page=wowoptin-pro-features"]) {
 				display:none;
 			} 
@@ -379,11 +311,9 @@ class Admin {
 			return;
 		}
 
-		wp_enqueue_style( $this->plugin_name . '-admin-css', OPTN_URL . 'admin/css/wowoptin-admin.min.css', array(), $this->version, 'all' );
-
-		$css_path = OPTN_URL . sprintf( '/build/admin/style-index%s.css', is_rtl() ? '-rtl' : '' );
-
-		wp_enqueue_style( $this->plugin_name . '-admin-build-css', $css_path, array(), $this->version, 'all' );
+		$config = \OPTN\Includes\Utils\AssetConfig::get( 'admin' );
+		foreach ( $config['styles'] as $style ) {
+			wp_enqueue_style( $style['handle'], $style['src'], $style['dependencies'], $style['version'] ); }
 	}
 
 	/**
@@ -397,42 +327,17 @@ class Admin {
 			return;
 		}
 
-		// Compatibility for version <6.6.
-		global $wp_version;
-
-		if ( version_compare( $wp_version, '6.6', '<' ) ) {
-			wp_register_script(
-				'react-jsx-runtime',
-				OPTN_URL . 'assets/js/react-jsx-runtime.js',
-				array( 'react' ),
-				'18.3.0',
-				true
-			);
-		}
-
-		$assets = require_once OPTN_DIR . '/build/admin/index.asset.php';
-
-		// For media upload feature.
+		$config = \OPTN\Includes\Utils\AssetConfig::enqueue( 'admin' );
 		wp_enqueue_media();
-
-		wp_enqueue_script(
-			$this->plugin_name . '-admin-js',
-			OPTN_URL . 'build/admin/index.js',
-			$assets['dependencies'],
-			$assets['version'],
-			true
-		);
-
 		$currency_symbol = Utils::get_currency_symbol();
-
-		$lic_info = Utils::get_license_info();
 
 		$user = get_userdata( get_current_user_id() );
 
 		wp_localize_script(
-			$this->plugin_name . '-admin-js',
+			$config['script']['handle'],
 			'optnAdmin',
-			array_merge(
+			apply_filters(
+				'optn_admin_localized_payload',
 				array(
 					'links'          => array(
 						'adminUrl'       => admin_url( 'post-new.php' ),
@@ -459,17 +364,13 @@ class Admin {
 					'currencySymbol' => $currency_symbol,
 					'curr_user'      => wp_get_current_user()->display_name,
 					'dev_mode'       => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? 'true' : 'false',
-					'pro'            => $lic_info['is_active'] ? 'true' : 'false',
-					'isExpired'      => Xpo::is_lc_expired() ? 'true' : 'false',
-					'renewLink'      => Xpo::get_renew_link(),
 					'settings'       => Settings::get_settings(),
+					'capabilities'   => array(
+						'manageSettings' => current_user_can( 'manage_options' ),
+					),
 					'audio'          => Utils::get_audio_urls(),
-					'show_lic_page'  => Utils::is_show_license_page() ? 'true' : 'false',
 					'version'        => OPTN_VERSION,
-					'license'        => Utils::get_license_key(),
-					'helloBar'       => Notice::get_hellobar_config(),
-				),
-				Xpo::get_wow_products_details()
+				)
 			)
 		);
 	}

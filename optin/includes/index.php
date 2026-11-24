@@ -1,1 +1,6 @@
-<?php // Silence is golden
+<?php
+/**
+ * This directory entrypoint intentionally emits no output.
+ *
+ * @package Optin
+ */

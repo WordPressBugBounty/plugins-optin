@@ -5,7 +5,10 @@ namespace OPTN\Includes\Utils;
 use OPTN\Includes\Utils\Utils;
 
 /**
- * Display Rules Class
+ * Validates display-rule definitions and resolves their selectable values.
+ *
+ * Evaluates supported targeting rules against the current request and supplies the
+ * post, taxonomy, author, commerce, and visitor options shown by the campaign editor.
  */
 class DisplayRules {
 
@@ -24,292 +27,28 @@ class DisplayRules {
 	/**
 	 * Is valid display rule
 	 *
-	 * @param object $rule rule.
+	 * @param \stdClass $rule Decoded display-rule record containing its type and configured values.
 	 * @return boolean
 	 */
 	public static function is_valid_display_rule( $rule ) {
-		$type = $rule->type;
-
-		if ( str_starts_with( $type, 'woo' ) ) {
-			return self::is_valid_woo_display_rule( $rule );
-		}
-
-		if ( str_starts_with( $type, 'edd' ) ) {
-			return self::is_valid_edd_display_rule( $rule );
-		}
-
-		return self::is_valid_general_display_rule( $rule );
-	}
-
-	/**
-	 * Validate WooCommerce Display Rules.
-	 *
-	 * @param object $rule rule.
-	 * @return boolean
-	 */
-	private static function is_valid_woo_display_rule( $rule ) {
-
-		if ( ! function_exists( 'WC' ) ) {
+		if ( ! is_object( $rule ) || ! is_string( $rule->type ?? null ) ) {
 			return false;
 		}
-
-		$type   = $rule->type;
-		$values = $rule->values;
-		$cond   = $rule->cond;
-
-		// Woo Cart Page.
-		if ( 'woo_cart_nocond' === $type ) {
-			return function_exists( 'is_cart' ) && is_cart();
+		/** Null declines a rule; absent or unknown handlers keep unsupported rules false. */
+		$result = apply_filters( 'optn_display_rule_result', null, $rule );
+		if ( null !== $result ) {
+			return true === $result;
 		}
-
-		// Woo Thank You Page.
-		if ( 'woo_thank_nocond' === $type ) {
-			return is_order_received_page();
+		if ( ! in_array( $rule->type ?? '', array( 'entire_nocond', 'front_nocond', 'page', 'parent_page', 'post_posts', 'post_cat', 'post_tags', 'post_type', 'author' ), true ) ) {
+			return false;
 		}
-
-		// Woo Product Page.
-		if ( 'woo_single_product' === $type ) {
-			if ( is_product() ) {
-				$product = wc_get_product();
-
-				if ( ! empty( $product ) ) {
-					return Utils::check_values(
-						strval( $product->get_id() ),
-						$values,
-						$cond
-					);
-				}
-			} elseif ( in_array( $cond, array( 'not_any', 'not_all' ), true ) ) {
-				return true;
-			}
-		}
-
-		// Woo Product Categories.
-		if ( 'woo_cats' === $type ) {
-			if ( ! is_product() ) {
-				return false;
-			}
-
-			$product = wc_get_product();
-
-			if ( ! empty( $product ) ) {
-				return Utils::check_values(
-					$product->get_category_ids(),
-					$values,
-					$cond
-				);
-			}
-		}
-
-		// Woo Product Tags.
-		if ( 'woo_tags' === $type ) {
-			if ( ! is_product() ) {
-				return false;
-			}
-
-			$product = wc_get_product();
-
-			if ( ! empty( $product ) ) {
-				return Utils::check_values(
-					$product->get_tag_ids(),
-					$values,
-					$cond
-				);
-			}
-		}
-
-		// Woo Products in Cart.
-		if ( 'woo_cart_products' === $type ) {
-			if ( ! empty( WC()->cart ) ) {
-				$products = array_values(
-					array_map(
-						function ( $cart_item ) {
-							return strval( $cart_item['product_id'] );
-						},
-						WC()->cart->get_cart() ?? array()
-					)
-				);
-
-				$args = array(
-					'status'       => 'publish',
-					'stock_status' => 'instock',
-					'return'       => 'ids',
-					'limit'        => -1,
-				);
-
-				$all_count = count( wc_get_products( $args ) ); // TODO @samin: Use count posts.
-
-				return Utils::check_values(
-					$products,
-					$values,
-					$cond,
-					$all_count,
-				);
-			}
-		}
-
-		// Woo Number of products in Cart.
-		if ( 'woo_cart_products_num' === $type ) {
-			if ( ! empty( WC()->cart ) ) {
-				$num_of_products = WC()->cart->get_cart_contents_count();
-				return Utils::check_math(
-					$num_of_products,
-					$values,
-					$cond,
-				);
-			}
-		}
-
-		// Woo Cart Total Value.
-		if ( 'woo_cart_value$' === $type ) {
-			if ( ! empty( WC()->cart ) ) {
-				$total = WC()->cart->get_cart_contents_total();
-				return Utils::check_math(
-					$total,
-					$values,
-					$cond,
-				);
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Validate EDD Display Rules.
-	 *
-	 * @param object $rule rule.
-	 * @return boolean
-	 */
-	private static function is_valid_edd_display_rule( $rule ) {
-		$type   = $rule->type;
-		$values = $rule->values;
-		$cond   = $rule->cond;
-
-		// EDD Cart Page.
-		if ( 'edd_cart_nocond' === $type ) {
-			$edd_options = get_option( 'edd_settings', array() );
-			return isset( $edd_options['purchase_page'] ) && get_the_ID() == $edd_options['purchase_page']; // phpcs:ignore
-		}
-
-		// EDD Thank You Page.
-		if ( 'edd_thank_nocond' === $type ) {
-			if ( function_exists( 'edd_is_success_page' ) ) {
-				return edd_is_success_page();
-			}
-		}
-
-		// EDD Product Page.
-		if ( 'edd_single_product' === $type ) {
-			if ( self::is_edd_product() ) {
-				$product_id = get_the_ID();
-				return Utils::check_values(
-					$product_id,
-					$values,
-					$cond,
-				);
-			} elseif ( in_array( $cond, array( 'not_any', 'not_all' ), true ) ) {
-				return true;
-			}
-		}
-
-		// EDD Product Categories.
-		if ( 'edd_cats' === $type ) {
-			if ( self::is_edd_product() ) {
-				$product_id    = get_the_ID();
-				$download_cats = get_the_terms( $product_id, 'download_category' ); // Meow >:3.
-
-				if ( is_array( $download_cats ) ) {
-					$product_cats = array_map(
-						function ( $item ) {
-							return $item->term_id;
-						},
-						$download_cats
-					);
-
-					return Utils::check_values(
-						$product_cats,
-						$values,
-						$cond,
-					);
-				}
-			}
-		}
-
-		if ( 'edd_tags' === $type ) {
-			if ( self::is_edd_product() ) {
-				$product_id    = get_the_ID();
-				$download_tags = get_the_terms( $product_id, 'download_tag' );
-
-				if ( is_array( $download_tags ) ) {
-					$product_tags = array_map(
-						function ( $item ) {
-							return $item->term_id;
-						},
-						$download_tags
-					);
-				}
-
-				return Utils::check_values(
-					$product_tags,
-					$values,
-					$cond,
-				);
-			}
-		}
-
-		// EDD Products in Cart.
-		if ( 'edd_cart_products' === $type ) {
-			if ( function_exists( 'edd_get_cart_contents' ) ) {
-				$products = array_map(
-					function ( $cart_item ) {
-						return strval( $cart_item['id'] );
-					},
-					edd_get_cart_contents()
-				);
-
-				$args = array(
-					'post_type'      => 'download',
-					'post_status'    => 'publish',
-					'fields'         => 'ids',
-					'posts_per_page' => -1,
-				);
-
-				$query = new \WP_Query( $args );
-
-				$all_count = $query->found_posts; // TODO @samin: Use count posts.
-
-				return Utils::check_values(
-					$products,
-					$values,
-					$cond,
-					$all_count,
-				);
-			}
-		}
-
-		// EDD Number of products in Cart.
-		if ( 'edd_cart_products_num' === $type ) {
-			if ( function_exists( 'edd_get_cart_quantity' ) ) {
-				return Utils::check_math( edd_get_cart_quantity(), $values, $cond );
-			}
-		}
-
-		// EDD Total Cart Value.
-		if ( 'edd_cart_value$' === $type ) {
-			if ( function_exists( 'edd_get_cart_total' ) ) {
-				$total = edd_get_cart_total();
-				return Utils::check_math( $total, $values, $cond );
-			}
-		}
-
-		return false;
+		return self::is_valid_general_display_rule( $rule );
 	}
 
 	/**
 	 * Check General Display Rules.
 	 *
-	 * @param object $rule rule.
+	 * @param \stdClass $rule Decoded display-rule record passed to the general evaluator.
 	 * @return boolean
 	 */
 	private static function is_valid_general_display_rule( $rule ) {
@@ -318,35 +57,24 @@ class DisplayRules {
 		$cond   = $rule->cond;
 
 		// Entire Page.
-		if ( str_starts_with( $type, 'entire' ) ) {
+		if ( 0 === strpos( $type, 'entire' ) ) {
 			return true;
 		}
 
 		// Front page.
-		if ( str_starts_with( $type, 'front' ) ) {
+		if ( 0 === strpos( $type, 'front' ) ) {
 			return is_front_page();
 		}
 
 		// URL Path.
-		if ( 'url_path' === $type ) {
-			return self::match_url_path( $values, $cond );
-		}
 
 		// Query params.
-		if ( 'custom_param_url' === $type ) {
-			$params = Utils::get_sanitized_query_parameters();
-			return Utils::validate_query_params( $values, $params );
-		}
 
 		// Cookie.
-		if ( 'cookie' === $type ) {
-			return self::validate_cookie( $values );
-		}
 
 		// Post.
 		if ( 'post_posts' === $type ||
-						'page' === $type ||
-						str_starts_with( $type, 'cpt_post:' )
+						'page' === $type
 		) {
 
 			$post_id = strval( get_the_ID() );
@@ -362,8 +90,7 @@ class DisplayRules {
 		// Taxonomy (with custom taxonomy).
 		if (
 			'post_cat' === $type ||
-			'post_tags' === $type ||
-			str_starts_with( $type, 'cpt_tax:' )
+			'post_tags' === $type
 		) {
 			$term_ids = Utils::get_terms_by_id( get_the_ID() );
 			return Utils::check_values( $term_ids, $values, $cond );
@@ -372,6 +99,12 @@ class DisplayRules {
 		// Post Types.
 		if ( 'post_type' === $type ) {
 			$post_type = get_post_type( get_the_ID() );
+			if ( ! in_array( $post_type, self::DEFAULT_POST_TYPES, true ) ) {
+				return false; }
+			foreach ( (array) $values as $value ) {
+				if ( ! is_string( $value ) || ! in_array( explode( '###', $value )[0], self::DEFAULT_POST_TYPES, true ) ) {
+					return false; }
+			}
 			return Utils::check_values( $post_type, $values, $cond );
 		}
 
@@ -379,44 +112,6 @@ class DisplayRules {
 		if ( 'author' === $type ) {
 			$author_id = strval( get_post_field( 'post_author', get_the_ID() ) );
 			return Utils::check_values( $author_id, $values, $cond );
-		}
-
-		return false;
-	}
-
-	/**
-	 * Validate cookie display rule.
-	 *
-	 * @param object $values cookie settings values.
-	 * @return bool
-	 */
-	private static function validate_cookie( $values ) {
-		$key_type     = $values->keyType; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-		$key          = sanitize_text_field( $values->keyValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-		$value_type   = $values->valueType; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-		$value        = sanitize_text_field( $values->valueValue ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-		$cookie_value = sanitize_text_field( wp_unslash( $_COOKIE[ $key ] ?? '' ) );
-
-		switch ( $key_type ) {
-			case 'exists':
-				return isset( $_COOKIE[ $key ] );
-			case 'not_exists':
-				return ! isset( $_COOKIE[ $key ] );
-		}
-
-		switch ( $value_type ) {
-			case 'empty':
-				return empty( $cookie_value );
-			case 'not_empty':
-				return ! empty( $cookie_value );
-			case 'equals':
-				return $cookie_value == $value; // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
-			case 'not_equals':
-				return $cookie_value != $value; // phpcs:ignore Universal.Operators.StrictComparisons.LooseNotEqual
-			case 'contains':
-				return strpos( $cookie_value, $value ) !== false;
-			case 'not_contains':
-				return strpos( $cookie_value, $value ) === false;
 		}
 
 		return false;
@@ -704,145 +399,57 @@ class DisplayRules {
 			),
 		);
 
-		return $res;
+		return apply_filters(
+			'optn_display_rule_options',
+			array_map(
+				function ( $option ) {
+					return ! empty( $option['pro'] ) ? array_intersect_key( $option, array_flip( array( 'value', 'label', 'pro', 'isHeader', 'isChild' ) ) ) : $option;
+				},
+				$res
+			)
+		);
 	}
 
 	/**
 	 * Get values for a rule.
 	 *
-	 * @param string $type rule type.
-	 * @param string $search search query.
-	 * @param mixed  $exclude exclude terms.
+	 * @param string          $type rule type.
+	 * @param string          $search search query.
+	 * @param array<int, int> $exclude Term, post, or user IDs omitted from the result.
 	 * @return array
 	 */
 	public static function get_values( $type, $search, $exclude ) {
-
-		if ( Utils::check_prefix( $type, 'cpt_post:', true ) ) {
-			return self::get_posts( $type, $search, $exclude );
+		/** Null declines lookup; extension results must retain the shared array response shape. */
+		$result = apply_filters( 'optn_display_rule_values', null, $type, $search, $exclude );
+		if ( null !== $result ) {
+			return is_array( $result ) ? $result : array();
 		}
-
-		if ( Utils::check_prefix( $type, 'cpt_tax:', true ) ) {
-			$v = explode( '###', $type );
-			return self::get_terms( $v[1], $search, $exclude );
-		}
-
 		switch ( $type ) {
-
 			case 'post_posts':
 				return self::get_posts( 'post', $search, $exclude );
-
 			case 'post_cat':
 				return self::get_terms( 'category', $search, $exclude );
-
+			case 'post_tags':
 			case 'post_tag':
 				return self::get_terms( 'post_tag', $search, $exclude );
-
 			case 'page':
 			case 'parent_page':
 				return self::get_posts( 'page', $search, $exclude );
-
 			case 'post_type':
 				return self::get_post_types( $search, $exclude );
-
 			case 'author':
 				return self::get_users( $search, $exclude );
-
-			case 'woo_cart_products':
-			case 'woo_single_product':
-				return self::get_woo_products( $search, $exclude );
-
-			case 'woo_cats':
-				return self::get_terms( 'product_cat', $search, $exclude );
-
-			case 'woo_tags':
-				return self::get_terms( 'product_tag', $search, $exclude );
-
-			case 'edd_single_product':
-			case 'edd_cart_products':
-				return self::get_edd_products( $search, $exclude );
-
-			case 'edd_cats':
-				return self::get_terms( 'download_category', $search, $exclude );
-
-			case 'edd_tags':
-				return self::get_terms( 'download_tag', $search, $exclude );
-
 			default:
 				return array();
 		}
 	}
 
 	/**
-	 * Get WooCommerce products
-	 *
-	 * @param string $search search query.
-	 * @param array  $exclude exclude terms.
-	 * @return array
-	 */
-	public static function get_woo_products( $search, $exclude ) {
-		$res = array();
-
-		if ( function_exists( 'wc_get_products' ) ) {
-			$products = wc_get_products(
-				array(
-					'exclude' => $exclude, //phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
-					's'       => $search,
-					'limit'   => ! empty( $search ) ? -1 : 10,
-					'status'  => 'publish',
-				)
-			);
-
-			if ( ! empty( $products ) ) {
-				foreach ( $products as $product ) {
-					$res[] = array(
-						'value' => $product->get_id(),
-						'label' => $product->get_name(),
-					);
-				}
-			}
-		}
-
-		return $res;
-	}
-
-	/**
-	 * Get EDD products.
-	 *
-	 * @param string $search search query.
-	 * @param mixed  $exclude exclude terms.
-	 * @return array
-	 */
-	public static function get_edd_products( $search, $exclude ) {
-		$res = array();
-
-		$products = get_posts(
-			array(
-				'post_type'      => 'download',
-				'posts_per_page' => ! empty( $search ) ? -1 : 10,
-				'post_status'    => 'publish',
-				's'              => $search,
-				'exclude'        => $exclude, //phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude
-			)
-		);
-
-		if ( ! empty( $products ) ) {
-			foreach ( $products as $product ) {
-				$res[] = array(
-					'value' => $product->ID,
-					'label' => $product->post_title,
-				);
-			}
-		}
-
-		return $res;
-	}
-
-	/**
 	 * Get terms
 	 *
-	 * @param string $tax taxonomy type.
-	 * @param string $search search query.
-	 * @param mixed  $exclude exclude terms.
+	 * @param string          $tax taxonomy type.
+	 * @param string          $search search query.
+	 * @param array<int, int> $exclude Term, post, or user IDs omitted from the result.
 	 * @return array
 	 */
 	public static function get_terms( $tax, $search, $exclude ) {
@@ -875,9 +482,9 @@ class DisplayRules {
 	/**
 	 * Get posts by post type.
 	 *
-	 * @param string $post_type post type.
-	 * @param string $search search query.
-	 * @param mixed  $exclude exclude terms.
+	 * @param string          $post_type post type.
+	 * @param string          $search search query.
+	 * @param array<int, int> $exclude Term, post, or user IDs omitted from the result.
 	 * @return array
 	 */
 	public static function get_posts( $post_type, $search, $exclude ) {
@@ -908,8 +515,8 @@ class DisplayRules {
 	/**
 	 * Get users.
 	 *
-	 * @param string $search search query.
-	 * @param mixed  $exclude exclude terms.
+	 * @param string          $search search query.
+	 * @param array<int, int> $exclude Term, post, or user IDs omitted from the result.
 	 * @return array
 	 */
 	public static function get_users( $search, $exclude ) {
@@ -937,8 +544,8 @@ class DisplayRules {
 	/**
 	 * Get Post types
 	 *
-	 * @param string $search search query.
-	 * @param mixed  $exclude exclude terms.
+	 * @param string          $search search query.
+	 * @param array<int, int> $exclude Term, post, or user IDs omitted from the result.
 	 * @return array
 	 */
 	public static function get_post_types( $search, $exclude ) {
@@ -985,124 +592,5 @@ class DisplayRules {
 		}
 
 		return $res;
-	}
-
-	/**
-	 * Check if EDD product single page
-	 *
-	 * @return boolean
-	 */
-	private static function is_edd_product() {
-		return is_single() && 'download' === get_post_type();
-	}
-
-	/**
-	 * Alternative version using WordPress functions for better integration
-	 *
-	 * @param string $target_path The path to match against.
-	 * @param string $condition The matching condition.
-	 * @param bool   $case_sensitive Whether the comparison should be case sensitive.
-	 * @return bool
-	 */
-	private static function match_url_path( $target_path, $condition = 'equals', $case_sensitive = false ) {
-		// Derive the current request path from the server environment to avoid
-		// losing language prefixes (e.g., /en) or sub-paths added by plugins.
-		// Using home_url() here can strip locale directories when filters are applied.
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '/';
-
-		$current_path = wp_parse_url( $request_uri, PHP_URL_PATH );
-		$current_path = $current_path ? $current_path : '/';
-
-		// If the server/environment collapses language-prefixed home to '/',
-		// fall back to the site's base path (e.g., '/en') for accurate matching.
-		$site_base = wp_parse_url( home_url( '/' ), PHP_URL_PATH );
-		if ( '/' === $current_path && ! empty( $site_base ) && '/' !== $site_base ) {
-			$current_path = $site_base;
-		}
-
-		// Build a list of path variants to match against:
-		// 1) The raw request path (preserves language prefixes).
-		// 2) Optionally, the path with the site's base stripped (for subdir installs).
-		$paths_to_check = array( $current_path );
-		if ( ! empty( $site_base ) && '/' !== $site_base && strpos( $current_path, $site_base ) === 0 ) {
-			$without_base     = substr( $current_path, strlen( $site_base ) );
-			$without_base     = '/' . ltrim( $without_base, '/' );
-			$paths_to_check[] = $without_base;
-		}
-
-		// Note: Do not strip the site's base path using home_url() because multilingual
-		// plugins often filter it to include language prefixes (e.g., /en). We want to
-		// preserve the visible URL path exactly as requested.
-
-		// Normalize paths: ensure leading slash and decode percent-encoding.
-		$current_path = rawurldecode( '/' . ltrim( $current_path, '/' ) );
-		$target_path  = rawurldecode( '/' . ltrim( (string) $target_path, '/' ) );
-
-		// Remove trailing slash for consistency (except for root).
-		if ( '/' !== $current_path ) {
-			$current_path = rtrim( $current_path, '/' );
-		}
-		if ( '/' !== $target_path ) {
-			$target_path = rtrim( $target_path, '/' );
-		}
-
-		if ( class_exists( '\\QM' ) ) {
-			\QM::debug( 'REQUEST_URI: ' . ( isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '' ) );
-			\QM::debug( 'Site Base: ' . (string) $site_base );
-			\QM::debug( 'Current Path Variants: ' . implode( ', ', $paths_to_check ) );
-			\QM::debug( 'Target Path: ' . $target_path );
-		}
-
-		if ( ! $case_sensitive ) {
-			$paths_to_check = array_map( 'strtolower', $paths_to_check );
-			$target_path    = strtolower( $target_path );
-		}
-
-		// Split the condition into its positive form plus a negation flag. The
-		// negation must be applied to the aggregated result of all path variants,
-		// never per variant -- see the loop below.
-		$is_negated     = str_starts_with( $condition, 'not_' );
-		$base_condition = $is_negated ? substr( $condition, 4 ) : $condition;
-
-		// Helper comparator for a single path, positive conditions only.
-		$matches = function ( $path ) use ( $base_condition, $target_path ) {
-			switch ( $base_condition ) {
-				case 'equals':
-					return $path === $target_path;
-				case 'starts_with':
-					return strpos( $path, $target_path ) === 0;
-				case 'ends_with':
-					$target_len = strlen( $target_path );
-					return substr( $path, -$target_len ) === $target_path;
-				case 'contains':
-					return strpos( $path, $target_path ) !== false;
-				default:
-					return false;
-			}
-		};
-
-		// Unknown condition: fail closed for both polarities.
-		if ( ! in_array( $base_condition, array( 'equals', 'starts_with', 'ends_with', 'contains' ), true ) ) {
-			return false;
-		}
-
-		// A variant matching is enough for the positive form. For the negated form
-		// this becomes "no variant matches" (De Morgan), so a stripped variant such
-		// as '/shop' can no longer satisfy "does not contain /en" while the visible
-		// URL is '/en/shop'.
-		$positive_match = false;
-		foreach ( $paths_to_check as $path_variant ) {
-			// Normalize variant: ensure leading slash, remove trailing slash (except root).
-			$path_variant = '/' . ltrim( $path_variant, '/' );
-			if ( '/' !== $path_variant ) {
-				$path_variant = rtrim( $path_variant, '/' );
-			}
-			if ( $matches( $path_variant ) ) {
-				$positive_match = true;
-				break;
-			}
-		}
-
-		return $is_negated ? ! $positive_match : $positive_match;
 	}
 }

@@ -1,21 +1,27 @@
 <?php // phpcs:ignore
 
 /**
- * Video class
+ * Builds the frontend markup for saved opt-in form fields and their controls.
  *
- * @package opitn/inludes/uitls
+ * Converts decoded field definitions into escaped text, checkbox, consent, and spacer
+ * markup while preserving each field's saved identifiers and validation attributes.
+ *
+ * @package Optin
  */
 
 namespace OPTN\Includes\Utils;
 
 /**
- * Video
+ * Renders saved form field definitions into accessible frontend form controls.
+ *
+ * Selects the correct control markup for each field type and includes its configured
+ * labels, input values, consent text, and submission-state messages.
  */
 class FormHelper {
 	/**
 	 * Get checkbox html
 	 *
-	 * @param object $field field data.
+	 * @param \stdClass $field Decoded form-field settings used to build the text input markup.
 	 * @return string
 	 */
 	private static function get_text_html( $field ) {
@@ -55,7 +61,7 @@ class FormHelper {
 	/**
 	 * Get checkbox html
 	 *
-	 * @param object $field field data.
+	 * @param \stdClass $field Decoded form-field settings used to build the checkbox markup.
 	 * @return string
 	 */
 	private static function get_checkbox_html( $field ) {
@@ -94,7 +100,7 @@ class FormHelper {
 	/**
 	 * Extract the Vimeo video ID from a URL.
 	 *
-	 * @param object $attr attributes.
+	 * @param \stdClass $attr Decoded form-block attributes containing field and layout settings.
 	 * @return string
 	 */
 	public static function get_input_html_v2( &$attr ) {
@@ -137,7 +143,7 @@ class FormHelper {
 		$html       .= '<button class="optn-block-form-button" type="submit" ';
 		$html       .= 'data-optn="' . esc_attr( wp_json_encode( $button_data ) ) . '">';
 		$html       .= '<div class="optn-block-form-button-text">';
-		$html .= esc_html( $attr->btnText );  // phpcs:ignore
+		$html       .= esc_html( $attr->btnText );  // phpcs:ignore
 		$html       .= '</div>';
 		$html       .= '</button>';
 		$html       .= '</div>';
@@ -146,7 +152,12 @@ class FormHelper {
 	}
 
 	/**
-	 * Get spacer html
+	 * Build the spacer markup for a saved form field.
+	 *
+	 * Uses the field's saved identifier as the markup attribute so frontend styling can
+	 * target the spacer from the same form definition used by the editor.
+	 *
+	 * @param \stdClass $field Saved form field record containing its identifier.
 	 *
 	 * @return string
 	 */
@@ -157,7 +168,7 @@ class FormHelper {
 	/**
 	 * Extract the Vimeo video ID from a URL.
 	 *
-	 * @param object $fields attributes.
+	 * @param array $fields Saved form-field records that should be rendered in order.
 	 * @return string
 	 */
 	public static function get_input_html( &$fields ) {

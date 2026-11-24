@@ -9,6 +9,24 @@ use OPTN\Includes\Utils\BlockUtils;
 	Social Block
  */
 class SocialBlock extends BaseBlock {
+	/** Supported platform IDs select only these bundled files. */
+	private const ICON_FILES = array(
+		'facebook'  => 'facebook.svg',
+		'instagram' => 'instagram.svg',
+		'linkedin'  => 'linkedin.svg',
+		'discord'   => 'discord.svg',
+		'x'         => 'x.svg',
+		'whatsapp'  => 'whatsapp.svg',
+		'telegram'  => 'telegram.svg',
+		'bluesky'   => 'bluesky.svg',
+		'threads'   => 'threads.svg',
+		'youtube'   => 'youtube.svg',
+		'tiktok'    => 'tiktok.svg',
+		'twitch'    => 'twitch.svg',
+		'reddit'    => 'reddit.svg',
+		'tumblr'    => 'tumblr.svg',
+		'snapchat'  => 'snapchat.svg',
+	);
 
 	/**
 	 * Get block name
@@ -33,7 +51,10 @@ class SocialBlock extends BaseBlock {
 
 		$html .= '<div class="optn-block-social-content" >';
 
-		foreach ( $attr->socials as $social ) {
+		foreach ( is_array( $attr->socials ?? null ) ? $attr->socials : array() as $social ) {
+			if ( ! is_object( $social ) || ! is_string( $social->type ?? null ) || ! isset( self::ICON_FILES[ $social->type ] ) ) {
+				continue;
+			}
 			$html .= $this->get_social_item(
 				$social->type,
 				$attr->labelEnabled && $social->labelEnabled ? // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
@@ -59,9 +80,20 @@ class SocialBlock extends BaseBlock {
 	 * @return string
 	 */
 	private function get_social_item( $icon, $label, $url, $type ) {
+		if ( ! is_string( $icon ) || ! isset( self::ICON_FILES[ $icon ] ) ) {
+			return '';
+		}
+		$path = OPTN_DIR . '/assets/images/social-icons/' . self::ICON_FILES[ $icon ];
+		if ( ! is_readable( $path ) ) {
+			return '';
+		}
+		$svg = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		if ( false === $svg ) {
+			return '';
+		}
 		$html = '<a data-optn-social-platform="' . esc_attr( $type ) . '" class="optn-block-social-content-item" href="' . esc_url( $url ) . '" >';
 
-		$html .= file_get_contents( OPTN_DIR . '/assets/images/social-icons/' . $icon . '.svg' ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$html .= $svg;
 
 		if ( ! empty( $label ) ) {
 			$html .= '<span class="optn-block-social-content-item-label">';

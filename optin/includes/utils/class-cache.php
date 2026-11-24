@@ -8,7 +8,10 @@ defined( 'ABSPATH' ) || exit;
 
 
 /**
- * Cache class
+ * Wraps WordPress transients with the plugin's shared cache key conventions.
+ *
+ * Provides cache lookup, storage, and deletion operations for integration metadata
+ * and other values whose lifetime is managed by WordPress transient expiration.
  */
 class Cache {
 	use Singleton;
@@ -17,7 +20,7 @@ class Cache {
 	 * Gets value from cache by key
 	 *
 	 * @param string $key key of the value.
-	 * @param mixed  $default_value default value if value in not in cache.
+	 * @param mixed  $default_value Any value to return when the transient has no stored value.
 	 * @return mixed
 	 */
 	public static function get( $key, $default_value = null ) {
@@ -39,7 +42,7 @@ class Cache {
 	 * Sets a value in cache
 	 *
 	 * @param string   $key key of the value.
-	 * @param mixed    $value value to store in cache.
+	 * @param mixed    $value Any serializable value that WordPress can store as a transient.
 	 * @param int|null $days cache expiration in days.
 	 * @return bool
 	 */

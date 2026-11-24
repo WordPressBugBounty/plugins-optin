@@ -1,125 +1,144 @@
-<?php // phpcs:ignore
+<?php
 /**
- * Mail Integration Interface
+ * Resolves shared integration providers and creates their mail handlers.
+ * Provider extensions register callbacks without adding provider-specific
+ * classes to the common submission flow.
  *
- * @package optin
- * @subpackage optin/intergrtions
+ * @package Optin
  */
 
 namespace OPTN\Includes\Integrations\Base;
 
-use OPTN\Includes\Integrations\Implementations\ActiveCampaign;
-use OPTN\Includes\Integrations\Implementations\Acumbamail;
-use OPTN\Includes\Integrations\Implementations\Brevo;
-use OPTN\Includes\Integrations\Implementations\CampaignMonitor;
-use OPTN\Includes\Integrations\Implementations\Chatgpt;
-use OPTN\Includes\Integrations\Implementations\ConvertKit;
-use OPTN\Includes\Integrations\Implementations\Drip;
-use OPTN\Includes\Integrations\Implementations\FluentCrm;
-use OPTN\Includes\Integrations\Implementations\Gemini;
-use OPTN\Includes\Integrations\Implementations\GetResponse;
-use OPTN\Includes\Integrations\Implementations\Grok;
-use OPTN\Includes\Integrations\Implementations\HubSpot;
 use OPTN\Includes\Integrations\Implementations\Mailchimp;
-use OPTN\Includes\Integrations\Implementations\MailerLite;
-use OPTN\Includes\Integrations\Implementations\MailPoet;
-use OPTN\Includes\Integrations\Implementations\Moosend;
-use OPTN\Includes\Integrations\Implementations\Omnisend;
-use OPTN\Includes\Integrations\Implementations\Sendfox;
 use OPTN\Includes\Integrations\Implementations\Webhook;
 
 /**
- * Integration Factory class
+ * Maintains provider metadata and constructs supported mail integrations.
+ * Built-in Mailchimp and Webhook providers share the same validation path,
+ * while registered extensions supply their own metadata and callbacks.
  */
 class IntegrationFactory {
-
 	/**
-	 * Intergration classes
+	 * Registered provider definitions indexed by their integration identifier.
 	 *
-	 * @var array
+	 * Each definition stores its handler class, category, account requirements, and
+	 * optional validation callbacks used when preparing a submission destination.
+	 *
+	 * @var array<string, array<string, string|bool|callable>>
 	 */
-	private static $obj = array(
-		'mailerlite'      => MailerLite::class,
-		'mailchimp'       => Mailchimp::class,
-		'hubspot'         => HubSpot::class,
-		'fluentcrm'       => FluentCrm::class,
-		'webhook'         => Webhook::class,
-		'brevo'           => Brevo::class,
-		'moosend'         => Moosend::class,
-		'omnisend'        => Omnisend::class,
-		'mailpoet'        => MailPoet::class,
-		'convertkit'      => ConvertKit::class,
-		'campaignmonitor' => CampaignMonitor::class,
-		'getresponse'     => GetResponse::class,
-		'drip'            => Drip::class,
-		'sendfox'         => Sendfox::class,
-		'activecampaign'  => ActiveCampaign::class,
-		'acumbamail'      => Acumbamail::class,
-		'chatgpt'         => Chatgpt::class,
-		'gemini'          => Gemini::class,
-		'grok'            => Grok::class,
-	);
+	private static $providers = array();
 
 	/**
-	 * AI Intergration classes
+	 * Register provider metadata without coupling the common flow to extension classes.
 	 *
-	 * @var array
+	 * The provider identifier selects this metadata for later validation and construction;
+	 * optional settings override the default category, account behavior, or callbacks.
+	 *
+	 * @param string $type    Provider identifier used by saved integration settings.
+	 * @param string $class   Fully qualified handler class name to instantiate.
+	 * @param array  $options Optional provider metadata and validation callbacks.
+	 * @return void
 	 */
-	private static $ai_integrations = array(
-		'chatgpt' => Chatgpt::class,
-		'gemini'  => Gemini::class,
-		'grok'    => Grok::class,
-	);
+	public static function register_provider( $type, $class, array $options = array() ) {
+		self::$providers[ $type ] = array_merge(
+			array(
+				'class'           => $class,
+				'account'         => true,
+				'category'        => 'mail',
+				'mapping_pattern' => '/^[a-zA-Z0-9_.-]{1,100}$/D',
+			),
+			$options
+		);
+	}
 
 	/**
-	 * Creates integration factory object.
+	 * Gets provider metadata from the extension registry or built-in providers.
+	 * Unknown provider names and non-string values return null.
 	 *
-	 * @param string $type type.
-	 * @param int    $account_id account id.
-	 * @return MailIntegration
+	 * @param string $type Provider identifier to look up.
+	 * @return array|null Provider metadata, or null when the provider is unknown.
+	 */
+	public static function get_provider( $type ) {
+		if ( ! is_string( $type ) ) {
+			return null; }
+		if ( isset( self::$providers[ $type ] ) ) {
+			return self::$providers[ $type ];
+		}
+		if ( 'mailchimp' === $type || 'webhook' === $type ) {
+			return array(
+				'class'           => 'mailchimp' === $type ? Mailchimp::class : Webhook::class,
+				'account'         => 'mailchimp' === $type,
+				'category'        => 'mail',
+				'mapping_pattern' => '/^[a-zA-Z0-9_.-]{1,100}$/D',
+			);
+		}
+		return null;
+	}
+
+	/**
+	 * Creates a provider handler when the provider is a supported mail integration.
+	 * Providers with another category or without a registered class return null.
+	 *
+	 * @param string   $type Provider identifier to instantiate.
+	 * @param int|null $account_id Saved account identifier passed to the handler.
+	 * @return object|null Integration handler, or null when no mail handler is available.
 	 */
 	public static function get_integration_class( $type, $account_id ) {
-		$classes = self::$obj;
-		if ( ! empty( $classes[ $type ] ) ) {
-			return new $classes[ $type ]( $account_id );
+		$provider = self::get_provider( $type );
+		if ( ! $provider || 'mail' !== $provider['category'] || empty( $provider['class'] ) ) {
+			return null;
 		}
-		return null;
+		$class = $provider['class'];
+		return new $class( $account_id );
 	}
 
 	/**
-	 * Creates AI integration factory object.
+	 * Validate the saved account data before provider-specific checks or delivery.
 	 *
-	 * @param string $type type.
-	 * @param int    $account_id account id.
-	 * @return AiIntegration
+	 * Requires an enabled account with a non-empty API key, applies the built-in
+	 * Mailchimp data-center format check, and invokes a registered provider validator.
+	 *
+	 * @param string $type Integration provider identifier.
+	 * @param array  $data Saved account fields loaded by the server.
+	 * @return bool|\WP_Error|mixed True, a provider validator result, or a validation error.
 	 */
-	public static function get_ai_integration_class( $type, $account_id ) {
-		$classes = self::$ai_integrations;
-		if ( ! empty( $classes[ $type ] ) ) {
-			return new $classes[ $type ]( $account_id );
+	public static function validate_account( $type, $data ) {
+		$provider = self::get_provider( $type );
+		if ( ! $provider || ! is_array( $data ) || ! empty( $data['disabled'] ) ||
+			! is_string( $data['apiKey'] ?? null ) || '' === trim( $data['apiKey'] ) ) {
+			return new \WP_Error( 'optn_submission_account', 'Account unavailable or mismatched', array( 'status' => 400 ) );
 		}
-		return null;
+		if ( 'mailchimp' === $type && ! preg_match( '/^[a-zA-Z0-9]+-us[0-9]+$/D', $data['apiKey'] ) ) {
+			return new \WP_Error( 'optn_submission_account', 'Invalid Mailchimp data center', array( 'status' => 400 ) );
+		}
+		return isset( $provider['validate_account'] ) ? call_user_func( $provider['validate_account'], $data ) : true;
 	}
 
 	/**
-	 * Creates integration info.
+	 * Validate saved destination settings and mapped fields for a provider.
 	 *
-	 * @param string $type type.
-	 * @param string $integration integration.
-	 * @param string $query query.
-	 * @return MailIntegration
+	 * Delegates to a provider-specific destination validator when registered; otherwise
+	 * applies the built-in Mailchimp list/email checks or Webhook URL/method checks.
+	 *
+	 * @param string $type   Integration provider identifier.
+	 * @param object $config Server-loaded provider configuration object; each extension defines its own fields.
+	 * @param array  $data   Validated form and mapped field values.
+	 * @return array<string, mixed>|\WP_Error|mixed Validated delivery data or a validation error.
 	 */
-	public static function get_integration_info( $type, $integration, $query ) {
-		if ( 'ai' === $type ) {
-			$class = self::$ai_integrations[ $integration ] ?? null;
-			if ( ! empty( $class ) ) {
-				switch ( $query ) {
-					case 'models':
-						return $class::get_models();
-				}
-			}
+	public static function prepare_destination( $type, $config, $data ) {
+		$provider = self::get_provider( $type );
+		if ( ! $provider ) {
+			return new \WP_Error( 'optn_submission_integration', 'Integration unavailable', array( 'status' => 400 ) );
 		}
-
-		return null;
+		if ( isset( $provider['validate_destination'] ) ) {
+			return call_user_func( $provider['validate_destination'], $config, $data );
+		}
+		if ( 'mailchimp' === $type && ( ! is_email( $data['fields']['email'] ?? '' ) || empty( $config->list ) ) ) {
+			return new \WP_Error( 'optn_submission_mapping', 'Saved email mapping or destination list unavailable', array( 'status' => 400 ) );
+		}
+		if ( 'webhook' === $type && ( ! wp_http_validate_url( $data['link'] ?? '' ) || ! in_array( $data['reqType'] ?? '', array( 'GET', 'POST' ), true ) ) ) {
+			return new \WP_Error( 'optn_submission_destination', 'Invalid saved webhook', array( 'status' => 400 ) );
+		}
+		return $data;
 	}
 }

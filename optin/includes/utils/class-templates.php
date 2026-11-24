@@ -1,11 +1,29 @@
-<?php // phpcs:ignore
+<?php
+/**
+ * Retrieves templates, presets, and recipes used to create opt-in campaigns.
+ *
+ * @package Optin
+ */
 
 namespace OPTN\Includes\Utils;
 
 /**
- * Template class
+ * Retrieves remote campaign templates, presets, and recipe definitions.
+ *
+ * Applies extension query arguments, caches successful responses, and exposes the
+ * individual records used by campaign creation and recipe activation screens.
  */
 class Templates {
+
+	/**
+	 * Add extension-provided query arguments to requests for hosted template data.
+	 *
+	 * @param array<string, scalar|null> $args Query arguments sent to the template service.
+	 * @return array<string, scalar|null> Query arguments after extension filters run.
+	 */
+	public static function query_args( array $args ): array {
+		return apply_filters( 'optn_template_query_args', $args );
+	}
 
 	const TEMPLATE_URL = 'https://apps.wowoptin.com/wp-json/otmp/v1/templates';
 	const PRESET_URL   = 'https://apps.wowoptin.com/wp-json/otmp/v1/presets';
@@ -24,10 +42,12 @@ class Templates {
 		$key = ! empty( $cached_data ) ? $key : '';
 
 		$url = add_query_arg(
-			array(
-				'key'     => $key,
-				'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
-				'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
+			self::query_args(
+				array(
+					'key'     => $key,
+					'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
+					'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
+				)
 			),
 			self::TEMPLATE_URL
 		);
@@ -73,10 +93,12 @@ class Templates {
 		$key = ! empty( $cached_data ) ? $key : '';
 
 		$url = add_query_arg(
-			array(
-				'key'     => $key,
-				'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
-				'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
+			self::query_args(
+				array(
+					'key'     => $key,
+					'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
+					'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
+				)
 			),
 			self::PRESET_URL
 		);
@@ -110,58 +132,6 @@ class Templates {
 	}
 
 	/**
-	 * Get Template post
-	 *
-	 * @param int $id template id.
-	 * @return array|null
-	 */
-	public static function fetch_template_post( $id ) {
-
-		$cache_data = Cache::get( 'optn_template_post' );
-
-		if ( ! empty( $cache_data ) && isset( $cache_data[ $id ] ) ) {
-			return $cache_data[ $id ];
-		}
-
-		$url = add_query_arg(
-			array(
-				'license' => Utils::get_license_key(),
-				'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
-				'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
-			),
-			self::TEMPLATE_URL . '/preview/' . $id
-		);
-
-		$response = wp_remote_get(
-			$url,
-			array(
-				'timeout' => 15,
-			)
-		);
-
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			Utils::log_to_file( $response );
-
-			$body = wp_remote_retrieve_body( $response );
-			$body = json_decode( $body, true );
-			if ( isset( $body['message'] ) && 'Update required' === $body['message'] ) {
-				return 'update_required';
-			}
-
-			return null;
-		}
-
-		$data = json_decode( $response['body'] );
-
-		if ( ! empty( $data ) ) {
-			Cache::set( 'optn_template_post', array( $id => $data ), 3 );
-		}
-
-		return $data;
-	}
-
-
-	/**
 	 * Get template data by ID
 	 *
 	 * @param int $id template id.
@@ -170,10 +140,11 @@ class Templates {
 	public static function fetch_single_template( $id ) {
 
 		$url = add_query_arg(
-			array(
-				'license' => Utils::get_license_key(),
-				'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
-				'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
+			self::query_args(
+				array(
+					'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
+					'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
+				)
 			),
 			self::TEMPLATE_URL . '/' . $id
 		);
@@ -212,10 +183,11 @@ class Templates {
 	public static function fetch_single_recipe( $id ) {
 
 		$url = add_query_arg(
-			array(
-				'license' => Utils::get_license_key(),
-				'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
-				'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
+			self::query_args(
+				array(
+					'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
+					'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
+				)
 			),
 			self::RECIPE_URL . '/' . $id
 		);
@@ -253,10 +225,11 @@ class Templates {
 	public static function fetch_single_preset( $id ) {
 
 		$url = add_query_arg(
-			array(
-				'license' => Utils::get_license_key(),
-				'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
-				'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
+			self::query_args(
+				array(
+					'is_dev'  => defined( 'OPTN_DEV_MODE' ) && OPTN_DEV_MODE ? '1' : '0',
+					'version' => defined( 'OPTN_VERSION' ) ? OPTN_VERSION : '0.0.0',
+				)
 			),
 			self::PRESET_URL . '/' . $id
 		);

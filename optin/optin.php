@@ -1,10 +1,10 @@
 <?php
 /**
- * Plugin Name:       WowOptin
+ * Plugin Name:       WowOptin - Popup Maker and Optin Forms
  * Description:       A WordPress Optin plugin helps capture visitor info through customizable forms to grow your email list and boost lead generation!
  * Requires at least: 6.4
  * Requires PHP:      7.4
- * Version:           1.4.50
+ * Version:           1.5.7
  * Author:            WPXPO
  * Author URI:        https://wpxpo.com/
  * License:           GPLv3
@@ -21,12 +21,14 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 
-define( 'OPTN_VERSION', '1.4.50' );
+define( 'OPTN_VERSION', '1.5.7' );
 define( 'OPTN_BASE', plugin_basename( __FILE__ ) );
 define( 'OPTN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'OPTN_URL', plugin_dir_url( __FILE__ ) );
 define( 'OPTN_MIN_CAPABILITY', 'edit_pages' );
 define( 'OPTN_CACHE_DAY', 3 );
+// PHP campaign-content extension contract; independent of product/release versions.
+define( 'OPTN_EXTENSION_API_VERSION', 2 );
 
 use OPTN\Includes\Activator;
 use OPTN\Includes\Deactivator;
@@ -41,9 +43,12 @@ function optn_activate_plugin() {
 
 /**
  * The code that runs during plugin deactivation.
+ *
+ * @param bool $network_wide Whether WordPress is deactivating the plugin network-wide.
+ * @return void
  */
-function optn_deactivate_plugin() {
-	Deactivator::deactivate();
+function optn_deactivate_plugin( $network_wide = false ) {
+	Deactivator::deactivate( $network_wide );
 }
 
 register_activation_hook( __FILE__, 'optn_activate_plugin' );
@@ -94,8 +99,13 @@ spl_autoload_register( 'optn_autoloader' );
  * @since    1.0.0
  */
 function optn_run_plugin() {
+	if ( ! apply_filters( 'optn_should_initialize', true ) ) {
+		return;
+	}
 	$plugin = new Init();
 	$plugin->run();
+	do_action( 'optn_runtime_initialized', 'free', $plugin );
 }
 
-optn_run_plugin();
+add_action( 'plugins_loaded', 'optn_run_plugin', 20 );
+add_filter( 'script_loader_tag', array( '\\OPTN\\Includes\\Utils\\AssetConfig', 'cache_attributes' ), 10, 2 );

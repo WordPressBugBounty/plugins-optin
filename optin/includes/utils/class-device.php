@@ -1,7 +1,13 @@
 <?php
+/**
+ * Detects visitor device types from request headers and user agents.
+ *
+ * @package Optin
+ */
 
 namespace OPTN\Includes\Utils;
 
+/** Detects visitor device categories. */
 class Device {
 
 	/**
@@ -98,13 +104,13 @@ class Device {
 	 * @return boolean
 	 */
 	private static function is_mobile( $ua ) {
-		return str_contains( $ua, 'Mobile' )
-			|| str_contains( $ua, 'Android' )
-			|| str_contains( $ua, 'Silk/' )
-			|| str_contains( $ua, 'Kindle' )
-			|| str_contains( $ua, 'BlackBerry' )
-			|| str_contains( $ua, 'Opera Mini' )
-			|| str_contains( $ua, 'Opera Mobi' );
+		return false !== strpos( $ua, 'Mobile' )
+			|| false !== strpos( $ua, 'Android' )
+			|| false !== strpos( $ua, 'Silk/' )
+			|| false !== strpos( $ua, 'Kindle' )
+			|| false !== strpos( $ua, 'BlackBerry' )
+			|| false !== strpos( $ua, 'Opera Mini' )
+			|| false !== strpos( $ua, 'Opera Mobi' );
 	}
 
 	/**
@@ -128,7 +134,7 @@ class Device {
 
 		$cache_key = $ua . '|' . ( $ua_only ? '1' : '0' );
 
-		// Check cache
+		// Check cache.
 		if ( isset( self::$device[ $cache_key ] ) ) {
 			return self::$device[ $cache_key ];
 		}
@@ -153,8 +159,10 @@ class Device {
 	}
 
 	/**
+	 * Matches a user agent string against a regular expression.
 	 *
-	 * @param string $regex
+	 * @param string $regex Regular expression to match.
+	 * @param string $ua User agent string to inspect.
 	 *
 	 * @return boolean
 	 */

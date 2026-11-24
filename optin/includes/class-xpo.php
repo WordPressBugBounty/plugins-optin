@@ -1,4 +1,9 @@
-<?php // phcps:ignore
+<?php
+/**
+ * Initializes shared plugin services and registers their WordPress hooks.
+ *
+ * @package Optin
+ */
 
 namespace OPTN\Includes;
 
@@ -12,192 +17,157 @@ defined( 'ABSPATH' ) || exit;
 class Xpo {
 
 	/**
-	 * Checks if the license is active.
-	 *
-	 * @return boolean
-	 */
-	public static function is_lc_active() {
-		if ( defined( 'OPTN_PRO_VERSION' ) ) {
-			$license_data = get_option( 'edd_optin_license_data', array() );
-			return isset( $license_data['license'] ) && 'valid' === $license_data['license'];
-		}
-		return false;
-	}
-
-	/**
-	 * Checks if the license has expired.
-	 *
-	 * @return bool True if the license is expired, otherwise false.
-	 */
-	public static function is_lc_expired() {
-		$license_data = get_option( 'edd_optin_license_data', array() );
-		return isset( $license_data['license'] ) && 'expired' === $license_data['license'];
-	}
-
-	/**
-	 * Get renew link
-	 *
-	 * @return string
-	 */
-	public static function get_renew_link() {
-		return 'https://account.wpxpo.com/checkout/?edd_license_key=' . Utils::get_license_key() . '&renew=1';
-	}
-
-	/**
-	 * Get Option Value bypassing cache
-	 * Inspired By WordPress Core get_option
+	 * Retrieve a fresh option value without retaining it in the object cache.
 	 *
 	 * @param string  $option Option Name.
 	 * @param boolean $default_value option default value.
 	 * @return mixed
 	 */
 	public static function get_option_without_cache( $option, $default_value = false ) {
-		global $wpdb;
-
-		if ( is_scalar( $option ) ) {
-			$option = trim( $option );
-		}
-
-		if ( empty( $option ) ) {
-			return false;
-		}
-
-		$value = $default_value;
-
-		$row = $wpdb->get_row( $wpdb->prepare( "SELECT option_value FROM $wpdb->options WHERE option_name = %s LIMIT 1", $option ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-
-		if ( is_object( $row ) ) {
-			$value = $row->option_value;
-		} else {
-			return apply_filters( "optn_default_option_{$option}", $default_value, $option );
-		}
-
-		return apply_filters( "optn_option_{$option}", maybe_unserialize( $value ), $option );
+		return self::without_option_cache(
+			array( $option ),
+			static function () use ( $option, $default_value ) {
+				return get_option( $option, $default_value );
+			}
+		);
 	}
 
 	/**
-	 * Add option without adding to the cache
-	 * Inspired By WordPress Core set_transient
+	 * Add an option without reading or retaining stale object-cache entries.
 	 *
 	 * @since v.1.0.7
-	 * @param string $option option name.
-	 * @param string $value option value.
-	 * @param string $autoload whether to load WordPress startup.
+	 * @param string      $option option name.
+	 * @param mixed       $value Any serializable option value accepted by WordPress.
+	 * @param bool|string $autoload whether to load WordPress startup.
 	 * @return bool
 	 */
 	public static function add_option_without_cache( $option, $value = '', $autoload = 'yes' ) {
-		global $wpdb;
-
-		if ( is_scalar( $option ) ) {
-			$option = trim( $option );
-		}
-
-		if ( empty( $option ) ) {
-			return false;
-		}
-
-		wp_protect_special_option( $option );
-
-		if ( is_object( $value ) ) {
-			$value = clone $value;
-		}
-
-		$value = sanitize_option( $option, $value );
-
-		/*
-		* Make sure the option doesn't already exist.
-		*/
-
-		if ( apply_filters( "optn_default_option_{$option}", false, $option, false ) !== self::get_option_without_cache( $option ) ) {
-			return false;
-		}
-
-		$serialized_value = maybe_serialize( $value );
-		$autoload         = ( 'no' === $autoload || false === $autoload ) ? 'no' : 'yes';
-
-		$result = $wpdb->query( $wpdb->prepare( "INSERT INTO `$wpdb->options` (`option_name`, `option_value`, `autoload`) VALUES (%s, %s, %s) ON DUPLICATE KEY UPDATE `option_name` = VALUES(`option_name`), `option_value` = VALUES(`option_value`), `autoload` = VALUES(`autoload`)", $option, $serialized_value, $autoload ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-		if ( ! $result ) {
-			return false;
-		}
-
-		return true;
+		return self::without_option_cache(
+			array( $option ),
+			static function () use ( $option, $value, $autoload ) {
+				return add_option( $option, $value, '', $autoload );
+			}
+		);
 	}
 
 	/**
-	 * Get Transient Value bypassing cache
-	 * Inspired By WordPress Core get_transient
+	 * Retrieve a transient from the database, bypassing the object cache.
 	 *
 	 * @since v.1.0.7
 	 * @param string $transient Transient Name.
 	 * @return mixed
 	 */
 	public static function get_transient_without_cache( $transient ) {
-		$transient_option  = '_transient_' . $transient;
-		$transient_timeout = '_transient_timeout_' . $transient;
-		$timeout           = self::get_option_without_cache( $transient_timeout );
-
-		if ( false !== $timeout && $timeout < time() ) {
-			delete_option( $transient_option );
-			delete_option( $transient_timeout );
-			$value = false;
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Preserve the WordPress core Transients API hook.
+		$pre = apply_filters( "pre_transient_{$transient}", false, $transient );
+		if ( false !== $pre ) {
+			return $pre;
 		}
 
-		if ( ! isset( $value ) ) {
-			$value = self::get_option_without_cache( $transient_option );
-		}
+		$value = self::without_option_cache(
+			array( '_transient_' . $transient, '_transient_timeout_' . $transient ),
+			static function () use ( $transient ) {
+				$option  = '_transient_' . $transient;
+				$timeout = '_transient_timeout_' . $transient;
+				$expires = get_option( $timeout );
 
-		return apply_filters( "optn_transient_{$transient}", $value, $transient );
+				if ( false !== $expires && $expires < time() ) {
+					delete_option( $option );
+					delete_option( $timeout );
+					return false;
+				}
+
+				return get_option( $option );
+			}
+		);
+
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Preserve the WordPress core Transients API hook.
+		return apply_filters( "transient_{$transient}", $value, $transient );
 	}
 
 	/**
-	 * Set transient without adding to the cache
-	 * Inspired By WordPress Core set_transient
+	 * Store a transient in the database without retaining object-cache entries.
+	 *
+	 * Database-backed helpers leave external-cache transients with the same name
+	 * unchanged. Use the matching uncached reader for values stored here.
 	 *
 	 * @since v.1.0.7
 	 * @param string  $transient Transient Name.
-	 * @param mixed   $value Transient Value.
+	 * @param mixed   $value Any value that the WordPress Transients API can store and return.
 	 * @param integer $expiration Time until expiration in seconds.
 	 * @return bool
 	 */
 	public static function set_transient_without_cache( $transient, $value, $expiration = 0 ) {
 		$expiration = (int) $expiration;
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Preserve the WordPress core Transients API hook.
+		$value = apply_filters( "pre_set_transient_{$transient}", $value, $expiration, $transient );
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Preserve the WordPress core Transients API hook.
+		$expiration = apply_filters( "expiration_of_transient_{$transient}", $expiration, $value, $transient );
 
-		$transient_timeout = '_transient_timeout_' . $transient;
-		$transient_option  = '_transient_' . $transient;
+		$result = self::without_option_cache(
+			array( '_transient_' . $transient, '_transient_timeout_' . $transient ),
+			static function () use ( $transient, $value, $expiration ) {
+				$option  = '_transient_' . $transient;
+				$timeout = '_transient_timeout_' . $transient;
 
-		$result = false;
-
-		if ( false === self::get_option_without_cache( $transient_option ) ) {
-			$autoload = 'yes';
-			if ( $expiration ) {
-				$autoload = 'no';
-				self::add_option_without_cache( $transient_timeout, time() + $expiration, 'no' );
-			}
-			$result = self::add_option_without_cache( $transient_option, $value, $autoload );
-		} else {
-			/*
-			* If expiration is requested, but the transient has no timeout option,
-			* delete, then re-create transient rather than update.
-			*/
-			$update = true;
-
-			if ( $expiration ) {
-				if ( false === self::get_option_without_cache( $transient_timeout ) ) {
-					delete_option( $transient_option );
-					self::add_option_without_cache( $transient_timeout, time() + $expiration, 'no' );
-					$result = self::add_option_without_cache( $transient_option, $value, 'no' );
-					$update = false;
-				} else {
-					update_option( $transient_timeout, time() + $expiration );
+				if ( false === get_option( $option ) ) {
+					if ( $expiration ) {
+						add_option( $timeout, time() + $expiration, '', false );
+					}
+					return add_option( $option, $value, '', ! $expiration );
 				}
-			}
 
-			if ( $update ) {
-				$result = update_option( $transient_option, $value );
+				if ( $expiration ) {
+					if ( false === get_option( $timeout ) ) {
+						delete_option( $option );
+						add_option( $timeout, time() + $expiration, '', false );
+						return add_option( $option, $value, '', false );
+					}
+					update_option( $timeout, time() + $expiration );
+				}
+
+				return update_option( $option, $value );
 			}
+		);
+
+		if ( $result ) {
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Preserve the WordPress core Transients API hook.
+			do_action( "set_transient_{$transient}", $value, $expiration, $transient );
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Preserve the WordPress core Transients API hook.
+			do_action( 'set_transient', $transient, $value, $expiration );
+			do_action_deprecated( 'setted_transient', array( $transient, $value, $expiration ), '6.8.0', 'set_transient' );
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Run a WordPress API operation against fresh database-backed values.
+	 *
+	 * Clear option caches before and after the operation, including when a hook
+	 * throws. The request-wide cache backend and transient cache are not changed.
+	 *
+	 * @param string[] $options Option names involved in the operation.
+	 * @param callable $callback WordPress API operation.
+	 * @return mixed
+	 */
+	private static function without_option_cache( $options, $callback ) {
+		$options = array_map( 'trim', $options );
+		$clear   = static function () use ( $options ) {
+			foreach ( $options as $option ) {
+				wp_cache_delete( $option, 'options' );
+			}
+			wp_cache_delete( 'alloptions', 'options' );
+			wp_cache_delete( 'notoptions', 'options' );
+		};
+
+		$clear();
+
+		try {
+			return $callback();
+		} finally {
+			$clear();
+		}
 	}
 
 	/**
@@ -265,135 +235,5 @@ class Xpo {
 		}
 
 		return $final_url;
-	}
-
-
-	/**
-	 * Get WOW Products Details.
-	 *
-	 * @return array
-	 */
-	public static function get_wow_products_details() {
-		return array(
-			'products'        => array(
-				'post_x'       => file_exists( WP_PLUGIN_DIR . '/ultimate-post/ultimate-post.php' ),
-				'wow_store'    => file_exists( WP_PLUGIN_DIR . '/product-blocks/product-blocks.php' ),
-				'wow_revenue'  => file_exists( WP_PLUGIN_DIR . '/revenue/revenue.php' ),
-				'wholesale_x'  => file_exists( WP_PLUGIN_DIR . '/wholesalex/wholesalex.php' ),
-				'wow_addon'    => file_exists( WP_PLUGIN_DIR . '/product-addons/product-addons.php' ),
-				'wow_shipping' => file_exists( WP_PLUGIN_DIR . '/wow-table-rate-shipping/wow-table-rate-shipping.php' ),
-				'wow_invoice'  => file_exists( WP_PLUGIN_DIR . '/wow-pdf-invoices-packing-slips/wow-pdf-invoices-packing-slips.php' ),
-			),
-			'products_active' => array(
-				'post_x'       => defined( 'ULTP_VER' ),
-				'wow_store'    => defined( 'WOPB_VER' ),
-				'wow_revenue'  => defined( 'REVENUE_VER' ),
-				'wholesale_x'  => defined( 'WHOLESALEX_VER' ),
-				'wow_addon'    => defined( 'PRAD_VER' ),
-				'wow_shipping' => defined( 'WTRS_VER' ),
-				'wow_invoice'  => defined( 'WINV_VER' ),
-			),
-		);
-	}
-
-
-	/**
-	 * Installs and activates a plugin by its name only.
-	 *
-	 * @param string $name The name or slug of the plugin to install and activate.
-	 */
-	public static function install_and_active_plugin( $name ) {
-		$to_r        = array( 'done' => true );
-		$plugin_slug = $name;
-		switch ( $name ) {
-			case 'post_x':
-				$plugin_slug = 'ultimate-post';
-				break;
-			case 'wow_store':
-				$plugin_slug = 'product-blocks';
-				break;
-			case 'wow_optin':
-				$plugin_slug = 'optin';
-				break;
-			case 'wow_revenue':
-				$plugin_slug = 'revenue';
-				break;
-			case 'wholesale_x':
-				$plugin_slug = 'wholesalex';
-				break;
-			case 'wow_addon':
-				$plugin_slug = 'product-addons';
-				break;
-			case 'wow_shipping':
-				$plugin_slug = 'wow-table-rate-shipping';
-				break;
-			case 'wow_invoice':
-				$plugin_slug = 'wow-pdf-invoices-packing-slips';
-				break;
-		}
-
-		if ( ! file_exists( WP_PLUGIN_DIR . '/' . $plugin_slug . '/' . $plugin_slug . '.php' ) ) {
-				$to_r = self::plugin_install( $plugin_slug . '/' . $plugin_slug . '.php', $plugin_slug );
-		} else {
-			activate_plugin( $plugin_slug . '/' . $plugin_slug . '.php' );
-		}
-		return $to_r;
-	}
-
-	/**
-	 * Installs a plugin based on the provided plugin file and slug.
-	 *
-	 * This function is expected to handle the logic required to install a plugin,
-	 * such as downloading, unpacking, and activating the plugin using the provided
-	 * plugin file and slug.
-	 *
-	 * @param string $plugin The plugin file path or identifier (e.g., 'plugin-directory/plugin-file.php').
-	 * @param string $slug   The plugin slug (typically the directory name of the plugin).
-	 */
-	public static function plugin_install( $plugin, $slug ) {
-		include ABSPATH . 'wp-admin/includes/plugin-install.php';
-		include ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-
-		if ( ! class_exists( 'Plugin_Upgrader' ) ) {
-			include ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php';
-		}
-		if ( ! class_exists( 'WP_Ajax_Upgrader_Skin' ) ) {
-			include ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php';
-		}
-
-		$api = plugins_api(
-			'plugin_information',
-			array(
-				'slug'   => $slug,
-				'fields' => array(
-					'short_description' => false,
-					'sections'          => false,
-					'requires'          => false,
-					'rating'            => false,
-					'ratings'           => false,
-					'downloaded'        => false,
-					'last_updated'      => false,
-					'added'             => false,
-					'tags'              => false,
-					'compatibility'     => false,
-					'homepage'          => false,
-					'donate_link'       => false,
-				),
-			)
-		);
-
-		if ( is_wp_error( $api ) ) {
-			wp_die( $api ); //phpcs:ignore
-		}
-
-		$upgrader       = new \Plugin_Upgrader( new \WP_Ajax_Upgrader_Skin( compact( 'title', 'url', 'nonce', 'plugin', 'api' ) ) );
-		$install_result = $upgrader->install( $api->download_link );
-
-		if ( ! is_wp_error( $install_result ) ) {
-			activate_plugin( $plugin );
-			return array( 'done' => false );
-		}
-
-		return array( 'done' => true );
 	}
 }

@@ -8,7 +8,10 @@ use OPTN\Includes\Utils\Utils;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * MailerLite Integration class.
+ * Sends validated form submissions to a configured HTTP webhook endpoint.
+ *
+ * Uses the shared mail integration lifecycle for account lookup and submission
+ * validation, then delivers mapped fields using the saved request method and URL.
  *
  * @link https://developers.mailerlite.com/docs/
  */
@@ -70,7 +73,7 @@ class Webhook extends BaseMailIntegration {
 			return false;
 		}
 
-		if ( ! is_null( $res ) && ! is_wp_error( $res ) ) {
+		if ( ! is_null( $res ) && ! is_wp_error( $res ) && wp_remote_retrieve_response_code( $res ) >= 200 && wp_remote_retrieve_response_code( $res ) < 300 ) {
 			$this->add_lead( $data );
 			return true;
 		}
